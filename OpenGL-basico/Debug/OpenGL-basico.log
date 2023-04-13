@@ -1,2 +1,8 @@
 ﻿  main.cpp
-  OpenGL-basico.vcxproj -> C:\Users\feder\OneDrive\Documents\VS Projects\OpenGL-basico2\Debug\OpenGL-basico.exe
+  Vector3.cpp
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(29,16): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(36,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(76,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  LINK : C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe not found or not built by the last incremental link; performing full link
+  OpenGL-basico.vcxproj -> C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe
