@@ -1,3 +1,4 @@
+#include "Timer.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include <iostream>
@@ -72,13 +73,16 @@ int main(int argc, char *argv[]) {
 	GLfloat colorLuz[4] = { 1, 1, 1, 1 };
 	//FIN INICIALIZACION
 	bool textOn = true;
-
+	float initialTime = 0;
+	float endTime = 0;
 	//LOOP PRINCIPAL
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
-
+		endTime= SDL_GetTicks();
+		float timeStep = endTime - initialTime;
+		initialTime = endTime;
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
@@ -92,6 +96,8 @@ int main(int argc, char *argv[]) {
 		//TRANSFORMACIONES LINEALES
 		if (rotate){
 			degrees = degrees + 1;
+			cout << 1000/timeStep;
+			cout << "  ";
 		}
 		glRotatef(degrees, 0.0, 1.0, 0.0);
 
