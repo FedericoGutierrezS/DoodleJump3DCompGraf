@@ -21,12 +21,27 @@ float Vector3::getZ() {
     return z;
 }
 
-float Vector3::getModulo() {
-    return modulo;
-}
-
 float calculateModulo(Vector3 a) {
     return sqrt(pow(a.getX(), 2) + pow(a.getY(), 2) + pow(a.getZ(), 2));
+}
+
+void Vector3::setX(float a) {
+    x = a;
+    this->modulo = calculateModulo(*this);
+}
+
+void Vector3::setY(float a) {
+    y = a;
+    this->modulo = calculateModulo(*this);
+}
+
+void Vector3::setZ(float a) {
+    z = a;
+    this->modulo = calculateModulo(*this);
+}
+
+float Vector3::getModulo() {
+    return modulo;
 }
 
 Vector3::Vector3(float a, float b, float c) {
@@ -77,7 +92,9 @@ float Vector3::moduloSqr(Vector3 a) {
 };
 
 Vector3* Vector3::normalize(Vector3 a) {
-    return divVecEsc(a, a.getModulo());
+    if (a.getModulo() != 0)
+        return divVecEsc(a, a.getModulo());
+    else return new Vector3(0, 0, 0);
 };
 
 Vector3* Vector3::symmetrical(Vector3 a, Vector3 b) {

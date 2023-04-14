@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL.h>
 
+//github shakesoda
+//time is in seconds
 struct TimeData {
 	Uint64 then;
 	Uint64 now;

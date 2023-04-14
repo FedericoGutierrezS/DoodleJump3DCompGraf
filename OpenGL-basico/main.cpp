@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -58,7 +59,7 @@ int main(int argc, char* argv[]) {
 
 
 	bool fin = false;
-	bool rotate = false;
+	bool jump = false;
 
 	SDL_Event evento;
 
@@ -74,16 +75,22 @@ int main(int argc, char* argv[]) {
 	GLfloat colorLuz[4] = { 1, 1, 1, 1 };
 	//FIN INICIALIZACION
 	bool textOn = true;
-	float initialTime = 0;
-	float endTime = 0;
+	float timeStep = 0;
+	float jumpSpeed = 9;
+	float moveSpeed = 7;
+	Timer *timer = new Timer();
+	Vector3 dummy;
+	Vector3* pos = new Vector3(0, 0, 0);
+	Vector3* dir = new Vector3(0, 0, 0);
+	Vector3* speed = new Vector3(0, 0, 0);
+	float timeAcc = 0;
+	float gravity = 9.8;
 	//LOOP PRINCIPAL
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
-		endTime = SDL_GetTicks();
-		float timeStep = endTime - initialTime;
-		initialTime = endTime;
+		timeStep = timer->touch().delta;
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
@@ -94,13 +101,28 @@ int main(int argc, char* argv[]) {
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, colorLuz);
 
 		glPushMatrix();
+		glScalef(0.3, 0.3, 0.3);
 		//TRANSFORMACIONES LINEALES
-		if (rotate) {
-			degrees = degrees + 1;
-			cout << 1000 / timeStep;
-			cout << "  ";
+
+		speed = dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed);//Se normaliza la dirección de movimiento y se le asigna la velocidad
+		if (jump) {//Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
+			timeAcc += timeStep;
+			speed->setY(jumpSpeed - timeAcc * gravity);
 		}
-		glRotatef(degrees, 0.0, 1.0, 0.0);
+		
+		if (pos->getY() < 0) {
+			pos->setY(0.0);
+			jump = false;
+			dir->setY(0);
+			timeAcc = 0;
+		}
+
+		if (speed->getModulo() > 0) {//Mientras la velocidad sea >0 se actualiza la posición del objeto
+			pos = dummy.suma(*pos, *dummy.multVecEsc(*speed, timeStep));
+		}
+
+		glTranslatef(pos->getX(),pos->getY(), pos->getZ());//Se mueve el objeto
+
 
 		//DIBUJAR OBJETOS
 		//DIBUJO TRIANGULO CON COLOR
@@ -112,32 +134,6 @@ int main(int argc, char* argv[]) {
 		glEnd();
 		glPopMatrix();
 
-		//DIBUJO TRIANGULO CON TEXTURA
-		if (textOn) {
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, textura);
-		}
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.0, 1.0, 1.0);
-		glTexCoord2f(0, 0);
-		glVertex3f(3., -1., 0.);
-		glTexCoord2f(0, 1);
-		glVertex3f(1., -1., 0.);
-		glTexCoord2f(1, 0);
-		glVertex3f(2., 1., 0.);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-
-		//DIBUJO TRIANGULO CON LUZ
-		glEnable(GL_LIGHTING);
-		glBegin(GL_TRIANGLES);
-		glNormal3f(0, 0, 1);
-		glVertex3f(-1., -1., 0.);
-		glVertex3f(-3., -1., 0.);
-		glVertex3f(-2., 1., 0.);
-		glEnd();
-		glDisable(GL_LIGHTING);
-
 
 		//FIN DIBUJAR OBJETOS
 
@@ -145,15 +141,32 @@ int main(int argc, char* argv[]) {
 		while (SDL_PollEvent(&evento)) {
 			switch (evento.type) {
 			case SDL_MOUSEBUTTONDOWN:
-				rotate = true;
-				cout << "ROT\n";
 				break;
 			case SDL_MOUSEBUTTONUP:
-				rotate = false;
 				break;
 			case SDL_QUIT:
 				fin = true;
 				break;
+			case SDL_KEYDOWN:
+				switch (evento.key.keysym.sym) {
+					case SDLK_RIGHT:
+						dir->setX(1);
+						break;
+					case SDLK_LEFT:
+						dir->setX(-1);
+						break;
+					case SDLK_UP:
+						dir->setZ(-1);
+						break;
+					case SDLK_DOWN:
+						dir->setZ(1);
+						break;
+					case SDLK_SPACE:
+						dir->setY(1);
+						jump = true;
+						break;
+				}
+			break;
 			case SDL_KEYUP:
 				switch (evento.key.keysym.sym) {
 				case SDLK_ESCAPE:
@@ -163,6 +176,16 @@ int main(int argc, char* argv[]) {
 					textOn = !textOn;
 					break;
 				case SDLK_RIGHT:
+					dir->setX(0);
+					break;
+				case SDLK_LEFT:
+					dir->setX(0);
+					break;
+				case SDLK_UP:
+					dir->setZ(0);
+					break;
+				case SDLK_DOWN:
+					dir->setZ(0);
 					break;
 				}
 			}
@@ -175,5 +198,6 @@ int main(int argc, char* argv[]) {
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
 	SDL_Quit();
+	delete timer;
 	return 0;
 }

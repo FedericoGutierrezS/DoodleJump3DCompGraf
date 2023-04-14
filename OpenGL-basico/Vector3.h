@@ -13,6 +13,9 @@ public:
     float getX();
     float getY();
     float getZ();
+    void setX(float);
+    void setY(float);
+    void setZ(float);
     float getModulo();
     Vector3* suma(Vector3, Vector3);
     Vector3* resta(Vector3, Vector3);
