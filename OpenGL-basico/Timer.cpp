@@ -1,4 +1,6 @@
+#pragma once
 #include "Timer.h"
+
 
 	Timer::Timer() {
 		m_time.now = SDL_GetPerformanceCounter();

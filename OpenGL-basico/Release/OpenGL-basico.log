@@ -1,3 +1,3 @@
 ﻿  main.cpp
-C:\Users\fgutierrez\source\repos\FedericoGutierrezS\DoodleJump3DCompGraf\main.cpp(1,10): fatal  error C1083: No se puede abrir el archivo incluir: 'Timer.h': No such file or directory
+C:\Users\fgutierrez\source\repos\FedericoGutierrezS\DoodleJump3DCompGraf\main.cpp(2,10): fatal  error C1083: No se puede abrir el archivo incluir: 'Timer.h': No such file or directory
   Timer.cpp
