@@ -59,7 +59,10 @@ int main(int argc, char* argv[]) {
 
 
 	bool fin = false;
-	bool jump = false;
+	bool movingr = false;
+	bool movingl = false;
+	bool movingf = false;
+	bool movingb = false;
 
 	SDL_Event evento;
 
@@ -105,14 +108,13 @@ int main(int argc, char* argv[]) {
 		//TRANSFORMACIONES LINEALES
 
 		speed = dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed);//Se normaliza la dirección de movimiento y se le asigna la velocidad
-		if (jump) {//Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
+		if (pos->getY() >= 0) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
 			timeAcc += timeStep;
 			speed->setY(jumpSpeed - timeAcc * gravity);
 		}
-		
+
 		if (pos->getY() < 0) {
 			pos->setY(0.0);
-			jump = false;
 			dir->setY(0);
 			timeAcc = 0;
 		}
@@ -121,7 +123,7 @@ int main(int argc, char* argv[]) {
 			pos = dummy.suma(*pos, *dummy.multVecEsc(*speed, timeStep));
 		}
 
-		glTranslatef(pos->getX(),pos->getY(), pos->getZ());//Se mueve el objeto
+		glTranslatef(pos->getX(), pos->getY(), pos->getZ());//Se mueve el objeto
 
 
 		//DIBUJAR OBJETOS
@@ -149,24 +151,24 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_KEYDOWN:
 				switch (evento.key.keysym.sym) {
-					case SDLK_RIGHT:
-						dir->setX(1);
-						break;
-					case SDLK_LEFT:
-						dir->setX(-1);
-						break;
-					case SDLK_UP:
-						dir->setZ(-1);
-						break;
-					case SDLK_DOWN:
-						dir->setZ(1);
-						break;
-					case SDLK_SPACE:
-						dir->setY(1);
-						jump = true;
-						break;
+				case SDLK_RIGHT:
+					dir->setX(1);
+					movingr = true;
+					break;
+				case SDLK_LEFT:
+					dir->setX(-1);
+					movingl = true;
+					break;
+				case SDLK_UP:
+					dir->setZ(-1);
+					movingf = true;
+					break;
+				case SDLK_DOWN:
+					dir->setZ(1);
+					movingb = true;
+					break;
 				}
-			break;
+				break;
 			case SDL_KEYUP:
 				switch (evento.key.keysym.sym) {
 				case SDLK_ESCAPE:
@@ -176,16 +178,20 @@ int main(int argc, char* argv[]) {
 					textOn = !textOn;
 					break;
 				case SDLK_RIGHT:
-					dir->setX(0);
+					if (!movingl) dir->setX(0);
+					movingr = false;
 					break;
 				case SDLK_LEFT:
-					dir->setX(0);
+					if (!movingr) dir->setX(0);
+					movingl = false;
 					break;
 				case SDLK_UP:
-					dir->setZ(0);
+					if (!movingb) dir->setZ(0);
+					movingf = false;
 					break;
 				case SDLK_DOWN:
-					dir->setZ(0);
+					if (!movingf) dir->setZ(0);
+					movingb = false;
 					break;
 				}
 			}
