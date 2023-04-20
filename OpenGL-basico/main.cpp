@@ -104,6 +104,12 @@ int main(int argc, char* argv[]) {
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, colorLuz);
 
 		glPushMatrix();
+
+		float posY = pos->getY();
+		if (posY <= 2 && posY>=-0.1) {
+			glScalef(1.0, posY*0.5, 1.0);
+		}
+
 		glScalef(0.3, 0.3, 0.3);
 		//TRANSFORMACIONES LINEALES
 
