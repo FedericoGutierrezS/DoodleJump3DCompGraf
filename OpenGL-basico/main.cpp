@@ -29,36 +29,27 @@ Vector3* DoTheImportThing(const std::string& pFile) {
 	// If the import failed, report it
 
 	// Now we can access the file's contents.
-	int vertAmount = 0;
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < sizeof(scene->mMeshes[i]->mVertices)/sizeof(scene->mMeshes[i]->mVertices[1]); j++) {
-			vertAmount = vertAmount + 1;
-		};
-	};
-	cout << vertAmount;
-	Vector3* vertices = new Vector3[vertAmount];
-	int h = 0;
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < sizeof(scene->mMeshes[i]->mVertices) / sizeof(scene->mMeshes[i]->mVertices[0]); j++) {
-			vertices[h].setX(scene->mMeshes[i]->mVertices[j].x);
-			vertices[h].setY(scene->mMeshes[i]->mVertices[j].y);
-			vertices[h].setZ(scene->mMeshes[i]->mVertices[j].z);
-			h++;
-		};
-	};
+	
 	// We're done. Everything will be cleaned up by the importer destructor
+	int verAmount = scene->mMeshes[0]->mNumVertices;
+	Vector3* vertices = new Vector3[verAmount];
+	for (int i = 0; i < verAmount; i++) {
+		vertices[i].setX(scene->mMeshes[0]->mVertices[i].x);
+		vertices[i].setY(scene->mMeshes[0]->mVertices[i].y);
+		vertices[i].setZ(scene->mMeshes[0]->mVertices[i].z);
+	}
 	return vertices;
 }
 
 void drawFaces(Vector3* vertices) {
-	for (int i = 0; i < sizeof(vertices); i + 4) {
+	for (int i = 0; i < sizeof(vertices)/sizeof(vertices[0]); i + 3) {
 		glBegin(GL_QUADS);
 		glColor3f(0.4, 0.0, 0.7);
 		glVertex3f(vertices[i].getX(), vertices[i].getY(), vertices[i].getZ());
 		glVertex3f(vertices[i + 1].getX(), vertices[i + 1].getY(), vertices[i + 1].getZ());
 		glVertex3f(vertices[i + 2].getX(), vertices[i + 2].getY(), vertices[i + 2].getZ());
-		glVertex3f(vertices[i + 3].getX(), vertices[i + 3].getY(), vertices[i + 3].getZ());
 		glEnd();
+		cout << vertices[i + 2].getX();
 	}
 }
 
@@ -195,14 +186,7 @@ int main(int argc, char* argv[]) {
 		glVertex3f(-1., -1., 0.);
 		glVertex3f(0., 1., 0.);
 		glEnd();
-		
-		glBegin(GL_TRIANGLES);
-		glColor3f(0.4, 1.0, 0.7);
-		glVertex3f(modelo[0].getX(), modelo[0].getY(), modelo[0].getZ());
-		glVertex3f(modelo[1].getX(), modelo[1].getY(), modelo[1].getZ());
-		glVertex3f(modelo[5].getX(), modelo[5].getY(), modelo[5].getZ());
-		glEnd();
-		
+		drawFaces(modelo);
 		glPopMatrix();
 		glPushMatrix();
 
