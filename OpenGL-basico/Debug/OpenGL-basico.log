@@ -1,8 +1,13 @@
 ﻿  main.cpp
-  Vector3.cpp
-C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(29,16): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(36,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Vector3.cpp(76,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-  LINK : C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe not found or not built by the last incremental link; performing full link
-  OpenGL-basico.vcxproj -> C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(54,42): warning C4552: "+": el resultado de la expresión no se usa
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(56,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(136,26): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(143,23): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(150,21): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(161,28): warning C4244: '=': conversión de 'const double' a 'float'; posible pérdida de datos
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(165,23): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(168,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(200,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(210,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(212,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+  OpenGL-basico.vcxproj -> C:\Users\fgutierrez\Documents\VS Projects\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe

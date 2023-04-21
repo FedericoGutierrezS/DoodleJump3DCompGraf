@@ -7,14 +7,60 @@
 #include <stdio.h>
 #include <conio.h>
 #include <GL/glu.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
 using namespace std;
 
 
+Vector3* DoTheImportThing(const std::string& pFile) {
+	// Create an instance of the Importer class
+	Assimp::Importer importer;
 
+	// And have it read the given file with some example postprocessing
+	// Usually - if speed is not the most important aspect for you - you'll
+	// probably to request more postprocessing than we do in this example.
+	const aiScene* scene = importer.ReadFile(pFile,
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_SortByPType);
+
+	// If the import failed, report it
+
+	// Now we can access the file's contents.
+	int vertAmount = 0;
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < sizeof(scene->mMeshes[i]->mVertices)/sizeof(scene->mMeshes[i]->mVertices[1]); j++) {
+			vertAmount = vertAmount + 1;
+		};
+	};
+	cout << vertAmount;
+	Vector3* vertices = new Vector3[vertAmount];
+	int h = 0;
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < sizeof(scene->mMeshes[i]->mVertices) / sizeof(scene->mMeshes[i]->mVertices[0]); j++) {
+			vertices[h].setX(scene->mMeshes[i]->mVertices[j].x);
+			vertices[h].setY(scene->mMeshes[i]->mVertices[j].y);
+			vertices[h].setZ(scene->mMeshes[i]->mVertices[j].z);
+			h++;
+		};
+	};
+	// We're done. Everything will be cleaned up by the importer destructor
+	return vertices;
+}
+
+void drawFaces(Vector3* vertices) {
+	for (int i = 0; i < sizeof(vertices); i + 4) {
+		glBegin(GL_QUADS);
+		glColor3f(0.4, 0.0, 0.7);
+		glVertex3f(vertices[i].getX(), vertices[i].getY(), vertices[i].getZ());
+		glVertex3f(vertices[i + 1].getX(), vertices[i + 1].getY(), vertices[i + 1].getZ());
+		glVertex3f(vertices[i + 2].getX(), vertices[i + 2].getY(), vertices[i + 2].getZ());
+		glVertex3f(vertices[i + 3].getX(), vertices[i + 3].getY(), vertices[i + 3].getZ());
+		glEnd();
+	}
+}
 
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
@@ -37,6 +83,9 @@ int main(int argc, char* argv[]) {
 	gluPerspective(45, 640 / 480.f, 0.1, 100);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
+
+	Vector3* modelo = DoTheImportThing("untitled.obj");
+
 
 	//TEXTURA
 	char* archivo = new char[20];
@@ -68,13 +117,14 @@ int main(int argc, char* argv[]) {
 	bool movingl = false;
 	bool movingf = false;
 	bool movingb = false;
+	bool camType = false;
 
 	SDL_Event evento;
 
 	float x, y, z;
 
 	x = 0;
-	y = 0;
+	y = 3;
 	z = 7;
 	float degrees = 0;
 
@@ -82,13 +132,16 @@ int main(int argc, char* argv[]) {
 	GLfloat luz_posicion1[4] = { 0, 0, -1, 1 };
 	GLfloat colorLuz[4] = { 1, 1, 1, 1 };
 	//FIN INICIALIZACION
+
+	const float pi = 3.14159;
+
 	bool textOn = true;
 	float timeStep = 0;
 	float jumpSpeed = 9;
 	float moveSpeed = 7;
-	float camRot = 180;
-	float dummyF;
-	Timer *timer = new Timer();
+	float camRot = pi / 2;
+	float camSens = 0.004;
+	Timer* timer = new Timer();
 	Vector3 dummy;
 	Vector3* pos = new Vector3(0, 0, 0);
 	Vector3* dir = new Vector3(0, 0, 0);
@@ -101,14 +154,15 @@ int main(int argc, char* argv[]) {
 		glLoadIdentity();
 		x = 7 * cos(camRot);
 		z = 7 * sin(camRot);
-		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
+		if (camType) //Se elige el tipo de camara(con V)
+			gluLookAt(x + pos->getX() * 0.3, y + pos->getY() * 0.3, z + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.2, 0, 1, 0);//Camara centrada en el jugador
+		else
+			gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);//Camara centrada en el escenario
 		timeStep = timer->touch().delta;
 		glPushMatrix();
-		glLoadIdentity();
-		gluLookAt(0, 0, 7, 0, 0, 0, 0, 1, 0);
 		float posY = pos->getY();
-		if (posY <= 2 && posY>=-0.1) {
-			glScalef(1.0, posY*0.5, 1.0);
+		if (posY <= 2 && posY >= -0.1) {
+			glScalef(1.0, posY * 0.5, 1.0);
 		}
 
 		glScalef(0.3, 0.3, 0.3);
@@ -141,11 +195,18 @@ int main(int argc, char* argv[]) {
 		glVertex3f(-1., -1., 0.);
 		glVertex3f(0., 1., 0.);
 		glEnd();
-
+		
+		glBegin(GL_TRIANGLES);
+		glColor3f(0.4, 1.0, 0.7);
+		glVertex3f(modelo[0].getX(), modelo[0].getY(), modelo[0].getZ());
+		glVertex3f(modelo[1].getX(), modelo[1].getY(), modelo[1].getZ());
+		glVertex3f(modelo[5].getX(), modelo[5].getY(), modelo[5].getZ());
+		glEnd();
+		
 		glPopMatrix();
 		glPushMatrix();
 
-		//DIBUJO ESCENARIO(Con giro de camara)
+		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTranslatef(0, -0.04, 0);
 		glBegin(GL_QUADS);
 		glColor3f(0.4, 0.0, 0.7);
@@ -167,7 +228,7 @@ int main(int argc, char* argv[]) {
 			case SDL_MOUSEBUTTONUP:
 				break;
 			case SDL_MOUSEMOTION:
-				camRot = fmod((camRot + evento.motion.xrel*0.01),360);
+				camRot = fmod((camRot + evento.motion.xrel * camSens), pi * 2);
 				break;
 			case SDL_QUIT:
 				fin = true;
@@ -175,20 +236,27 @@ int main(int argc, char* argv[]) {
 			case SDL_KEYDOWN:
 				switch (evento.key.keysym.sym) {
 				case SDLK_RIGHT:
+				case SDLK_d:
 					dir->setX(1);
 					movingr = true;
 					break;
 				case SDLK_LEFT:
+				case SDLK_a:
 					dir->setX(-1);
 					movingl = true;
 					break;
 				case SDLK_UP:
+				case SDLK_w:
 					dir->setZ(-1);
 					movingf = true;
 					break;
 				case SDLK_DOWN:
+				case SDLK_s:
 					dir->setZ(1);
 					movingb = true;
+					break;
+				case SDLK_v:
+					camType = !camType;
 					break;
 				}
 				break;
@@ -201,18 +269,22 @@ int main(int argc, char* argv[]) {
 					textOn = !textOn;
 					break;
 				case SDLK_RIGHT:
+				case SDLK_d:
 					if (!movingl) dir->setX(0);
 					movingr = false;
 					break;
 				case SDLK_LEFT:
+				case SDLK_a:
 					if (!movingr) dir->setX(0);
 					movingl = false;
 					break;
 				case SDLK_UP:
+				case SDLK_w:
 					if (!movingb) dir->setZ(0);
 					movingf = false;
 					break;
 				case SDLK_DOWN:
+				case SDLK_s:
 					if (!movingf) dir->setZ(0);
 					movingb = false;
 					break;
