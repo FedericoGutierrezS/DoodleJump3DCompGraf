@@ -1,14 +1,19 @@
 #include "Vector3.h"
 #include "Timer.h"
-#include "SDL.h"
-#include "SDL_opengl.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
 #include <iostream>
 #include "FreeImage.h"
 #include <stdio.h>
 #include <conio.h>
 #include <GL/glu.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 using namespace std;
+
+
 
 
 int main(int argc, char* argv[]) {
@@ -81,6 +86,8 @@ int main(int argc, char* argv[]) {
 	float timeStep = 0;
 	float jumpSpeed = 9;
 	float moveSpeed = 7;
+	float camRot = 180;
+	float dummyF;
 	Timer *timer = new Timer();
 	Vector3 dummy;
 	Vector3* pos = new Vector3(0, 0, 0);
@@ -92,19 +99,13 @@ int main(int argc, char* argv[]) {
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
+		x = 7 * cos(camRot);
+		z = 7 * sin(camRot);
 		gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);
 		timeStep = timer->touch().delta;
-		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
-		glEnable(GL_LIGHT0); // habilita la luz 0
-		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
-
-		glEnable(GL_LIGHT1); // habilita la luz 1
-		glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion1);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, colorLuz);
-
 		glPushMatrix();
-
+		glLoadIdentity();
+		gluLookAt(0, 0, 7, 0, 0, 0, 0, 1, 0);
 		float posY = pos->getY();
 		if (posY <= 2 && posY>=-0.1) {
 			glScalef(1.0, posY*0.5, 1.0);
@@ -140,8 +141,21 @@ int main(int argc, char* argv[]) {
 		glVertex3f(-1., -1., 0.);
 		glVertex3f(0., 1., 0.);
 		glEnd();
-		glPopMatrix();
 
+		glPopMatrix();
+		glPushMatrix();
+
+		//DIBUJO ESCENARIO(Con giro de camara)
+		glTranslatef(0, -0.04, 0);
+		glBegin(GL_QUADS);
+		glColor3f(0.4, 0.0, 0.7);
+		glVertex3f(-3., 0., 3.);
+		glVertex3f(-3., 0., -3.);
+		glVertex3f(3., 0., -3.);
+		glVertex3f(3., 0., 3.);
+		glEnd();
+
+		glPopMatrix();
 
 		//FIN DIBUJAR OBJETOS
 
@@ -151,6 +165,9 @@ int main(int argc, char* argv[]) {
 			case SDL_MOUSEBUTTONDOWN:
 				break;
 			case SDL_MOUSEBUTTONUP:
+				break;
+			case SDL_MOUSEMOTION:
+				camRot = fmod((camRot + evento.motion.xrel*0.01),360);
 				break;
 			case SDL_QUIT:
 				fin = true;
