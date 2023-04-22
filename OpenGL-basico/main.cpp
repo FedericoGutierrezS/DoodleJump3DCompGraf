@@ -14,7 +14,7 @@
 using namespace std;
 
 
-Vector3* DoTheImportThing(const std::string& pFile) {
+Vector3* DoTheImportThing(const std::string& pFile, int& vertAmount) {
 	// Create an instance of the Importer class
 	Assimp::Importer importer;
 
@@ -23,34 +23,38 @@ Vector3* DoTheImportThing(const std::string& pFile) {
 	// probably to request more postprocessing than we do in this example.
 	const aiScene* scene = importer.ReadFile(pFile,
 		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
 		aiProcess_SortByPType);
-
 	// If the import failed, report it
 
 	// Now we can access the file's contents.
-	
+
 	// We're done. Everything will be cleaned up by the importer destructor
-	int verAmount = scene->mMeshes[0]->mNumVertices;
-	Vector3* vertices = new Vector3[verAmount];
-	for (int i = 0; i < verAmount; i++) {
+		
+	vertAmount = scene->mMeshes[0]->mNumVertices;
+	Vector3* vertices = new Vector3[vertAmount];
+	for (int i = 0; i < vertAmount; i++) {
 		vertices[i].setX(scene->mMeshes[0]->mVertices[i].x);
 		vertices[i].setY(scene->mMeshes[0]->mVertices[i].y);
 		vertices[i].setZ(scene->mMeshes[0]->mVertices[i].z);
 	}
 	return vertices;
-}
+};
 
-void drawFaces(Vector3* vertices) {
-	for (int i = 0; i < sizeof(vertices)/sizeof(vertices[0]); i + 3) {
+void drawFaces(Vector3* vertices,int vertAmount) {
+	glPushMatrix();
+	glRotatef(270, 1, 0, 0);
+	glRotatef(180, 0, 0, 1);
+	glTranslatef(0, 0, -1);
+	for (int i = 0; i < vertAmount; i = i + 4) {
 		glBegin(GL_QUADS);
-		glColor3f(0.4, 0.0, 0.7);
+		glColor3f(0.4, fmod(i,0.3), 0.2);
 		glVertex3f(vertices[i].getX(), vertices[i].getY(), vertices[i].getZ());
 		glVertex3f(vertices[i + 1].getX(), vertices[i + 1].getY(), vertices[i + 1].getZ());
 		glVertex3f(vertices[i + 2].getX(), vertices[i + 2].getY(), vertices[i + 2].getZ());
+		glVertex3f(vertices[i + 3].getX(), vertices[i + 3].getY(), vertices[i + 3].getZ());
 		glEnd();
-		cout << vertices[i + 2].getX();
 	}
+	glPopMatrix();
 }
 
 int main(int argc, char* argv[]) {
@@ -63,19 +67,25 @@ int main(int argc, char* argv[]) {
 	SDL_Window* win = SDL_CreateWindow("ICG-UdelaR",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
-
+	SDL_DisplayMode dispMode;
+	dispMode.format = SDL_PIXELFORMAT_RGBA32;
+	dispMode.w = 1920;
+	dispMode.h = 1080;
+	dispMode.refresh_rate = 60;
+	dispMode.driverdata = 0;
+	SDL_SetWindowDisplayMode(win, &dispMode);
 	glMatrixMode(GL_PROJECTION);
 
 	float color = 0;
 	glClearColor(color, color, color, 1);
 
-	gluPerspective(45, 640 / 480.f, 0.1, 100);
+	gluPerspective(45, 1280 / 720.f, 0.1, 100);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
-
-	Vector3* modelo = DoTheImportThing("untitled.obj");
+	int vertAmount = 0;
+	Vector3* modelo = DoTheImportThing("untitled.blend", vertAmount);
 
 
 	//TEXTURA
@@ -109,6 +119,7 @@ int main(int argc, char* argv[]) {
 	bool movingf = false;
 	bool movingb = false;
 	bool camType = false;
+	bool fullscreen = false;
 
 	SDL_Event evento;
 
@@ -146,7 +157,7 @@ int main(int argc, char* argv[]) {
 		x = 7 * cos(camRot);
 		z = 7 * sin(camRot);
 		if (camType) //Se elige el tipo de camara(con V)
-			gluLookAt(x + pos->getX() * 0.3, y + pos->getY() * 0.3, z + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.2, 0, 1, 0);//Camara centrada en el jugador
+			gluLookAt(x/3 + pos->getX() * 0.3,  pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
 		else
 			gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);//Camara centrada en el escenario
 		timeStep = timer->touch().delta;
@@ -179,14 +190,8 @@ int main(int argc, char* argv[]) {
 
 
 		//DIBUJAR OBJETOS
-		//DIBUJO TRIANGULO CON COLOR
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.0, 0.0, 0.0);
-		glVertex3f(1., -1., 0.);
-		glVertex3f(-1., -1., 0.);
-		glVertex3f(0., 1., 0.);
-		glEnd();
-		drawFaces(modelo);
+		//DIBUJO MODELO
+		drawFaces(modelo, vertAmount);
 		glPopMatrix();
 		glPushMatrix();
 
@@ -241,6 +246,31 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_v:
 					camType = !camType;
+					break;
+				case SDLK_F11:
+					if(!fullscreen){
+						SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
+						glMatrixMode(GL_PROJECTION);
+						glLoadIdentity();
+						float color = 0;
+						glClearColor(color, color, color, 1);
+						gluPerspective(45, 1920 / 1080.f, 0.1, 100);
+						glEnable(GL_DEPTH_TEST);
+						glMatrixMode(GL_MODELVIEW);
+						fullscreen = !fullscreen;
+					}
+					else{
+						SDL_SetWindowFullscreen(win, 0);
+						glMatrixMode(GL_PROJECTION);
+						glLoadIdentity();
+						float color = 0;
+						glClearColor(color, color, color, 1);
+
+						gluPerspective(45, 1280 / 720.f, 0.1, 100);
+						glEnable(GL_DEPTH_TEST);
+						glMatrixMode(GL_MODELVIEW);
+						fullscreen = !fullscreen;
+					}
 					break;
 				}
 				break;
