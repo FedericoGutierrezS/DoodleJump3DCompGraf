@@ -63,15 +63,15 @@ int main(int argc, char* argv[]) {
 		cerr << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
-
+	
 	SDL_Window* win = SDL_CreateWindow("ICG-UdelaR",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
+
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	glMatrixMode(GL_PROJECTION);
-
 	float color = 0;
 	glClearColor(color, color, color, 1);
 
@@ -150,6 +150,7 @@ int main(int argc, char* argv[]) {
 		glLoadIdentity();
 		x = 7 * cos(camRot);
 		z = 7 * sin(camRot);
+
 		if (camType) //Se elige el tipo de camara(con V)
 			gluLookAt(x/3 + pos->getX() * 0.3,  pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
 		else
@@ -163,7 +164,6 @@ int main(int argc, char* argv[]) {
 
 		glScalef(0.3, 0.3, 0.3);
 		//TRANSFORMACIONES LINEALES
-
 		speed = dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed);//Se normaliza la dirección de movimiento y se le asigna la velocidad
 		if (pos->getY() >= 0) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
 			timeAcc += timeStep;
@@ -181,8 +181,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		glTranslatef(pos->getX(), pos->getY(), pos->getZ());//Se mueve el objeto
-
-
+		
 		//DIBUJAR OBJETOS
 		//DIBUJO MODELO
 		drawFaces(modelo, vertAmount);
@@ -200,7 +199,6 @@ int main(int argc, char* argv[]) {
 		glEnd();
 
 		glPopMatrix();
-
 		//FIN DIBUJAR OBJETOS
 
 		//MANEJO DE EVENTOS
