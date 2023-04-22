@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		SDL_WINDOWPOS_CENTERED,
 		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
-
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	glMatrixMode(GL_PROJECTION);
 
 	float color = 0;
