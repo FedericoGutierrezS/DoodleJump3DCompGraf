@@ -69,13 +69,7 @@ int main(int argc, char* argv[]) {
 		SDL_WINDOWPOS_CENTERED,
 		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
-	SDL_DisplayMode dispMode;
-	dispMode.format = SDL_PIXELFORMAT_RGBA32;
-	dispMode.w = 1920;
-	dispMode.h = 1080;
-	dispMode.refresh_rate = 60;
-	dispMode.driverdata = 0;
-	SDL_SetWindowDisplayMode(win, &dispMode);
+
 	glMatrixMode(GL_PROJECTION);
 
 	float color = 0;
@@ -249,7 +243,13 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_F11:
 					if(!fullscreen){
+						SDL_DestroyWindow(win);//Se destruye la ventana y se crea una nueva con la nueva resolución, creando un contexto para esta
+						win = SDL_CreateWindow("ICG-UdelaR",
+							SDL_WINDOWPOS_CENTERED,
+							SDL_WINDOWPOS_CENTERED,
+							1920, 1080, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 						SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
+						context = SDL_GL_CreateContext(win);
 						glMatrixMode(GL_PROJECTION);
 						glLoadIdentity();
 						float color = 0;
@@ -260,7 +260,13 @@ int main(int argc, char* argv[]) {
 						fullscreen = !fullscreen;
 					}
 					else{
+						SDL_DestroyWindow(win);
+						win = SDL_CreateWindow("ICG-UdelaR",
+							SDL_WINDOWPOS_CENTERED,
+							SDL_WINDOWPOS_CENTERED,
+							1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 						SDL_SetWindowFullscreen(win, 0);
+						context = SDL_GL_CreateContext(win);
 						glMatrixMode(GL_PROJECTION);
 						glLoadIdentity();
 						float color = 0;
