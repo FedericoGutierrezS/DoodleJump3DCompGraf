@@ -14,7 +14,7 @@
 using namespace std;
 
 
-Vector3* DoTheImportThing(const std::string& pFile, int& faceAmount) {
+Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount) {
 	// Create an instance of the Importer class
 	Assimp::Importer importer;
 
@@ -30,36 +30,68 @@ Vector3* DoTheImportThing(const std::string& pFile, int& faceAmount) {
 	// Now we can access the file's contents.
 
 	// We're done. Everything will be cleaned up by the importer destructor
-		
+
 	faceAmount = scene->mMeshes[0]->mNumFaces;
-	Vector3* vertices = new Vector3[faceAmount*3];
+	Vector3** model = new Vector3*[3];
+	model[0] = new Vector3[faceAmount * 3];
+	model[1] = new Vector3[faceAmount * 3];
+	model[2] = new Vector3[faceAmount * 3];
 	for (int i = 0; i < faceAmount; i++) {
-		vertices[i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].x);
-		vertices[i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].y);
-		vertices[i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].z);
-		vertices[faceAmount + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].x);
-		vertices[faceAmount + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].y);
-		vertices[faceAmount + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].z);
-		vertices[faceAmount * 2 + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].x);
-		vertices[faceAmount * 2 + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].y);
-		vertices[faceAmount * 2 + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].z);
+		//VERTICES
+		model[0][i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].x);
+		model[0][i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].y);
+		model[0][i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].z);
+		model[0][faceAmount + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].x);
+		model[0][faceAmount + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].y);
+		model[0][faceAmount + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].z);
+		model[0][faceAmount * 2 + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].x);
+		model[0][faceAmount * 2 + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].y);
+		model[0][faceAmount * 2 + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].z);
+		//NORMALES
+		model[1][i].setX(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[0]].x);
+		model[1][i].setY(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[0]].y);
+		model[1][i].setZ(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[0]].z);
+		model[1][faceAmount + i].setX(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[1]].x);
+		model[1][faceAmount + i].setY(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[1]].y);
+		model[1][faceAmount + i].setZ(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[1]].z);
+		model[1][faceAmount * 2 + i].setX(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[2]].x);
+		model[1][faceAmount * 2 + i].setY(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[2]].y);
+		model[1][faceAmount * 2 + i].setZ(scene->mMeshes[0]->mNormals[scene->mMeshes[0]->mFaces[i].mIndices[2]].z);
+		//UVs
+		model[2][i].setX(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[0]].x);
+		model[2][i].setY(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[0]].y);
+		model[2][i].setZ(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[0]].z);
+		model[2][faceAmount + i].setX(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[1]].x);
+		model[2][faceAmount + i].setY(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[1]].y);
+		model[2][faceAmount + i].setZ(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[1]].z);
+		model[2][faceAmount * 2 + i].setX(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[2]].x);
+		model[2][faceAmount * 2 + i].setY(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[2]].y);
+		model[2][faceAmount * 2 + i].setZ(scene->mMeshes[0]->mTextureCoords[0][scene->mMeshes[0]->mFaces[i].mIndices[2]].z);
+		
 	}
-	return vertices;
+	return model;
 };
 
-void drawFaces(Vector3* vertices,int faceAmount) {
+void drawFaces(Vector3** model,int faceAmount, GLuint textura) {
 	glPushMatrix();
-	glRotatef(270, 1, 0, 0);
-	glRotatef(180, 0, 0, 1);
+	glRotatef(180, 0, 1, 0);
 	glTranslatef(0, 0, -1);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textura);
 	for (int i = 0; i < faceAmount; i++ ) {
 		glBegin(GL_TRIANGLES);
-		glColor3f(0.4, fmod(i,0.3), 0.2);
-		glVertex3f(vertices[i].getX(), vertices[i].getY(), vertices[i].getZ());
-		glVertex3f(vertices[faceAmount + i].getX(), vertices[faceAmount + i].getY(), vertices[faceAmount + i].getZ());
-		glVertex3f(vertices[faceAmount * 2 + i].getX(), vertices[faceAmount * 2 + i].getY(), vertices[faceAmount * 2 + i].getZ());
+		glTexCoord3f(model[2][i].getX(), model[2][i].getY(), model[2][i].getZ());
+		glNormal3f(model[1][i].getX(), model[1][i].getY(), model[1][i].getZ());
+		glVertex3f(model[0][i].getX(), model[0][i].getY(), model[0][i].getZ());
+		glTexCoord3f(model[2][faceAmount + i].getX(), model[2][faceAmount + i].getY(), model[2][faceAmount + i].getZ());
+		glNormal3f(model[1][faceAmount + i].getX(), model[1][faceAmount + i].getY(), model[1][faceAmount + i].getZ());
+		glVertex3f(model[0][faceAmount + i].getX(), model[0][faceAmount + i].getY(), model[0][faceAmount + i].getZ());
+		glTexCoord3f(model[2][faceAmount * 2 + i].getX(), model[2][faceAmount * 2 + i].getY(), model[2][faceAmount * 2 + i].getZ());
+		glNormal3f(model[1][faceAmount * 2 + i].getX(), model[1][faceAmount * 2 + i].getY(), model[1][faceAmount * 2 + i].getZ());
+		glVertex3f(model[0][faceAmount * 2 + i].getX(), model[0][faceAmount * 2 + i].getY(), model[0][faceAmount * 2 + i].getZ());
 		glEnd();
 	}
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
@@ -85,7 +117,7 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	int vertAmount = 0;
-	Vector3* modelo = DoTheImportThing("untitled.blend", vertAmount);
+	Vector3** modelo = DoTheImportThing("untitled.obj", vertAmount);
 
 
 	//TEXTURA
@@ -111,8 +143,7 @@ int main(int argc, char* argv[]) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//FIN TEXTURA
-
-
+	
 	bool fin = false;
 	bool movingr = false;
 	bool movingl = false;
@@ -130,8 +161,7 @@ int main(int argc, char* argv[]) {
 	z = 7;
 	float degrees = 0;
 
-	GLfloat luz_posicion[4] = { 0, 0, 1, 1 };
-	GLfloat luz_posicion1[4] = { 0, 0, -1, 1 };
+	GLfloat luz_posicion[4] = { 0, 3, 1, 1 };
 	GLfloat colorLuz[4] = { 1, 1, 1, 1 };
 	//FIN INICIALIZACION
 
@@ -156,15 +186,21 @@ int main(int argc, char* argv[]) {
 		glLoadIdentity();
 		x = 7 * cos(camRot);
 		z = 7 * sin(camRot);
-
 		if (camType) //Se elige el tipo de camara(con V)
-			gluLookAt(x/3 + pos->getX() * 0.3,  pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
+			gluLookAt(x/3 + pos->getX() * 0.3, 1.5 + pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
 		else
 			gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);//Camara centrada en el escenario
+
+		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
+		glEnable(GL_LIGHT0); // habilita la luz 0
+		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
+
+
 		timeStep = timer->touch().delta;
 		glPushMatrix();
 		float posY = pos->getY();
-		if (posY <= 2 && posY >= -0.1) {
+		if (posY <= 2 && posY >= -0.2) {
 			glScalef(1.0, posY * 0.5, 1.0);
 		}
 
@@ -190,7 +226,10 @@ int main(int argc, char* argv[]) {
 		
 		//DIBUJAR OBJETOS
 		//DIBUJO MODELO
-		drawFaces(modelo, vertAmount);
+		glEnable(GL_LIGHTING);
+		glShadeModel(GL_SMOOTH);
+		drawFaces(modelo, vertAmount, textura);
+		glDisable(GL_LIGHTING);
 		glPopMatrix();
 		glPushMatrix();
 
