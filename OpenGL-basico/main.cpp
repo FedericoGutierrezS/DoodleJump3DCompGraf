@@ -14,7 +14,7 @@
 using namespace std;
 
 
-Vector3* DoTheImportThing(const std::string& pFile, int& vertAmount) {
+Vector3* DoTheImportThing(const std::string& pFile, int& faceAmount) {
 	// Create an instance of the Importer class
 	Assimp::Importer importer;
 
@@ -23,6 +23,7 @@ Vector3* DoTheImportThing(const std::string& pFile, int& vertAmount) {
 	// probably to request more postprocessing than we do in this example.
 	const aiScene* scene = importer.ReadFile(pFile,
 		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
 		aiProcess_SortByPType);
 	// If the import failed, report it
 
@@ -30,28 +31,33 @@ Vector3* DoTheImportThing(const std::string& pFile, int& vertAmount) {
 
 	// We're done. Everything will be cleaned up by the importer destructor
 		
-	vertAmount = scene->mMeshes[0]->mNumVertices;
-	Vector3* vertices = new Vector3[vertAmount];
-	for (int i = 0; i < vertAmount; i++) {
-		vertices[i].setX(scene->mMeshes[0]->mVertices[i].x);
-		vertices[i].setY(scene->mMeshes[0]->mVertices[i].y);
-		vertices[i].setZ(scene->mMeshes[0]->mVertices[i].z);
+	faceAmount = scene->mMeshes[0]->mNumFaces;
+	Vector3* vertices = new Vector3[faceAmount*3];
+	for (int i = 0; i < faceAmount; i++) {
+		vertices[i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].x);
+		vertices[i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].y);
+		vertices[i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[0]].z);
+		vertices[faceAmount + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].x);
+		vertices[faceAmount + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].y);
+		vertices[faceAmount + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[1]].z);
+		vertices[faceAmount * 2 + i].setX(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].x);
+		vertices[faceAmount * 2 + i].setY(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].y);
+		vertices[faceAmount * 2 + i].setZ(scene->mMeshes[0]->mVertices[scene->mMeshes[0]->mFaces[i].mIndices[2]].z);
 	}
 	return vertices;
 };
 
-void drawFaces(Vector3* vertices,int vertAmount) {
+void drawFaces(Vector3* vertices,int faceAmount) {
 	glPushMatrix();
 	glRotatef(270, 1, 0, 0);
 	glRotatef(180, 0, 0, 1);
 	glTranslatef(0, 0, -1);
-	for (int i = 0; i < vertAmount; i = i + 4) {
-		glBegin(GL_QUADS);
+	for (int i = 0; i < faceAmount; i++ ) {
+		glBegin(GL_TRIANGLES);
 		glColor3f(0.4, fmod(i,0.3), 0.2);
 		glVertex3f(vertices[i].getX(), vertices[i].getY(), vertices[i].getZ());
-		glVertex3f(vertices[i + 1].getX(), vertices[i + 1].getY(), vertices[i + 1].getZ());
-		glVertex3f(vertices[i + 2].getX(), vertices[i + 2].getY(), vertices[i + 2].getZ());
-		glVertex3f(vertices[i + 3].getX(), vertices[i + 3].getY(), vertices[i + 3].getZ());
+		glVertex3f(vertices[faceAmount + i].getX(), vertices[faceAmount + i].getY(), vertices[faceAmount + i].getZ());
+		glVertex3f(vertices[faceAmount * 2 + i].getX(), vertices[faceAmount * 2 + i].getY(), vertices[faceAmount * 2 + i].getZ());
 		glEnd();
 	}
 	glPopMatrix();
