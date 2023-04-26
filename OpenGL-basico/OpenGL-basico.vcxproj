@@ -79,13 +79,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="jugador.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="plataforma.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="jugador.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="plataforma.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>

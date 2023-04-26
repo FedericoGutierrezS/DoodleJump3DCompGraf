@@ -8,8 +8,27 @@
 #include <conio.h>
 #include <GL/glu.h>
 #include "mesh.h"
+#include "plataforma.h"
+#include "jugador.h"
 
 using namespace std;
+
+Plataforma* colision(Jugador* j, Plataforma** p, int c) {
+	Plataforma* ret = NULL;
+	int i = 0;
+	while (i < c && ret == NULL) {
+		if ((j->getPos()->getY() <= p[i]->getY() + p[i]->getProfCol())&& (j->getPos()->getY() >= p[i]->getY()+ p[i]->getProfCol()-0.2)) {
+			if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getZ() - p[i]->getAnchCol())) {
+				if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getX() - p[i]->getAltCol())) {
+					ret = p[i];
+				}
+			}
+		}
+		i++;
+	}
+	return ret;
+}
+
 
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
@@ -83,9 +102,6 @@ int main(int argc, char* argv[]) {
 
 	float x, y, z;
 
-	x = 0;
-	y = 3;
-	z = 7;
 	float degrees = 0;
 
 	GLfloat luz_posicion[4] = { 0, 3, 1, 1 };
@@ -96,18 +112,33 @@ int main(int argc, char* argv[]) {
 
 	bool textOn = true;
 	float timeStep = 0;
-	float jumpSpeed = 9;
-	float moveSpeed = 7;
-	float camRot = pi / 2;
+	float jumpSpeed = 6;
+	float moveSpeed = 4;
+	float camRot = pi/2;
 	float camSens = 0.004;
 	float radioCamara = 7;
 	Timer* timer = new Timer();
+
+	float alturaDerrota = -0.2;
+
 	Vector3 dummy;
-	Vector3* pos = new Vector3(0, 0, 0);
+
 	Vector3* dir = new Vector3(0, 0, 0);
-	Vector3* speed = new Vector3(0, 0, 0);
+
 	float timeAcc = 0;
 	float gravity = 9.8;
+
+
+	Plataforma* choque = NULL;
+	Plataforma** plataformas = new Plataforma*[30];
+	plataformas[0] = new Plataforma(0, 1.5, -2, 1.4, 0.5, 0.3);
+	plataformas[1] = new Plataforma(2, 3, -6, 1.4, 0.5, 0.3);
+	plataformas[2] = new Plataforma(-3, 4, -3, 1.4, 0.5, 0.3);
+	plataformas[3] = new Plataforma(0, 5.5, 0, 1.4, 0.5, 0.3);
+	plataformas[4] = new Plataforma(4, 7, 0, 1.4, 0.5, 0.3);
+	int cantPlat = 5;
+
+	Jugador* jug = new Jugador(0.3, 0.3, 0.3);
 	//LOOP PRINCIPAL
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -115,9 +146,9 @@ int main(int argc, char* argv[]) {
 		x = radioCamara * cos(camRot);
 		z = radioCamara * sin(camRot);
 		if (camType) //Se elige el tipo de camara(con V)
-			gluLookAt(x/3 + pos->getX() * 0.3, 1.5 + pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
+			gluLookAt(x + jug->getPos()->getX(), 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
 		else
-			gluLookAt(x, y, z, 0, 0, 0, 0, 1, 0);//Camara centrada en el escenario
+			gluLookAt(x, 1.5 + jug->getPos()->getY(), z, 0, jug->getPos()->getY(), 0, 0, 1, 0);//Camara centrada en el escenario
 
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
@@ -126,47 +157,45 @@ int main(int argc, char* argv[]) {
 
 		timeStep = timer->touch().delta;
 		glPushMatrix();
-		float posY = pos->getY();
-		if (posY <= 2 && posY >= -0.2) {
-			glScalef(1.0, posY * 0.5, 1.0);
-		}
 
-		glScalef(0.3, 0.3, 0.3);
 		//TRANSFORMACIONES LINEALES
-		speed = dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed);//Se normaliza la dirección de movimiento y se le asigna la velocidad
-		if (pos->getY() >= 0) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
+		jug->setVel(dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed));//Se normaliza la dirección de movimiento y se le asigna la velocidad
+		if (jug->getPos()->getY() >= 0 ) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
 			timeAcc += timeStep;
-			speed->setY(jumpSpeed - timeAcc * gravity);
+			jug->getVel()->setY(jumpSpeed - timeAcc * gravity);
+			choque = colision(jug, plataformas, cantPlat);
+			if (choque != NULL) {
+				timeAcc = 0;
+				alturaDerrota = choque->getY() - 0.3;
+			}
+		}
+		if (jug->getPos()->getY() < alturaDerrota) {
+			cout << "Game Over";
+			alturaDerrota = -0.2;
 		}
 
-		if (pos->getY() < 0) {
-			pos->setY(0.0);
+		if (jug->getPos()->getY() < 0) {
+			jug->getPos()->setY(0.0);
 			dir->setY(0);
 			timeAcc = 0;
 		}
 
-		if (speed->getModulo() > 0) {//Mientras la velocidad sea >0 se actualiza la posición del objeto
-			pos = dummy.suma(*pos, *dummy.multVecEsc(*speed, timeStep));
+		if (jug->getVel()->getModulo() > 0) {//Mientras la velocidad sea >0 se actualiza la posición del objeto
+			jug->setPos(dummy.suma(*jug->getPos(), *dummy.multVecEsc(*jug->getVel(), timeStep)));
 		}
-
-		glTranslatef(pos->getX(), pos->getY(), pos->getZ());//Se mueve el objeto
 		
 		//DIBUJAR OBJETOS
 		//DIBUJO MODELO
 		glEnable(GL_LIGHTING);
-		glShadeModel(GL_SMOOTH);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		drawFaces(jugador, vertAmountJugador, textura);//mesh.h
+		jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
-		glPushMatrix();
-
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
-		drawFaces(plataforma, vertAmountPlataforma, textura);
-
-		glPopMatrix();
+		for (int i = 0; i < cantPlat; i++) {
+			plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+		}
 		//FIN DIBUJAR OBJETOS
 
 		//MANEJO DE EVENTOS
