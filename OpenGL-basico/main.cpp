@@ -75,7 +75,6 @@ Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount) {
 void drawFaces(Vector3** model,int faceAmount, GLuint textura) {
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
-	glTranslatef(0, 0, -1);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textura);
 	for (int i = 0; i < faceAmount; i++ ) {
@@ -122,7 +121,7 @@ int main(int argc, char* argv[]) {
 
 	//TEXTURA
 	char* archivo = new char[20];
-	archivo = "../canon.png";
+	archivo = "canon.png";
 
 	//CARGAR IMAGEN
 	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(archivo);
@@ -195,7 +194,6 @@ int main(int argc, char* argv[]) {
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
-
 
 		timeStep = timer->touch().delta;
 		glPushMatrix();
@@ -301,6 +299,14 @@ int main(int argc, char* argv[]) {
 						glEnable(GL_DEPTH_TEST);
 						glMatrixMode(GL_MODELVIEW);
 						fullscreen = !fullscreen;
+
+						glBindTexture(GL_TEXTURE_2D, textura);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
+						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					}
 					else{
 						SDL_DestroyWindow(win);
@@ -319,6 +325,14 @@ int main(int argc, char* argv[]) {
 						glEnable(GL_DEPTH_TEST);
 						glMatrixMode(GL_MODELVIEW);
 						fullscreen = !fullscreen;
+
+						glBindTexture(GL_TEXTURE_2D, textura);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
+						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					}
 					break;
 				}
