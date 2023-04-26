@@ -32,21 +32,33 @@ int main(int argc, char* argv[]) {
 	gluPerspective(45, 1280 / 720.f, 0.1, 100);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
-	int vertAmount = 0;
-	Vector3** modelo = DoTheImportThing("untitled.obj", vertAmount);//mesh.h
+	int vertAmountJugador = 0;
+	int vertAmountPlataforma = 0;
+	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
+	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
 
 
 	//TEXTURA
 	char* archivo = new char[20];
-	archivo = "canon.png";
+	archivo = "jugador.png";
 
 	//CARGAR IMAGEN
 	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(archivo);
 	FIBITMAP* bitmap = FreeImage_Load(fif, archivo);
 	bitmap = FreeImage_ConvertTo24Bits(bitmap);
-	int w = FreeImage_GetWidth(bitmap);
-	int h = FreeImage_GetHeight(bitmap);
-	void* datos = FreeImage_GetBits(bitmap);
+	int wj = FreeImage_GetWidth(bitmap);
+	int hj = FreeImage_GetHeight(bitmap);
+	void* datosJugador = FreeImage_GetBits(bitmap);
+
+	archivo = "plataforma.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wp = FreeImage_GetWidth(bitmap);
+	int hp = FreeImage_GetHeight(bitmap);
+	void* datosPlataforma = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
 	GLuint textura;
@@ -56,7 +68,6 @@ int main(int argc, char* argv[]) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//FIN TEXTURA
 	
@@ -89,6 +100,7 @@ int main(int argc, char* argv[]) {
 	float moveSpeed = 7;
 	float camRot = pi / 2;
 	float camSens = 0.004;
+	float radioCamara = 7;
 	Timer* timer = new Timer();
 	Vector3 dummy;
 	Vector3* pos = new Vector3(0, 0, 0);
@@ -100,8 +112,8 @@ int main(int argc, char* argv[]) {
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
-		x = 7 * cos(camRot);
-		z = 7 * sin(camRot);
+		x = radioCamara * cos(camRot);
+		z = radioCamara * sin(camRot);
 		if (camType) //Se elige el tipo de camara(con V)
 			gluLookAt(x/3 + pos->getX() * 0.3, 1.5 + pos->getY() * 0.3, z/3 + pos->getZ() * 0.3, pos->getX() * 0.3, pos->getY() * 0.3, pos->getZ() * 0.3, 0, 1, 0);//Camara centrada en el jugador
 		else
@@ -143,20 +155,16 @@ int main(int argc, char* argv[]) {
 		//DIBUJO MODELO
 		glEnable(GL_LIGHTING);
 		glShadeModel(GL_SMOOTH);
-		drawFaces(modelo, vertAmount, textura);//mesh.h
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		drawFaces(jugador, vertAmountJugador, textura);//mesh.h
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
 		glPushMatrix();
 
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
-		glTranslatef(0, -0.04, 0);
-		glBegin(GL_QUADS);
-		glColor3f(0.4, 0.0, 0.7);
-		glVertex3f(-3., 0., 3.);
-		glVertex3f(-3., 0., -3.);
-		glVertex3f(3., 0., -3.);
-		glVertex3f(3., 0., 3.);
-		glEnd();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
+		drawFaces(plataforma, vertAmountPlataforma, textura);
 
 		glPopMatrix();
 		//FIN DIBUJAR OBJETOS
@@ -167,6 +175,9 @@ int main(int argc, char* argv[]) {
 			case SDL_MOUSEBUTTONDOWN:
 				break;
 			case SDL_MOUSEBUTTONUP:
+				break;
+			case SDL_MOUSEWHEEL:
+				radioCamara = radioCamara - evento.wheel.y*0.5;
 				break;
 			case SDL_MOUSEMOTION:
 				camRot = fmod((camRot + evento.motion.xrel * camSens), pi * 2);
@@ -222,7 +233,6 @@ int main(int argc, char* argv[]) {
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
 						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					}
 					else{
@@ -248,7 +258,6 @@ int main(int argc, char* argv[]) {
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, datos);
 						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					}
 					break;
