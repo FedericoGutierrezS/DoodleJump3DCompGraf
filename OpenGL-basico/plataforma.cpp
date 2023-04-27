@@ -8,6 +8,7 @@ Plataforma::Plataforma(float a, float b, float c, float alt, float anch, float p
 	altCol = alt;
 	anchCol = anch;
 	profCol = prof;
+	disList = -1;
 }
 float Plataforma::getX() {
 	return x;
@@ -30,6 +31,7 @@ float Plataforma::getProfCol() {
 void Plataforma::draw(Vector3** modelo, int caras,GLuint textura) {
 	glPushMatrix();
 	glTranslatef(x, y, z);
-	drawFaces(modelo, caras, textura);
+	if(disList == -1) disList = drawFaces(modelo, caras, textura);
+	if (disList != -1) glCallList(disList);
 	glPopMatrix();
 }

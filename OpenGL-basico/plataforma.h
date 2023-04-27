@@ -12,6 +12,7 @@ private:
 	float altCol;
 	float anchCol;
 	float profCol;
+	int disList;
 
 public:
 	Plataforma(float, float, float, float, float, float);

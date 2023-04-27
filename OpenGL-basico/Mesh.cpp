@@ -58,10 +58,12 @@ Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount) {
 	return model;
 };
 
-void drawFaces(Vector3** model, int faceAmount, GLuint textura) {
+int drawFaces(Vector3** model, int faceAmount, GLuint textura) {
 	glPushMatrix();
 	glRotatef(180, 0, 1, 0);
 	glBindTexture(GL_TEXTURE_2D, textura);
+	int displayList = glGenLists(1);
+	glNewList(displayList, GL_COMPILE);
 	for (int i = 0; i < faceAmount; i++) {
 		glBegin(GL_TRIANGLES);
 		glTexCoord3f(model[2][i].getX(), model[2][i].getY(), model[2][i].getZ());
@@ -75,5 +77,7 @@ void drawFaces(Vector3** model, int faceAmount, GLuint textura) {
 		glVertex3f(model[0][faceAmount * 2 + i].getX(), model[0][faceAmount * 2 + i].getY(), model[0][faceAmount * 2 + i].getZ());
 		glEnd();
 	}
+	glEndList();
 	glPopMatrix();
+	return displayList;
 }

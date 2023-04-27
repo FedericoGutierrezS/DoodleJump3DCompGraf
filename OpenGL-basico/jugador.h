@@ -11,6 +11,7 @@ private:
 	float profCol;
 	Vector3* pos;
 	Vector3* vel;
+	int disList;
 
 public:
 	Jugador(float, float, float);
@@ -18,6 +19,7 @@ public:
 	float getAnchCol();
 	float getProfCol();
 	Vector3* getPos();
+	void setPos(float,float,float);
 	void setPos(Vector3*);
 	Vector3* getVel();
 	void setVel(Vector3*);

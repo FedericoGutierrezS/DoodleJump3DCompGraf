@@ -8,4 +8,4 @@
 
 Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount);
 
-void drawFaces(Vector3** model, int faceAmount, GLuint textura);
+int drawFaces(Vector3** model, int faceAmount, GLuint textura);

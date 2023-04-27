@@ -10,7 +10,8 @@
 #include "mesh.h"
 #include "plataforma.h"
 #include "jugador.h"
-#include "font.h"
+#include "HUD.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ Plataforma* colision(Jugador* j, Plataforma** p, int c) {
 	Plataforma* ret = NULL;
 	int i = 0;
 	while (i < c && ret == NULL) {
-		if ((j->getPos()->getY() <= p[i]->getY() + p[i]->getProfCol())&& (j->getPos()->getY() >= p[i]->getY()+ p[i]->getProfCol()-0.2)) {
+		if ((j->getPos()->getY() <= p[i]->getY() + p[i]->getProfCol())&& (j->getPos()->getY() >= p[i]->getY())) {
 			if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getZ() - p[i]->getAnchCol())) {
 				if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getX() - p[i]->getAltCol())) {
 					ret = p[i];
@@ -116,10 +117,12 @@ int main(int argc, char* argv[]) {
 	SDL_Event evento;
 
 	float x, y, z;
+	int yAnt = 0;
 
 	float degrees = 0;
 
 	GLfloat luz_posicion[4] = { 0, 3, 1, 1 };
+	GLfloat luz_posicion1[4] = { 0, 3, 1, 1 };
 	GLfloat colorLuz[4] = { 1, 1, 1, 1 };
 	//FIN INICIALIZACION
 
@@ -132,9 +135,10 @@ int main(int argc, char* argv[]) {
 	float camRot = pi/2;
 	float camSens = 0.004;
 	float radioCamara = 7;
+	float viewDistance = 5;
 	Timer* timer = new Timer();
 
-	float alturaDerrota = -0.2;
+	float alturaDerrota = -200;
 
 	Vector3 dummy;
 
@@ -143,7 +147,8 @@ int main(int argc, char* argv[]) {
 	float timeAcc = 0;
 	float gravity = 9.8;
 	float velocidadJuego = 1;
-
+	float tiempoTranscurrido = 0;
+	float score = 0;
 
 	Plataforma* choque = NULL;
 	Plataforma** plataformas = new Plataforma*[30];
@@ -152,8 +157,19 @@ int main(int argc, char* argv[]) {
 	plataformas[2] = new Plataforma(-3, 4, -3, 1.4, 0.5, 0.3);
 	plataformas[3] = new Plataforma(0, 5.5, 0, 1.4, 0.5, 0.3);
 	plataformas[4] = new Plataforma(4, 7, 0, 1.4, 0.5, 0.3);
-	int cantPlat = 5;
-
+	plataformas[5] = new Plataforma(2, 9, 1, 1.4, 0.5, 0.3);
+	plataformas[6] = new Plataforma(2, 11, 0, 1.4, 0.5, 0.3);
+	plataformas[7] = new Plataforma(-1, 13, -1, 1.4, 0.5, 0.3);
+	plataformas[8] = new Plataforma(4, 15, 0, 1.4, 0.5, 0.3);
+	plataformas[9] = new Plataforma(2, 17, 1, 1.4, 0.5, 0.3);
+	plataformas[10] = new Plataforma(0, 19, 2, 1.4, 0.5, 0.3);
+	plataformas[11] = new Plataforma(1, 21.5, 1, 1.4, 0.5, 0.3);
+	plataformas[12] = new Plataforma(3, 23, 0, 1.4, 0.5, 0.3);
+	plataformas[13] = new Plataforma(2, 25, 3, 1.4, 0.5, 0.3);
+	plataformas[14] = new Plataforma(0, 27, 1, 1.4, 0.5, 0.3);
+	plataformas[15] = new Plataforma(1, 28.5, 0, 1.4, 0.5, 0.3);
+	int cantPlat = 16;
+	
 	Jugador* jug = new Jugador(0.3, 0.3, 0.3);
 	//LOOP PRINCIPAL
 	do {
@@ -170,10 +186,14 @@ int main(int argc, char* argv[]) {
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
+		glEnable(GL_LIGHT1); // habilita la luz 0
+		glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion1);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, colorLuz);
 
 		timeStep = velocidadJuego*timer->touch().delta;
 		if (pause) timeStep = 0;
 		glPushMatrix();
+		tiempoTranscurrido = tiempoTranscurrido + timeStep;
 
 		//TRANSFORMACIONES LINEALES
 		jug->setVel(dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed));//Se normaliza la dirección de movimiento y se le asigna la velocidad
@@ -183,12 +203,18 @@ int main(int argc, char* argv[]) {
 			choque = colision(jug, plataformas, cantPlat);
 			if (choque != NULL) {
 				timeAcc = 0;
-				alturaDerrota = choque->getY() - 0.3;
+				if(alturaDerrota < choque->getY() - 2) alturaDerrota = choque->getY() - 2;
+				score = abs(alturaDerrota) * 1000;
+				yAnt = choque->getY();
 			}
+			
 		}
 		if (jug->getPos()->getY() < alturaDerrota) {
-			cout << "Game Over";
-			alturaDerrota = -0.2;
+			alturaDerrota = -200;
+			tiempoTranscurrido = 0;
+			score = 0;
+			jug->setPos(0,0,0);
+			yAnt = 0;
 		}
 
 		if (jug->getPos()->getY() < 0) {
@@ -208,15 +234,24 @@ int main(int argc, char* argv[]) {
 		if (texturas) glEnable(GL_TEXTURE_2D);
 		if (facetado) glShadeModel(GL_FLAT);
 		else glShadeModel(GL_SMOOTH);
+		luz_posicion[0] = jug->getPos()->getX() + 2;
+		luz_posicion[1] = jug->getPos()->getY() + 1;
+		luz_posicion[2] = jug->getPos()->getZ() + 2;
+		luz_posicion1[0] = jug->getPos()->getX() - 2;
+		luz_posicion1[1] = jug->getPos()->getY() + 1;
+		luz_posicion1[2] = jug->getPos()->getZ() - 2;
 		glEnable(GL_LIGHTING);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
+		glPushMatrix();
+		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		for (int i = 0; i < cantPlat; i++) {
-			plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+			if((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance)&& (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance)) plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
 		}
 		//FIN DIBUJAR OBJETOS
 
@@ -232,11 +267,8 @@ int main(int argc, char* argv[]) {
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
-		render0(0, 0, textura);
-		render1(30, 0, textura);
-		render2(60, 0, textura);
-		render3(90, 0, textura);
-		render4(120, 0, textura);
+		renderTime(tiempoTranscurrido, textura);
+		renderScore(score, textura);
 		// Making sure we can render 3d again
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -286,53 +318,14 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_F11:
 					if(!fullscreen){
-						SDL_DestroyWindow(win);//Se destruye la ventana y se crea una nueva con la nueva resolución, creando un contexto para esta
-						win = SDL_CreateWindow("ICG-UdelaR",
-							SDL_WINDOWPOS_CENTERED,
-							SDL_WINDOWPOS_CENTERED,
-							1920, 1080, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-						SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
-						context = SDL_GL_CreateContext(win);
-						glMatrixMode(GL_PROJECTION);
-						glLoadIdentity();
-						float color = 0;
-						glClearColor(color, color, color, 1);
-						gluPerspective(45, 1920 / 1080.f, 0.1, 100);
-						glEnable(GL_DEPTH_TEST);
-						glMatrixMode(GL_MODELVIEW);
-						fullscreen = !fullscreen;
 
-						glBindTexture(GL_TEXTURE_2D, textura);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+						SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
+						fullscreen = !fullscreen;
 					}
 					else{
-						SDL_DestroyWindow(win);
-						win = SDL_CreateWindow("ICG-UdelaR",
-							SDL_WINDOWPOS_CENTERED,
-							SDL_WINDOWPOS_CENTERED,
-							1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
 						SDL_SetWindowFullscreen(win, 0);
-						context = SDL_GL_CreateContext(win);
-						glMatrixMode(GL_PROJECTION);
-						glLoadIdentity();
-						float color = 0;
-						glClearColor(color, color, color, 1);
-
-						gluPerspective(45, 1280 / 720.f, 0.1, 100);
-						glEnable(GL_DEPTH_TEST);
-						glMatrixMode(GL_MODELVIEW);
 						fullscreen = !fullscreen;
-
-						glBindTexture(GL_TEXTURE_2D, textura);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-						glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					}
 					break;
 				}
