@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="font.cpp" />
     <ClCompile Include="jugador.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -87,6 +88,7 @@
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="font.h" />
     <ClInclude Include="jugador.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="plataforma.h" />

@@ -33,6 +33,9 @@
     <ClCompile Include="jugador.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="jugador.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,7 @@
 #include "mesh.h"
 #include "plataforma.h"
 #include "jugador.h"
+#include "font.h"
 
 using namespace std;
 
@@ -78,6 +79,16 @@ int main(int argc, char* argv[]) {
 	int wp = FreeImage_GetWidth(bitmap);
 	int hp = FreeImage_GetHeight(bitmap);
 	void* datosPlataforma = FreeImage_GetBits(bitmap);
+
+	archivo = "atlasFont.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wa = FreeImage_GetWidth(bitmap);
+	int ha = FreeImage_GetHeight(bitmap);
+	void* datosAtlasFont = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
 	GLuint textura;
@@ -97,6 +108,10 @@ int main(int argc, char* argv[]) {
 	bool movingb = false;
 	bool camType = false;
 	bool fullscreen = false;
+	bool pause = false;
+	bool texturas = true;
+	bool wireframe = false;
+	bool facetado = false;
 
 	SDL_Event evento;
 
@@ -112,8 +127,8 @@ int main(int argc, char* argv[]) {
 
 	bool textOn = true;
 	float timeStep = 0;
-	float jumpSpeed = 6;
-	float moveSpeed = 4;
+	float jumpSpeed = 7;
+	float moveSpeed = 5;
 	float camRot = pi/2;
 	float camSens = 0.004;
 	float radioCamara = 7;
@@ -127,6 +142,7 @@ int main(int argc, char* argv[]) {
 
 	float timeAcc = 0;
 	float gravity = 9.8;
+	float velocidadJuego = 1;
 
 
 	Plataforma* choque = NULL;
@@ -155,7 +171,8 @@ int main(int argc, char* argv[]) {
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
 
-		timeStep = timer->touch().delta;
+		timeStep = velocidadJuego*timer->touch().delta;
+		if (pause) timeStep = 0;
 		glPushMatrix();
 
 		//TRANSFORMACIONES LINEALES
@@ -186,6 +203,11 @@ int main(int argc, char* argv[]) {
 		
 		//DIBUJAR OBJETOS
 		//DIBUJO MODELO
+		if(wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if (texturas) glEnable(GL_TEXTURE_2D);
+		if (facetado) glShadeModel(GL_FLAT);
+		else glShadeModel(GL_SMOOTH);
 		glEnable(GL_LIGHTING);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
 		jug->draw(jugador, vertAmountJugador, textura);
@@ -198,6 +220,29 @@ int main(int argc, char* argv[]) {
 		}
 		//FIN DIBUJAR OBJETOS
 
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(0.0, 1280, 720, 0.0, -1.0, 10.0);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glDisable(GL_CULL_FACE);
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
+		render0(0, 0, textura);
+		render1(30, 0, textura);
+		render2(60, 0, textura);
+		render3(90, 0, textura);
+		render4(120, 0, textura);
+		// Making sure we can render 3d again
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glDisable(GL_TEXTURE_2D);
+		
 		//MANEJO DE EVENTOS
 		while (SDL_PollEvent(&evento)) {
 			switch (evento.type) {
@@ -294,8 +339,11 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_KEYUP:
 				switch (evento.key.keysym.sym) {
-				case SDLK_ESCAPE:
+				case SDLK_q:
 					fin = true;
+					break;
+				case SDLK_p:
+					pause = !pause;
 					break;
 				case SDLK_l:
 					textOn = !textOn;
