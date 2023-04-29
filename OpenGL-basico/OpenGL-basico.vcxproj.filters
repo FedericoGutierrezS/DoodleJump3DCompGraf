@@ -62,5 +62,8 @@
     <ClInclude Include="HUD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enemigo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

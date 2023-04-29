@@ -89,6 +89,7 @@
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemigo.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="jugador.h" />

@@ -59,8 +59,6 @@ Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount) {
 };
 
 int drawFaces(Vector3** model, int faceAmount, GLuint textura) {
-	glPushMatrix();
-	glRotatef(180, 0, 1, 0);
 	glBindTexture(GL_TEXTURE_2D, textura);
 	int displayList = glGenLists(1);
 	glNewList(displayList, GL_COMPILE);
@@ -78,6 +76,5 @@ int drawFaces(Vector3** model, int faceAmount, GLuint textura) {
 		glEnd();
 	}
 	glEndList();
-	glPopMatrix();
 	return displayList;
 }

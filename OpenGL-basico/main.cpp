@@ -10,6 +10,7 @@
 #include "mesh.h"
 #include "plataforma.h"
 #include "jugador.h"
+#include "enemigo.h"
 #include "HUD.h"
 #include <algorithm>
 
@@ -31,6 +32,22 @@ Plataforma* colision(Jugador* j, Plataforma** p, int c) {
 	return ret;
 }
 
+Enemigo* colision(Jugador* j, Enemigo** p, int c) {
+	Enemigo* ret = NULL;
+	int i = 0;
+	while (i < c && ret == NULL) {
+		if ((j->getPos()->getY() <= p[i]->getPos()->getY() + p[i]->getProfCol()) && (j->getPos()->getY() >= p[i]->getPos()->getY())) {
+			if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getPos()->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getPos()->getZ() - p[i]->getAnchCol())) {
+				if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getPos()->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getPos()->getX() - p[i]->getAltCol())) {
+					ret = p[i];
+				}
+			}
+		}
+		i++;
+	}
+	return ret;
+}
+
 
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
@@ -38,7 +55,7 @@ int main(int argc, char* argv[]) {
 		cerr << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
-	
+
 	SDL_Window* win = SDL_CreateWindow("ICG-UdelaR",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
@@ -55,8 +72,10 @@ int main(int argc, char* argv[]) {
 	glMatrixMode(GL_MODELVIEW);
 	int vertAmountJugador = 0;
 	int vertAmountPlataforma = 0;
+	int vertAmountEnemigo = 0;
 	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
 	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
+	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
 
 
 	//TEXTURA
@@ -92,6 +111,17 @@ int main(int argc, char* argv[]) {
 	void* datosAtlasFont = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "Enemigo.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int we = FreeImage_GetWidth(bitmap);
+	int he = FreeImage_GetHeight(bitmap);
+	void* datosEnemigo = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
 	GLuint textura;
 	glGenTextures(1, &textura);
 	glBindTexture(GL_TEXTURE_2D, textura);
@@ -113,6 +143,7 @@ int main(int argc, char* argv[]) {
 	bool texturas = true;
 	bool wireframe = false;
 	bool facetado = false;
+	bool enemyDir = true;
 
 	SDL_Event evento;
 
@@ -132,6 +163,7 @@ int main(int argc, char* argv[]) {
 	float timeStep = 0;
 	float jumpSpeed = 7;
 	float moveSpeed = 5;
+	float enemigo1Speed = 4;
 	float camRot = pi/2;
 	float camSens = 0.004;
 	float radioCamara = 7;
@@ -149,6 +181,8 @@ int main(int argc, char* argv[]) {
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
+
+	float enemyCenter = 0;
 
 	Plataforma* choque = NULL;
 	Plataforma** plataformas = new Plataforma*[30];
@@ -169,7 +203,16 @@ int main(int argc, char* argv[]) {
 	plataformas[14] = new Plataforma(0, 27, 1, 1.4, 0.5, 0.3);
 	plataformas[15] = new Plataforma(1, 28.5, 0, 1.4, 0.5, 0.3);
 	int cantPlat = 16;
-	
+
+	Enemigo* colEnemigo = NULL;
+	Enemigo** enemigos = new Enemigo*[10];
+	enemigos[0] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[0]->setPos(-3, 4.4, -3);
+	enemigos[1] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[1]->setPos(4, 7.4, 0);
+	enemigos[2] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[2]->setPos(1, 21.9, 1);
+	int cantEnem = 3;
 	Jugador* jug = new Jugador(0.3, 0.3, 0.3);
 	//LOOP PRINCIPAL
 	do {
@@ -201,6 +244,7 @@ int main(int argc, char* argv[]) {
 			timeAcc += timeStep;
 			jug->getVel()->setY(jumpSpeed - timeAcc * gravity);
 			choque = colision(jug, plataformas, cantPlat);
+			colEnemigo = colision(jug, enemigos, cantEnem);
 			if (choque != NULL) {
 				timeAcc = 0;
 				if(alturaDerrota < choque->getY() - 2) alturaDerrota = choque->getY() - 2;
@@ -209,7 +253,7 @@ int main(int argc, char* argv[]) {
 			}
 			
 		}
-		if (jug->getPos()->getY() < alturaDerrota) {
+		if (jug->getPos()->getY() < alturaDerrota || colEnemigo!=NULL) {
 			alturaDerrota = -200;
 			tiempoTranscurrido = 0;
 			score = 0;
@@ -243,18 +287,57 @@ int main(int argc, char* argv[]) {
 		glEnable(GL_LIGHTING);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
 		glPushMatrix();
+
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+
+		if (dir->getX() == -1) {
+			if(dir->getZ() == 0) glRotatef(180, 0, 1, 0);
+			else if(dir->getZ() == -1) glRotatef(135, 0, 1, 0);
+				else glRotatef(225, 0, 1, 0);
+		}
+		else if (dir->getX() == 1) {
+			if (dir->getZ() == 0);
+			else if (dir->getZ() == -1) glRotatef(45, 0, 1, 0);
+			else glRotatef(315, 0, 1, 0);
+		}
+		else if (dir->getX() == 0 && dir->getZ() == 1) glRotatef(270, 0, 1, 0);
+		else if (dir->getX() == 0 && dir->getZ() == -1) glRotatef(90, 0, 1, 0);
+
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
+
 		jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
+		
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		for (int i = 0; i < cantPlat; i++) {
 			if((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance)&& (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance)) plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
 		}
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
+		for (int i = 0; i < cantEnem; i++) {
+			glPushMatrix();
+			glTranslatef(enemigos[i]->getPos()->getX(), enemigos[i]->getPos()->getY(), enemigos[i]->getPos()->getZ());
+			if (enemyDir && enemigos[i]->getPos()->getX() < enemigos[i]->getEnemyCenter() + 1.8) {
+				enemigos[i]->getPos()->setX(enemigos[i]->getPos()->getX() + timeStep * enemigo1Speed);
+				glRotatef(180, 0, 1, 0);
+			}
+			else if (enemigos[i]->getPos()->getX() >= enemigos[i]->getEnemyCenter() + 1.8) {
+				enemyDir = !enemyDir;
+				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() + 1.79);
+			}
+			if (!enemyDir && enemigos[i]->getPos()->getX() > enemigos[i]->getEnemyCenter() - 1.8) {
+				enemigos[i]->getPos()->setX(enemigos[i]->getPos()->getX() - timeStep * enemigo1Speed);
+			}
+			else if (enemigos[i]->getPos()->getX() <= enemigos[i]->getEnemyCenter() - 1.8) {
+				enemyDir = !enemyDir;
+				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() - 1.79);
+			}
+			enemigos[i]->draw(enemigo1, vertAmountEnemigo, textura);
+			glPopMatrix();
+		}
 		//FIN DIBUJAR OBJETOS
-
+		
 
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
