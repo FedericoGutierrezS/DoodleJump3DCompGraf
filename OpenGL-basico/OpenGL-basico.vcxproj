@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="jugador.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="enemigo.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="HUD.h" />

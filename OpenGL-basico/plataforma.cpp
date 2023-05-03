@@ -1,7 +1,7 @@
 #include "plataforma.h"
 
 
-Plataforma::Plataforma(float a, float b, float c, float alt, float anch, float prof) {
+Plataforma::Plataforma(float a, float b, float c, float alt, float anch, float prof, char type1) {
 	x = a;
 	y = b;
 	z = c;
@@ -9,6 +9,8 @@ Plataforma::Plataforma(float a, float b, float c, float alt, float anch, float p
 	anchCol = anch;
 	profCol = prof;
 	disList = -1;
+	type = type1;
+	exists = true;
 }
 float Plataforma::getX() {
 	return x;
@@ -27,6 +29,15 @@ float Plataforma::getAnchCol() {
 }
 float Plataforma::getProfCol() {
 	return profCol;
+}
+char Plataforma::getType() {
+	return type;
+}
+bool Plataforma::getExists() {
+	return exists;
+}
+void Plataforma::setExists(bool exi) {
+	exists = exi; 
 }
 void Plataforma::draw(Vector3** modelo, int caras,GLuint textura) {
 	glPushMatrix();

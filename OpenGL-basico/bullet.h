@@ -1,32 +1,25 @@
+#pragma once
 #include "mesh.h"
 #include "Vector3.h"
 #include <SDL/SDL_opengl.h>
-#pragma once
 
-
-class Plataforma {
-protected:
-	float x;
-	float y;
-	float z;
+class Bullet {
 private:
 	float altCol;
 	float anchCol;
 	float profCol;
 	int disList;
-	char type;
 	bool exists;
+	Vector3* pos;
 
 public:
-	Plataforma(float, float, float, float, float, float, char);
-	float getX();
-	float getY();
-	float getZ();
+	Bullet(float, float, float, float, float, float);
+	Vector3* getPos();
 	bool getExists();
-	char getType();
 	float getAltCol();
 	float getAnchCol();
 	float getProfCol();
 	void setExists(bool);
+	void setPos(Vector3*);
 	void draw(Vector3**, int, GLuint);
 };

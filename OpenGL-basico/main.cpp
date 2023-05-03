@@ -12,6 +12,7 @@
 #include "jugador.h"
 #include "enemigo.h"
 #include "HUD.h"
+#include "bullet.h"
 #include <algorithm>
 
 using namespace std;
@@ -20,10 +21,12 @@ Plataforma* colision(Jugador* j, Plataforma** p, int c) {
 	Plataforma* ret = NULL;
 	int i = 0;
 	while (i < c && ret == NULL) {
-		if ((j->getPos()->getY() <= p[i]->getY() + p[i]->getProfCol())&& (j->getPos()->getY() >= p[i]->getY())) {
-			if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getZ() - p[i]->getAnchCol())) {
-				if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getX() - p[i]->getAltCol())) {
-					ret = p[i];
+		if (p[i]->getExists()) {
+			if ((j->getPos()->getY() <= p[i]->getY() + p[i]->getProfCol()) && (j->getPos()->getY() >= p[i]->getY())) {
+				if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getZ() - p[i]->getAnchCol())) {
+					if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getX() - p[i]->getAltCol())) {
+						ret = p[i];
+					}
 				}
 			}
 		}
@@ -36,10 +39,12 @@ Enemigo* colision(Jugador* j, Enemigo** p, int c) {
 	Enemigo* ret = NULL;
 	int i = 0;
 	while (i < c && ret == NULL) {
-		if ((j->getPos()->getY() <= p[i]->getPos()->getY() + p[i]->getProfCol()) && (j->getPos()->getY() >= p[i]->getPos()->getY())) {
-			if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getPos()->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getPos()->getZ() - p[i]->getAnchCol())) {
-				if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getPos()->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getPos()->getX() - p[i]->getAltCol())) {
-					ret = p[i];
+		if (p[i]->getExists()) {
+			if ((j->getPos()->getY() <= p[i]->getPos()->getY() + p[i]->getProfCol()) && (j->getPos()->getY() + j->getProfCol() >= p[i]->getPos()->getY())) {
+				if ((j->getPos()->getZ() - j->getAnchCol() <= p[i]->getPos()->getZ() + p[i]->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= p[i]->getPos()->getZ() - p[i]->getAnchCol())) {
+					if ((j->getPos()->getX() - j->getAltCol() <= p[i]->getPos()->getX() + p[i]->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= p[i]->getPos()->getX() - p[i]->getAltCol())) {
+						ret = p[i];
+					}
 				}
 			}
 		}
@@ -48,6 +53,23 @@ Enemigo* colision(Jugador* j, Enemigo** p, int c) {
 	return ret;
 }
 
+Enemigo* colision(Bullet* b, Enemigo** p, int c) {
+	Enemigo* ret = NULL;
+	int i = 0;
+	while (i < c && ret == NULL) {
+		if (p[i]->getExists()) {
+			if ((b->getPos()->getY() <= p[i]->getPos()->getY() + p[i]->getProfCol()) && (b->getPos()->getY() + b->getProfCol() >= p[i]->getPos()->getY())) {
+				if ((b->getPos()->getZ() - b->getAnchCol() <= p[i]->getPos()->getZ() + p[i]->getAnchCol()) && (b->getPos()->getZ() + b->getAnchCol() >= p[i]->getPos()->getZ() - p[i]->getAnchCol())) {
+					if ((b->getPos()->getX() - b->getAltCol() <= p[i]->getPos()->getX() + p[i]->getAltCol()) && (b->getPos()->getX() + b->getAltCol() >= p[i]->getPos()->getX() - p[i]->getAltCol())) {
+						ret = p[i];
+					}
+				}
+			}
+		}
+		i++;
+	}
+	return ret;
+}
 
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
@@ -73,9 +95,11 @@ int main(int argc, char* argv[]) {
 	int vertAmountJugador = 0;
 	int vertAmountPlataforma = 0;
 	int vertAmountEnemigo = 0;
+	int vertAmountBala = 0;
 	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
 	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
 	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
+	Vector3** bala = DoTheImportThing("bala.obj", vertAmountBala);
 
 
 	//TEXTURA
@@ -122,6 +146,17 @@ int main(int argc, char* argv[]) {
 	void* datosEnemigo = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "Bala.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wb = FreeImage_GetWidth(bitmap);
+	int hb = FreeImage_GetHeight(bitmap);
+	void* datosBala = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
 	GLuint textura;
 	glGenTextures(1, &textura);
 	glBindTexture(GL_TEXTURE_2D, textura);
@@ -137,13 +172,13 @@ int main(int argc, char* argv[]) {
 	bool movingl = false;
 	bool movingf = false;
 	bool movingb = false;
-	bool camType = false;
+	bool camType = false;//Tipo de camara(Se cambia con V)
 	bool fullscreen = false;
 	bool pause = false;
 	bool texturas = true;
 	bool wireframe = false;
 	bool facetado = false;
-	bool enemyDir = true;
+	bool enemyDir = true;//Usado para el cambio de direccion del enemigo
 
 	SDL_Event evento;
 
@@ -159,61 +194,70 @@ int main(int argc, char* argv[]) {
 
 	const float pi = 3.14159;
 
-	bool textOn = true;
 	float timeStep = 0;
-	float jumpSpeed = 7;
-	float moveSpeed = 5;
-	float enemigo1Speed = 4;
-	float camRot = pi/2;
-	float camSens = 0.004;
-	float radioCamara = 7;
-	float viewDistance = 5;
-	Timer* timer = new Timer();
+	float jumpSpeed = 7;//Velocidad inicial del salto del jugador
+	float moveSpeed = 5;//Velocidad del jugador
+	float enemigo1Speed = 4;//Velocidad del enemigo(Posiblemente puede convenir meterla dentro de la clase enemigo
+	float camRot = pi/2;//Angulo actual de la camara
+	float camSens = 0.004;//Sensibilidad de la camara
+	float radioCamara = 7;//Radio de la camara, se ajusta en juego con la ruedita
+	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
+	float bulletSpeed = 8;
+
+	Timer* timer = new Timer();//timer para el timeStep
 
 	float alturaDerrota = -200;
 
-	Vector3 dummy;
+	Vector3 dummy;//Auxiliar para usar operaciones de Vector3
 
-	Vector3* dir = new Vector3(0, 0, 0);
+	Vector3* dir = new Vector3(0, 0, 0);//Direccion a la que se tiene que mover el personaje(WASD o FLECHAS)
+	Vector3* direccionBala = new Vector3(0, 0, 0);
 
 	float timeAcc = 0;
 	float gravity = 9.8;
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
+	float altAlcanzada = 0;
 
-	float enemyCenter = 0;
-
+	//Generacion de plataformas
 	Plataforma* choque = NULL;
 	Plataforma** plataformas = new Plataforma*[30];
-	plataformas[0] = new Plataforma(0, 1.5, -2, 1.4, 0.5, 0.3);
-	plataformas[1] = new Plataforma(2, 3, -6, 1.4, 0.5, 0.3);
-	plataformas[2] = new Plataforma(-3, 4, -3, 1.4, 0.5, 0.3);
-	plataformas[3] = new Plataforma(0, 5.5, 0, 1.4, 0.5, 0.3);
-	plataformas[4] = new Plataforma(4, 7, 0, 1.4, 0.5, 0.3);
-	plataformas[5] = new Plataforma(2, 9, 1, 1.4, 0.5, 0.3);
-	plataformas[6] = new Plataforma(2, 11, 0, 1.4, 0.5, 0.3);
-	plataformas[7] = new Plataforma(-1, 13, -1, 1.4, 0.5, 0.3);
-	plataformas[8] = new Plataforma(4, 15, 0, 1.4, 0.5, 0.3);
-	plataformas[9] = new Plataforma(2, 17, 1, 1.4, 0.5, 0.3);
-	plataformas[10] = new Plataforma(0, 19, 2, 1.4, 0.5, 0.3);
-	plataformas[11] = new Plataforma(1, 21.5, 1, 1.4, 0.5, 0.3);
-	plataformas[12] = new Plataforma(3, 23, 0, 1.4, 0.5, 0.3);
-	plataformas[13] = new Plataforma(2, 25, 3, 1.4, 0.5, 0.3);
-	plataformas[14] = new Plataforma(0, 27, 1, 1.4, 0.5, 0.3);
-	plataformas[15] = new Plataforma(1, 28.5, 0, 1.4, 0.5, 0.3);
-	int cantPlat = 16;
-
+	plataformas[0] = new Plataforma(0, 1.5, -2, 1.4, 0.5, 0.3,'n');
+	plataformas[1] = new Plataforma(2, 3, -6, 1.4, 0.5, 0.3, 'n');
+	plataformas[2] = new Plataforma(-3, 4, -3, 1.4, 0.5, 0.3, 'd');
+	plataformas[3] = new Plataforma(0, 5.5, 0, 1.4, 0.5, 0.3, 'n');
+	plataformas[4] = new Plataforma(4, 7, 0, 1.4, 0.5, 0.3, 'n');
+	plataformas[5] = new Plataforma(2, 9, 1, 1.4, 0.5, 0.3, 'n');
+	plataformas[6] = new Plataforma(2, 11, 0, 1.4, 0.5, 0.3, 'd');
+	plataformas[7] = new Plataforma(-1, 13, -1, 1.4, 0.5, 0.3, 'n');
+	plataformas[8] = new Plataforma(4, 15, 0, 1.4, 0.5, 0.3, 'n');
+	plataformas[9] = new Plataforma(2, 17, 1, 1.4, 0.5, 0.3, 'n');
+	plataformas[10] = new Plataforma(0, 19, 2, 1.4, 0.5, 0.3, 'd');
+	plataformas[11] = new Plataforma(1, 21.5, 1, 1.4, 0.5, 0.3, 'n');
+	plataformas[12] = new Plataforma(3, 23, 0, 1.4, 0.5, 0.3, 'n');
+	plataformas[13] = new Plataforma(2, 25, 3, 1.4, 0.5, 0.3, 'n');
+	plataformas[14] = new Plataforma(0, 27, 1, 1.4, 0.5, 0.3, 'd');
+	plataformas[15] = new Plataforma(1, 28.5, 0, 1.4, 0.5, 0.3, 'n');
+	plataformas[16] = new Plataforma(2, 30, -1, 1.4, 0.5, 0.3, 'd');
+	int cantPlat = 17;
+	//Generacion de enemigos
 	Enemigo* colEnemigo = NULL;
+	Enemigo* enemigoHerido = NULL;
 	Enemigo** enemigos = new Enemigo*[10];
 	enemigos[0] = new Enemigo(0.3, 0.3, 0.3);
-	enemigos[0]->setPos(-3, 4.4, -3);
+	enemigos[0]->setPos(2, 3.4, -6);
 	enemigos[1] = new Enemigo(0.3, 0.3, 0.3);
 	enemigos[1]->setPos(4, 7.4, 0);
 	enemigos[2] = new Enemigo(0.3, 0.3, 0.3);
 	enemigos[2]->setPos(1, 21.9, 1);
-	int cantEnem = 3;
-	Jugador* jug = new Jugador(0.3, 0.3, 0.3);
+	enemigos[3] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[3]->setPos(0, 27.4, 1);
+	int cantEnem = 4;
+	//Se crea el jugador
+	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
+	//Se crea la bala
+	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
 	//LOOP PRINCIPAL
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -223,61 +267,92 @@ int main(int argc, char* argv[]) {
 		if (camType) //Se elige el tipo de camara(con V)
 			gluLookAt(x + jug->getPos()->getX(), 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
 		else
-			gluLookAt(x, 1.5 + jug->getPos()->getY(), z, 0, jug->getPos()->getY(), 0, 0, 1, 0);//Camara centrada en el escenario
+			gluLookAt(x, 3 + jug->getPos()->getY(), z, 0, jug->getPos()->getY(), 0, 0, 1, 0);//Camara centrada en el escenario
 
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, colorLuz);
-		glEnable(GL_LIGHT1); // habilita la luz 0
+		glEnable(GL_LIGHT1); // habilita la luz 1
 		glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion1);
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, colorLuz);
 
 		timeStep = velocidadJuego*timer->touch().delta;
-		if (pause) timeStep = 0;
-		glPushMatrix();
-		tiempoTranscurrido = tiempoTranscurrido + timeStep;
+		if (pause) timeStep = 0;//Pausa
+		tiempoTranscurrido = tiempoTranscurrido + timeStep;//Contador de tiempo
 
 		//TRANSFORMACIONES LINEALES
 		jug->setVel(dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed));//Se normaliza la dirección de movimiento y se le asigna la velocidad
 		if (jug->getPos()->getY() >= 0 ) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
 			timeAcc += timeStep;
 			jug->getVel()->setY(jumpSpeed - timeAcc * gravity);
-			choque = colision(jug, plataformas, cantPlat);
-			colEnemigo = colision(jug, enemigos, cantEnem);
+			choque = colision(jug, plataformas, cantPlat);//Chequeo de colision con plataformas
+			colEnemigo = colision(jug, enemigos, cantEnem);//Chequeo de colision con enemigos
+			enemigoHerido = colision(bul, enemigos, cantEnem);//Chequeo de colision de bala con enemigo
+			//Si choca con una plataforma, salta nuevamente(acumulador de tiempo de la ecuacion vuelve a 0) y ademas actualiza tanto altura de derrota como score, yAnt es usado en la animacion de salto
 			if (choque != NULL) {
 				timeAcc = 0;
 				if(alturaDerrota < choque->getY() - 2) alturaDerrota = choque->getY() - 2;
-				score = abs(alturaDerrota) * 1000;
 				yAnt = choque->getY();
+				if (choque->getType() == 'd') choque->setExists(false);
+				if (alturaDerrota > altAlcanzada) {
+					score = score + (alturaDerrota - altAlcanzada) * 300;
+					altAlcanzada = alturaDerrota;
+				}
+				choque = NULL;
 			}
-			
 		}
+
+		if (enemigoHerido != NULL) {//Si herimos a un enemigo, este desaparece
+			enemigoHerido->setExists(false);
+			bul->setExists(false);
+			score = score + 371;
+			enemigoHerido = NULL;
+		}
+
+		//Condiciones de Derrota
 		if (jug->getPos()->getY() < alturaDerrota || colEnemigo!=NULL) {
 			alturaDerrota = -200;
 			tiempoTranscurrido = 0;
 			score = 0;
 			jug->setPos(0,0,0);
 			yAnt = 0;
+			altAlcanzada = 0;
+			//Se marcan todas las plataformas como existentes nuevamente
+			for (int i = 0; i < cantPlat; i++) {
+				plataformas[i]->setExists(true);
+			}
+			for (int i = 0; i < cantEnem; i++) {
+				enemigos[i]->setExists(true);
+			}
+			bul->getPos()->setY(0);
 		}
-
+		//La altura 0 es piso
 		if (jug->getPos()->getY() < 0) {
 			jug->getPos()->setY(0.0);
 			dir->setY(0);
 			timeAcc = 0;
+			yAnt = 0;
 		}
 
 		if (jug->getVel()->getModulo() > 0) {//Mientras la velocidad sea >0 se actualiza la posición del objeto
 			jug->setPos(dummy.suma(*jug->getPos(), *dummy.multVecEsc(*jug->getVel(), timeStep)));
 		}
 		
-		//DIBUJAR OBJETOS
-		//DIBUJO MODELO
+		//Movimiento de la bala
+		if (bul->getExists()) {
+			bul->setPos(dummy.suma(*bul->getPos(), *dummy.multVecEsc(*dummy.multVecEsc(*dummy.normalize(*direccionBala), bulletSpeed), timeStep)));
+			if (dummy.resta(*jug->getPos(), *bul->getPos())->getModulo() > 10)
+				bul->setExists(false);
+		};
+
+		//Opciones necesarias
 		if(wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		if (texturas) glEnable(GL_TEXTURE_2D);
 		if (facetado) glShadeModel(GL_FLAT);
 		else glShadeModel(GL_SMOOTH);
+		//Luces alrededor del jugador
 		luz_posicion[0] = jug->getPos()->getX() + 2;
 		luz_posicion[1] = jug->getPos()->getY() + 1;
 		luz_posicion[2] = jug->getPos()->getZ() + 2;
@@ -287,9 +362,9 @@ int main(int argc, char* argv[]) {
 		glEnable(GL_LIGHTING);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
 		glPushMatrix();
-
+		//Se translada al personaje
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
-
+		//Se gira al personaje para que mire a donde apunta la direccion de movimiento
 		if (dir->getX() == -1) {
 			if(dir->getZ() == 0) glRotatef(180, 0, 1, 0);
 			else if(dir->getZ() == -1) glRotatef(135, 0, 1, 0);
@@ -302,18 +377,41 @@ int main(int argc, char* argv[]) {
 		}
 		else if (dir->getX() == 0 && dir->getZ() == 1) glRotatef(270, 0, 1, 0);
 		else if (dir->getX() == 0 && dir->getZ() == -1) glRotatef(90, 0, 1, 0);
-
+		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
-
+		//Dibujado de personaje
 		jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
-		
+
+		//Dibujado de bala
+		if (bul->getExists()) {
+			glPushMatrix();
+			glTranslatef(bul->getPos()->getX(), bul->getPos()->getY()+0.8f, bul->getPos()->getZ());
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wb, hb, 0, GL_BGR, GL_UNSIGNED_BYTE, datosBala);
+			bul->draw(bala, vertAmountBala, textura);
+			glPopMatrix();
+		}
+
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		for (int i = 0; i < cantPlat; i++) {
-			if((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance)&& (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance)) plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+			if ((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance) && (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance) && plataformas[i]->getExists()) {
+				switch (plataformas[i]->getType()) {
+				case 'n':
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
+					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+					break;
+				case 'd':
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
+					glColor3f(1, 0, 0.412);
+					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+					glColor3f(1, 1, 1);
+					break;
+				}
+			}
 		}
+		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
 		for (int i = 0; i < cantEnem; i++) {
 			glPushMatrix();
@@ -333,7 +431,9 @@ int main(int argc, char* argv[]) {
 				enemyDir = !enemyDir;
 				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() - 1.79);
 			}
-			enemigos[i]->draw(enemigo1, vertAmountEnemigo, textura);
+			if (enemigos[i]->getExists()) {
+				enemigos[i]->draw(enemigo1, vertAmountEnemigo, textura);
+			}
 			glPopMatrix();
 		}
 		//FIN DIBUJAR OBJETOS
@@ -399,6 +499,18 @@ int main(int argc, char* argv[]) {
 				case SDLK_v:
 					camType = !camType;
 					break;
+				case SDLK_SPACE:
+					if (!bul->getExists()) {
+						bul->setExists(true);
+						bul->getPos()->setX(jug->getPos()->getX());
+						bul->getPos()->setY(jug->getPos()->getY());
+						bul->getPos()->setZ(jug->getPos()->getZ());
+						direccionBala->setX(dir->getX());
+						direccionBala->setY(dir->getY());
+						direccionBala->setZ(dir->getZ());
+						if(direccionBala->getModulo() == 0) direccionBala->setX(1);
+					}
+					break;
 				case SDLK_F11:
 					if(!fullscreen){
 
@@ -420,9 +532,6 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_p:
 					pause = !pause;
-					break;
-				case SDLK_l:
-					textOn = !textOn;
 					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
