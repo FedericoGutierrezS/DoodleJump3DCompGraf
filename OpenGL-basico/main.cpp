@@ -239,7 +239,7 @@ int main(int argc, char* argv[]) {
 	Vector3* direccionBala = new Vector3(0, 0, 0);
 
 	float timeAcc = 0;
-	float gravity = -3;
+	float gravity = 10;
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
