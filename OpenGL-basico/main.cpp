@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 	float color = 0;
 	glClearColor(color, color, color, 1);
 
-	gluPerspective(45, 1280 / 720.f, 0.1, 100);
+	gluPerspective(90, 1280 / 720.f, 0.1, 100);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	int vertAmountJugador = 0;
@@ -223,9 +223,10 @@ int main(int argc, char* argv[]) {
 	float moveSpeed = 5;//Velocidad del jugador
 	float enemigo1Speed = 4;//Velocidad del enemigo(Posiblemente puede convenir meterla dentro de la clase enemigo
 	float camRot = pi/2;//Angulo actual de la camara
+	float camRotH = pi/2;
 	float camSens = 0.004;//Sensibilidad de la camara
 	float radioCamara = 7;//Radio de la camara, se ajusta en juego con la ruedita
-	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
+	float viewDistance = 10;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 8;
 
 	Timer* timer = new Timer();//timer para el timeStep
@@ -243,7 +244,7 @@ int main(int argc, char* argv[]) {
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
-	string seed = "sda";
+	string seed = "sdda";
 
 	//Generacion de plataformas
 	Plataforma* choque = NULL;
@@ -278,11 +279,12 @@ int main(int argc, char* argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		x = radioCamara * cos(camRot);
+		y = radioCamara * cos(camRotH);
 		z = radioCamara * sin(camRot);
 		if (camType) //Se elige el tipo de camara(con V)
-			gluLookAt(x + jug->getPos()->getX(), 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
+			gluLookAt(x + jug->getPos()->getX(),y + 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
 		else
-			gluLookAt(jug->getPos()->getX()+x*1/radioCamara,jug->getPos()->getY()+0.5, jug->getPos()->getZ()+z*1/radioCamara, jug->getPos()->getX(), jug->getPos()->getY()+0.5, jug->getPos()->getZ()+0.5, 0, 1, 0);//Camara centrada en el escenario
+			gluLookAt(jug->getPos()->getX(),jug->getPos()->getY()+1, jug->getPos()->getZ(), jug->getPos()->getX()-x, jug->getPos()->getY()+y+1, jug->getPos()->getZ()-z+1, 0, 1, 0);//Camara centrada en el escenario
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
@@ -458,7 +460,7 @@ int main(int argc, char* argv[]) {
 				enemyDir = !enemyDir;
 				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() - 1.79);
 			}
-			if (enemigos[i]->getExists()) {
+			if (enemigos[i]->getExists() && enemigos[i]->getPos()->getY() <= jug->getPos()->getY() + viewDistance && enemigos[i]->getPos()->getY() >= jug->getPos()->getY() - viewDistance) {
 				enemigos[i]->draw(enemigo1, vertAmountEnemigo, textura);
 			}
 			glPopMatrix();
@@ -497,6 +499,9 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_MOUSEMOTION:
 				camRot = fmod((camRot + evento.motion.xrel * camSens), pi * 2);
+				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens), pi);
+				if (camRotH <= 0) camRotH = camRotH + 0.01;
+				if (camRotH >= pi-0.1) camRotH = camRotH - 0.01;
 				break;
 			case SDL_QUIT:
 				fin = true;
