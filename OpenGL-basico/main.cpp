@@ -205,6 +205,8 @@ int main(int argc, char* argv[]) {
 	float x, y, z;
 	float auxX, auxY, auxZ;
 	int yAnt = 0;
+	float radiansFromMovement = 0;
+	float degreesFromMovement = 0;
 
 	float degrees = 0;
 
@@ -391,18 +393,17 @@ int main(int argc, char* argv[]) {
 		//Se translada al personaje
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
 		//Se gira al personaje para que mire a donde apunta la direccion de movimiento
-		if (dir->getX() == -1) {
-			if(dir->getZ() == 0) glRotatef(180, 0, 1, 0);
-			else if(dir->getZ() == -1) glRotatef(135, 0, 1, 0);
-				else glRotatef(225, 0, 1, 0);
-		}
-		else if (dir->getX() == 1) {
-			if (dir->getZ() == 0);
-			else if (dir->getZ() == -1) glRotatef(45, 0, 1, 0);
-			else glRotatef(315, 0, 1, 0);
-		}
-		else if (dir->getX() == 0 && dir->getZ() == 1) glRotatef(270, 0, 1, 0);
-		else if (dir->getX() == 0 && dir->getZ() == -1) glRotatef(90, 0, 1, 0);
+		radiansFromMovement = atan2(x, z);
+		if(movingb || movingf || movingr || movingl)
+			degreesFromMovement = radiansFromMovement * 180 / M_PI;
+		if (movingb)
+			degreesFromMovement = degreesFromMovement - 180;
+		if (movingr)
+			degreesFromMovement = degreesFromMovement - 90;
+		if (movingl)
+			degreesFromMovement = degreesFromMovement + 90;
+		if (degreesFromMovement < 0) degreesFromMovement += 360;
+		glRotatef(degreesFromMovement + 90, 0, 1, 0);
 		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
@@ -504,33 +505,34 @@ int main(int argc, char* argv[]) {
 				case SDLK_RIGHT:
 				case SDLK_d:
 					auxX = cos(camRot) * cos(camRot);
-					auxY = sin(camRot) * sin(camRot);
-					dir->setZ(-cos(camRot) / sqrt(auxX + auxY));
-					dir->setX(sin(camRot) / sqrt(auxX + auxY));
+					auxZ = sin(camRot) * sin(camRot);
+					dir->setZ(-cos(camRot) / sqrt(auxX + auxZ));
+					dir->setX(sin(camRot) / sqrt(auxX + auxZ));
 					movingr = true;
 					break;
 				case SDLK_LEFT:
 				case SDLK_a:
 					auxX = cos(camRot) * cos(camRot);
-					auxY = sin(camRot) * sin(camRot);
-					dir->setZ(cos(camRot) / sqrt(auxX + auxY));
-					dir->setX(-sin(camRot) / sqrt(auxX + auxY));
+					auxZ = sin(camRot) * sin(camRot);
+					dir->setZ(cos(camRot) / sqrt(auxX + auxZ));
+					dir->setX(-sin(camRot) / sqrt(auxX + auxZ));
 					movingl = true;
 					break;
 				case SDLK_UP:
 				case SDLK_w:
 					auxX = cos(camRot) * cos(camRot);
-					auxY = sin(camRot) * sin(camRot);
-					dir->setZ(-sin(camRot) / sqrt(auxX + auxY));
-					dir->setX(-cos(camRot) / sqrt(auxX + auxY));
+					auxZ = sin(camRot) * sin(camRot);
+					dir->setZ(-sin(camRot) / sqrt(auxX + auxZ));
+					dir->setX(-cos(camRot) / sqrt(auxX + auxZ));
+					cout << "X: " << dir->getX() << " Z: " << dir->getZ() << "\n";
 					movingf = true;
 					break;
 				case SDLK_DOWN:
 				case SDLK_s:
 					auxX = cos(camRot) * cos(camRot);
-					auxY = sin(camRot) * sin(camRot);
-					dir->setZ(sin(camRot) / sqrt(auxX + auxY));
-					dir->setX(cos(camRot) / sqrt(auxX + auxY));
+					auxZ = sin(camRot) * sin(camRot);
+					dir->setZ(sin(camRot) / sqrt(auxX + auxZ));
+					dir->setX(cos(camRot) / sqrt(auxX + auxZ));
 					movingb = true;
 					break;
 				case SDLK_v:
