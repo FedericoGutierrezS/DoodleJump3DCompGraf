@@ -26,8 +26,8 @@ void generate_object(string seed, float height,int &xcoord,int &ycoord) {
 	// Convert the hash value to a string.
 	string hash_string = to_string(hash_value);
 	// Split the hash string into two parts.
-	string left_part = hash_string.substr(0, 5);
-	string right_part = hash_string.substr(5);
+	string left_part = hash_string.substr(0, 4);
+	string right_part = hash_string.substr(4);
 	// Use the left and right parts of the hash string to generate the x and y coordinates of the object.
 	int x_coordinate = stoi(left_part,NULL,10);
 	int y_coordinate = stoi(right_part,NULL,10);
@@ -70,7 +70,7 @@ Enemigo* colision(Jugador* j, Enemigo** p, int c) {
 		}
 		i++;
 	}
-	return ret;
+	return NULL;
 }
 
 Enemigo* colision(Bullet* b, Enemigo** p, int c) {
@@ -225,8 +225,8 @@ int main(int argc, char* argv[]) {
 	float camRot = pi/2;//Angulo actual de la camara
 	float camRotH = pi/2;
 	float camSens = 0.004;//Sensibilidad de la camara
-	float radioCamara = 7;//Radio de la camara, se ajusta en juego con la ruedita
-	float viewDistance = 10;//Radio alrededor del personaje para el cual se renderizan las plataformas
+	float radioCamara = 4;//Radio de la camara, se ajusta en juego con la ruedita
+	float viewDistance = 10000;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 8;
 
 	Timer* timer = new Timer();//timer para el timeStep
@@ -239,11 +239,12 @@ int main(int argc, char* argv[]) {
 	Vector3* direccionBala = new Vector3(0, 0, 0);
 
 	float timeAcc = 0;
-	float gravity = 11;
+	float gravity = -3;
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
+	float probEnemigos = 50;
 	string seed = "sdda";
 
 	//Generacion de plataformas
@@ -288,9 +289,9 @@ int main(int argc, char* argv[]) {
 		int prob = (xcoord + zcoord) % 100;
 		xcoord = (xcoord % 100) * 0.06;
 		zcoord = (zcoord % 100) * 0.06;
-		if (prob > 90) {
+		if (100 - prob < probEnemigos) {
 			enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
-			if (i > jug->getPos()->getY() + 4)enemigos[i % 11]->setExists(true);
+			if (i > jug->getPos()->getY() + 1)enemigos[i % 11]->setExists(true);
 		}
 		plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
 	}
@@ -323,7 +324,7 @@ int main(int argc, char* argv[]) {
 				int prob = (xcoord + zcoord) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
-				if (prob > 90) {
+				if ((100 - prob < probEnemigos) && (enemigos[i % 11]->getPos()->getY() < i )) {
 					enemigos[i % 11]->setPos(xcoord,i+0.4,zcoord);
 				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
@@ -372,7 +373,7 @@ int main(int argc, char* argv[]) {
 				int prob = (xcoord + zcoord) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
-				if (prob > 90) {
+				if (100 - prob < probEnemigos) {
 					enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
 				}
 				plataformas[i % 11]->setPos(xcoord,i,zcoord);
@@ -440,7 +441,6 @@ int main(int argc, char* argv[]) {
 		if(camType) jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
-
 		//Dibujado de bala
 		if (bul->getExists()) {
 			glPushMatrix();
@@ -477,8 +477,8 @@ int main(int argc, char* argv[]) {
 				glRotatef(180, 0, 1, 0);
 			}
 			else if (enemigos[i]->getPos()->getX() >= enemigos[i]->getEnemyCenter() + 1.8) {
-				enemyDir = !enemyDir;
-				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() + 1.79);
+					enemyDir = !enemyDir;
+					enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() + 1.79);
 			}
 			if (!enemyDir && enemigos[i]->getPos()->getX() > enemigos[i]->getEnemyCenter() - 1.8) {
 				enemigos[i]->getPos()->setX(enemigos[i]->getPos()->getX() - timeStep * enemigo1Speed);
