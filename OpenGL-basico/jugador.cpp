@@ -5,7 +5,7 @@ Jugador::Jugador(float alt, float anch, float prof) {
 	altCol = alt;
 	anchCol = anch;
 	profCol = prof;
-	pos = new Vector3(0, 0, 0);
+	pos = new Vector3(5, 0, 5);
 	vel = new Vector3(0, 0, 0);
 	disList = -1;
 }

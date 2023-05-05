@@ -25,7 +25,7 @@ void generate_object(string seed, float height,int &xcoord,int &ycoord) {
 	size_t hash_value = hash<string>{}(to_string((int)height) + seed);
 	// Convert the hash value to a string.
 	string hash_string = to_string(hash_value);
-	// Split the hash string into two parts, each of which is 16 characters long.
+	// Split the hash string into two parts.
 	string left_part = hash_string.substr(0, 5);
 	string right_part = hash_string.substr(5);
 	// Use the left and right parts of the hash string to generate the x and y coordinates of the object.
@@ -255,14 +255,28 @@ int main(int argc, char* argv[]) {
 	Enemigo* enemigoHerido = NULL;
 	Enemigo** enemigos = new Enemigo*[10];
 	enemigos[0] = new Enemigo(0.3, 0.3, 0.3);
-	enemigos[0]->setPos(2, 3.4, -6);
+	enemigos[0]->setPos(-11, -11, -11);
 	enemigos[1] = new Enemigo(0.3, 0.3, 0.3);
-	enemigos[1]->setPos(4, 7.4, 0);
+	enemigos[1]->setPos(-11, -11, -11);
 	enemigos[2] = new Enemigo(0.3, 0.3, 0.3);
-	enemigos[2]->setPos(1, 21.9, 1);
+	enemigos[2]->setPos(-11, -11, -11);
 	enemigos[3] = new Enemigo(0.3, 0.3, 0.3);
-	enemigos[3]->setPos(0, 27.4, 1);
-	int cantEnem = 4;
+	enemigos[3]->setPos(-11, -11, -11);
+	enemigos[4] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[4]->setPos(-11, -11, -11);
+	enemigos[5] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[5]->setPos(-11, -11, -11);
+	enemigos[6] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[6]->setPos(-11, -11, -11);
+	enemigos[7] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[7]->setPos(-11, -11, -11);
+	enemigos[8] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[8]->setPos(-11, -11, -11);
+	enemigos[9] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[9]->setPos(-11, -11, -11);
+	enemigos[10] = new Enemigo(0.3, 0.3, 0.3);
+	enemigos[10]->setPos(-11, -11, -11);
+	int cantEnem = 11;
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
@@ -271,8 +285,13 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
 		generate_object(seed, i, xcoord, zcoord);
+		int prob = (xcoord + zcoord) % 100;
 		xcoord = (xcoord % 100) * 0.06;
 		zcoord = (zcoord % 100) * 0.06;
+		if (prob > 90) {
+			enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
+			if (i > jug->getPos()->getY() + 4)enemigos[i % 11]->setExists(true);
+		}
 		plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
 	}
 	do {
@@ -301,8 +320,12 @@ int main(int argc, char* argv[]) {
 			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
 				int xcoord = 2, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
+				int prob = (xcoord + zcoord) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
+				if (prob > 90) {
+					enemigos[i % 11]->setPos(xcoord,i+0.4,zcoord);
+				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
 		//TRANSFORMACIONES LINEALES
@@ -339,15 +362,19 @@ int main(int argc, char* argv[]) {
 			alturaDerrota = -200;
 			tiempoTranscurrido = 0;
 			score = 0;
-			jug->setPos(0,0,0);
+			jug->setPos(5,0,5);
 			yAnt = 0;
 			altAlcanzada = 0;
 			//Se marcan todas las plataformas como existentes nuevamente
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
+				int prob = (xcoord + zcoord) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
+				if (prob > 90) {
+					enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
+				}
 				plataformas[i % 11]->setPos(xcoord,i,zcoord);
 			}
 			for (int i = 0; i < cantPlat; i++) {
