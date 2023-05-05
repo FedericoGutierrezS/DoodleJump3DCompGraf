@@ -28,5 +28,6 @@ public:
 	float getAnchCol();
 	float getProfCol();
 	void setExists(bool);
+	void setPos(float, float, float);
 	void draw(Vector3**, int, GLuint);
 };

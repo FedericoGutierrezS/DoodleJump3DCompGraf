@@ -14,8 +14,28 @@
 #include "HUD.h"
 #include "bullet.h"
 #include <algorithm>
+#include <stdlib.h>
+#include <string>
 
 using namespace std;
+
+void generate_object(string seed, float height,int &xcoord,int &ycoord) {
+
+	// Use the random number and the seed to generate a hash.
+	size_t hash_value = hash<string>{}(to_string((int)height) + seed);
+	// Convert the hash value to a string.
+	string hash_string = to_string(hash_value);
+	// Split the hash string into two parts, each of which is 16 characters long.
+	string left_part = hash_string.substr(0, 5);
+	string right_part = hash_string.substr(5);
+	// Use the left and right parts of the hash string to generate the x and y coordinates of the object.
+	int x_coordinate = stoi(left_part,NULL,10);
+	int y_coordinate = stoi(right_part,NULL,10);
+
+	// Return the object at the specified coordinates.
+	xcoord = x_coordinate;
+	ycoord = y_coordinate;
+}
 
 Plataforma* colision(Jugador* j, Plataforma** p, int c) {
 	Plataforma* ret = NULL;
@@ -195,7 +215,7 @@ int main(int argc, char* argv[]) {
 	const float pi = 3.14159;
 
 	float timeStep = 0;
-	float jumpSpeed = 7;//Velocidad inicial del salto del jugador
+	float jumpSpeed = 6;//Velocidad inicial del salto del jugador
 	float moveSpeed = 5;//Velocidad del jugador
 	float enemigo1Speed = 4;//Velocidad del enemigo(Posiblemente puede convenir meterla dentro de la clase enemigo
 	float camRot = pi/2;//Angulo actual de la camara
@@ -214,33 +234,17 @@ int main(int argc, char* argv[]) {
 	Vector3* direccionBala = new Vector3(0, 0, 0);
 
 	float timeAcc = 0;
-	float gravity = 9.8;
+	float gravity = 11;
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
+	string seed = "sda";
 
 	//Generacion de plataformas
 	Plataforma* choque = NULL;
-	Plataforma** plataformas = new Plataforma*[30];
-	plataformas[0] = new Plataforma(0, 1.5, -2, 1.4, 0.5, 0.3,'n');
-	plataformas[1] = new Plataforma(2, 3, -6, 1.4, 0.5, 0.3, 'n');
-	plataformas[2] = new Plataforma(-3, 4, -3, 1.4, 0.5, 0.3, 'd');
-	plataformas[3] = new Plataforma(0, 5.5, 0, 1.4, 0.5, 0.3, 'n');
-	plataformas[4] = new Plataforma(4, 7, 0, 1.4, 0.5, 0.3, 'n');
-	plataformas[5] = new Plataforma(2, 9, 1, 1.4, 0.5, 0.3, 'n');
-	plataformas[6] = new Plataforma(2, 11, 0, 1.4, 0.5, 0.3, 'd');
-	plataformas[7] = new Plataforma(-1, 13, -1, 1.4, 0.5, 0.3, 'n');
-	plataformas[8] = new Plataforma(4, 15, 0, 1.4, 0.5, 0.3, 'n');
-	plataformas[9] = new Plataforma(2, 17, 1, 1.4, 0.5, 0.3, 'n');
-	plataformas[10] = new Plataforma(0, 19, 2, 1.4, 0.5, 0.3, 'd');
-	plataformas[11] = new Plataforma(1, 21.5, 1, 1.4, 0.5, 0.3, 'n');
-	plataformas[12] = new Plataforma(3, 23, 0, 1.4, 0.5, 0.3, 'n');
-	plataformas[13] = new Plataforma(2, 25, 3, 1.4, 0.5, 0.3, 'n');
-	plataformas[14] = new Plataforma(0, 27, 1, 1.4, 0.5, 0.3, 'd');
-	plataformas[15] = new Plataforma(1, 28.5, 0, 1.4, 0.5, 0.3, 'n');
-	plataformas[16] = new Plataforma(2, 30, -1, 1.4, 0.5, 0.3, 'd');
-	int cantPlat = 17;
+	Plataforma** plataformas = new Plataforma*[11];
+	int cantPlat = 11;
 	//Generacion de enemigos
 	Enemigo* colEnemigo = NULL;
 	Enemigo* enemigoHerido = NULL;
@@ -259,6 +263,13 @@ int main(int argc, char* argv[]) {
 	//Se crea la bala
 	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
 	//LOOP PRINCIPAL
+	for (int i = 0; i < 11; i++) {
+		int xcoord = 2, zcoord = 0;
+		generate_object(seed, i, xcoord, zcoord);
+		xcoord = (xcoord % 100) * 0.06;
+		zcoord = (zcoord % 100) * 0.06;
+		plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
+	}
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
@@ -267,7 +278,7 @@ int main(int argc, char* argv[]) {
 		if (camType) //Se elige el tipo de camara(con V)
 			gluLookAt(x + jug->getPos()->getX(), 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
 		else
-			gluLookAt(x, 3 + jug->getPos()->getY(), z, 0, jug->getPos()->getY(), 0, 0, 1, 0);//Camara centrada en el escenario
+			gluLookAt(jug->getPos()->getX()+x*1/radioCamara,jug->getPos()->getY()+0.5, jug->getPos()->getZ()+z*1/radioCamara, jug->getPos()->getX(), jug->getPos()->getY()+0.5, jug->getPos()->getZ()+0.5, 0, 1, 0);//Camara centrada en el escenario
 
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
@@ -280,7 +291,15 @@ int main(int argc, char* argv[]) {
 		timeStep = velocidadJuego*timer->touch().delta;
 		if (pause) timeStep = 0;//Pausa
 		tiempoTranscurrido = tiempoTranscurrido + timeStep;//Contador de tiempo
-
+		
+		if(jug->getPos()->getY() > 5)
+			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
+				int xcoord = 2, zcoord = 0;
+				generate_object(seed, i, xcoord, zcoord);
+				xcoord = (xcoord % 100) * 0.06;
+				zcoord = (zcoord % 100) * 0.06;
+				plataformas[i % 11]->setPos(xcoord, i, zcoord);
+			}
 		//TRANSFORMACIONES LINEALES
 		jug->setVel(dummy.multVecEsc(*dummy.normalize(*dir), moveSpeed));//Se normaliza la dirección de movimiento y se le asigna la velocidad
 		if (jug->getPos()->getY() >= 0 ) { //Se reduce la velocidad en función de la gravedad si el personaje se encuentra saltando
@@ -319,6 +338,13 @@ int main(int argc, char* argv[]) {
 			yAnt = 0;
 			altAlcanzada = 0;
 			//Se marcan todas las plataformas como existentes nuevamente
+			for (int i = 0; i < 11; i++) {
+				int xcoord = 2, zcoord = 0;
+				generate_object(seed, i, xcoord, zcoord);
+				xcoord = (xcoord % 100) * 0.06;
+				zcoord = (zcoord % 100) * 0.06;
+				plataformas[i % 11]->setPos(xcoord,i,zcoord);
+			}
 			for (int i = 0; i < cantPlat; i++) {
 				plataformas[i]->setExists(true);
 			}
@@ -380,7 +406,7 @@ int main(int argc, char* argv[]) {
 		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
-		jug->draw(jugador, vertAmountJugador, textura);
+		if(camType) jug->draw(jugador, vertAmountJugador, textura);
 		glDisable(GL_LIGHTING);
 		glPopMatrix();
 
@@ -392,7 +418,6 @@ int main(int argc, char* argv[]) {
 			bul->draw(bala, vertAmountBala, textura);
 			glPopMatrix();
 		}
-
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		for (int i = 0; i < cantPlat; i++) {

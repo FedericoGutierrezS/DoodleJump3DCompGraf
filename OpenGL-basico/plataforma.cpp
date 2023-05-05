@@ -39,6 +39,11 @@ bool Plataforma::getExists() {
 void Plataforma::setExists(bool exi) {
 	exists = exi; 
 }
+void Plataforma::setPos(float a, float b, float c) {
+	x = a;
+	y = b;
+	z = c;
+}
 void Plataforma::draw(Vector3** modelo, int caras,GLuint textura) {
 	glPushMatrix();
 	glTranslatef(x, y, z);
