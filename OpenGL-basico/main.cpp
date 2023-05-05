@@ -203,6 +203,7 @@ int main(int argc, char* argv[]) {
 	SDL_Event evento;
 
 	float x, y, z;
+	float auxX, auxY, auxZ;
 	int yAnt = 0;
 
 	float degrees = 0;
@@ -279,7 +280,6 @@ int main(int argc, char* argv[]) {
 			gluLookAt(x + jug->getPos()->getX(), 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
 		else
 			gluLookAt(jug->getPos()->getX()+x*1/radioCamara,jug->getPos()->getY()+0.5, jug->getPos()->getZ()+z*1/radioCamara, jug->getPos()->getX(), jug->getPos()->getY()+0.5, jug->getPos()->getZ()+0.5, 0, 1, 0);//Camara centrada en el escenario
-
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
@@ -503,22 +503,34 @@ int main(int argc, char* argv[]) {
 				switch (evento.key.keysym.sym) {
 				case SDLK_RIGHT:
 				case SDLK_d:
-					dir->setX(1);
+					auxX = cos(camRot) * cos(camRot);
+					auxY = sin(camRot) * sin(camRot);
+					dir->setZ(-cos(camRot) / sqrt(auxX + auxY));
+					dir->setX(sin(camRot) / sqrt(auxX + auxY));
 					movingr = true;
 					break;
 				case SDLK_LEFT:
 				case SDLK_a:
-					dir->setX(-1);
+					auxX = cos(camRot) * cos(camRot);
+					auxY = sin(camRot) * sin(camRot);
+					dir->setZ(cos(camRot) / sqrt(auxX + auxY));
+					dir->setX(-sin(camRot) / sqrt(auxX + auxY));
 					movingl = true;
 					break;
 				case SDLK_UP:
 				case SDLK_w:
-					dir->setZ(-1);
+					auxX = cos(camRot) * cos(camRot);
+					auxY = sin(camRot) * sin(camRot);
+					dir->setZ(-sin(camRot) / sqrt(auxX + auxY));
+					dir->setX(-cos(camRot) / sqrt(auxX + auxY));
 					movingf = true;
 					break;
 				case SDLK_DOWN:
 				case SDLK_s:
-					dir->setZ(1);
+					auxX = cos(camRot) * cos(camRot);
+					auxY = sin(camRot) * sin(camRot);
+					dir->setZ(sin(camRot) / sqrt(auxX + auxY));
+					dir->setX(cos(camRot) / sqrt(auxX + auxY));
 					movingb = true;
 					break;
 				case SDLK_v:
@@ -560,22 +572,22 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
-					if (!movingl) dir->setX(0);
+					if (!movingb && !movingf && !movingl) { dir->setZ(0); dir->setX(0); }
 					movingr = false;
 					break;
 				case SDLK_LEFT:
 				case SDLK_a:
-					if (!movingr) dir->setX(0);
+					if (!movingb && !movingr && !movingf) { dir->setZ(0); dir->setX(0); }
 					movingl = false;
 					break;
 				case SDLK_UP:
 				case SDLK_w:
-					if (!movingb) dir->setZ(0);
+					if (!movingb && !movingr && !movingl) { dir->setZ(0); dir->setX(0);}
 					movingf = false;
 					break;
 				case SDLK_DOWN:
 				case SDLK_s:
-					if (!movingf) dir->setZ(0);
+					if (!movingf && !movingr && !movingl) { dir->setZ(0); dir->setX(0); }
 					movingb = false;
 					break;
 				}
