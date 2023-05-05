@@ -207,6 +207,7 @@ int main(int argc, char* argv[]) {
 	int yAnt = 0;
 	float radiansFromMovement = 0;
 	float degreesFromMovement = 0;
+	float lastDirX = 1, lastDirZ = 0;
 
 	float degrees = 0;
 
@@ -504,35 +505,42 @@ int main(int argc, char* argv[]) {
 				switch (evento.key.keysym.sym) {
 				case SDLK_RIGHT:
 				case SDLK_d:
-					auxX = cos(camRot) * cos(camRot);
-					auxZ = sin(camRot) * sin(camRot);
-					dir->setZ(-cos(camRot) / sqrt(auxX + auxZ));
-					dir->setX(sin(camRot) / sqrt(auxX + auxZ));
+					auxX = pow(cos(camRot), 2);
+					auxZ = pow(sin(camRot), 2);
+					lastDirX = sin(camRot) / sqrt(auxX + auxZ);
+					lastDirZ = -cos(camRot) / sqrt(auxX + auxZ);
+					dir->setZ(lastDirZ);
+					dir->setX(lastDirX);
 					movingr = true;
 					break;
 				case SDLK_LEFT:
 				case SDLK_a:
-					auxX = cos(camRot) * cos(camRot);
-					auxZ = sin(camRot) * sin(camRot);
-					dir->setZ(cos(camRot) / sqrt(auxX + auxZ));
-					dir->setX(-sin(camRot) / sqrt(auxX + auxZ));
+					auxX = pow(cos(camRot), 2);
+					auxZ = pow(sin(camRot), 2);
+					lastDirX = -sin(camRot) / sqrt(auxX + auxZ);
+					lastDirZ = cos(camRot) / sqrt(auxX + auxZ);
+					dir->setZ(lastDirZ);
+					dir->setX(lastDirX);
 					movingl = true;
 					break;
 				case SDLK_UP:
 				case SDLK_w:
-					auxX = cos(camRot) * cos(camRot);
-					auxZ = sin(camRot) * sin(camRot);
-					dir->setZ(-sin(camRot) / sqrt(auxX + auxZ));
-					dir->setX(-cos(camRot) / sqrt(auxX + auxZ));
-					cout << "X: " << dir->getX() << " Z: " << dir->getZ() << "\n";
+					auxX = pow(cos(camRot),2);
+					auxZ = pow(sin(camRot),2);
+					lastDirX = -cos(camRot) / sqrt(auxX + auxZ);
+					lastDirZ = -sin(camRot) / sqrt(auxX + auxZ);
+					dir->setZ(lastDirZ);
+					dir->setX(lastDirX);
 					movingf = true;
 					break;
 				case SDLK_DOWN:
 				case SDLK_s:
-					auxX = cos(camRot) * cos(camRot);
-					auxZ = sin(camRot) * sin(camRot);
-					dir->setZ(sin(camRot) / sqrt(auxX + auxZ));
-					dir->setX(cos(camRot) / sqrt(auxX + auxZ));
+					auxX = pow(cos(camRot), 2);
+					auxZ = pow(sin(camRot), 2);
+					lastDirX = cos(camRot) / sqrt(auxX + auxZ);
+					lastDirZ = sin(camRot) / sqrt(auxX + auxZ);
+					dir->setZ(lastDirZ);
+					dir->setX(lastDirX);
 					movingb = true;
 					break;
 				case SDLK_v:
@@ -544,10 +552,9 @@ int main(int argc, char* argv[]) {
 						bul->getPos()->setX(jug->getPos()->getX());
 						bul->getPos()->setY(jug->getPos()->getY());
 						bul->getPos()->setZ(jug->getPos()->getZ());
-						direccionBala->setX(dir->getX());
+						direccionBala->setX(lastDirX);
 						direccionBala->setY(dir->getY());
-						direccionBala->setZ(dir->getZ());
-						if(direccionBala->getModulo() == 0) direccionBala->setX(1);
+						direccionBala->setZ(lastDirZ);
 					}
 					break;
 				case SDLK_F11:
