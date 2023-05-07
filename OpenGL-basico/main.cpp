@@ -91,19 +91,19 @@ Enemigo* colision(Bullet* b, Enemigo** p, int c) {
 	return ret;
 }
 
-Jetpack* colision(Jugador* j, Jetpack* jp) {
-	Jetpack* ret = NULL;
+bool colision(Jugador* j, Jetpack* jp) {
+	bool res = false;
 	if (jp->getExist()) {
 		if ((j->getPos()->getY() <= jp->getPos()->getY() + jp->getProfCol()) && (j->getPos()->getY() >= jp->getPos()->getY())) {
 			if ((j->getPos()->getZ() - j->getAnchCol() <= jp->getPos()->getZ() + jp->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= jp->getPos()->getZ() - jp->getAnchCol())) {
 				if ((j->getPos()->getX() - j->getAltCol() <= jp->getPos()->getX() + jp->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= jp->getPos()->getX() - jp->getAltCol())) {
-					ret = jp;
-					jp->setOnPlayer(true);
+					res = true;
+					;
 				}
 			}
 		}
 	}
-	return ret;
+	return res;
 }
 
 void makeObjectLookAtMovementDir(Vector3* dir) {
@@ -265,10 +265,14 @@ int main(int argc, char* argv[]) {
 	float radioCamara = 7;//Radio de la camara, se ajusta en juego con la ruedita
 	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 8;
-	float jetpackTiem = 5;//Duracion del jetpack
+	float jetpackTime = 5;//Duracion del jetpack
 
 	Timer* timer = new Timer();//timer para el timeStep
-	Timer* jetpackTimer = new Timer();
+	Timer* jetpackTimer = new Timer();//controla en tiempo que el jugador tiene el jetpack puesto
+	Timer* jetpackRemovalTimer = new Timer();//controla el timepo luego de que se le termina el jetpack al jugador
+	float jetpackElapsedTime = -1;
+	float jetpackRemovedElapsedTime = -1;
+	float jetpackTimeToGetToFullGravity = 5;
 
 	float alturaDerrota = -200;
 
@@ -303,7 +307,7 @@ int main(int argc, char* argv[]) {
 	enemigos[3]->setPos(0, 27.4, 1);
 	int cantEnem = 4;
 	//Generacion de jetpack
-	Jetpack* colJetpack = NULL;
+	bool colJetpack = false;
 	Jetpack* jetp = new Jetpack(1, 1, 1);
 	
 	jetp->setPos(0., 0., -5.);
@@ -361,6 +365,15 @@ int main(int argc, char* argv[]) {
 			colEnemigo = colision(jug, enemigos, cantEnem);//Chequeo de colision con enemigos
 			enemigoHerido = colision(bul, enemigos, cantEnem);//Chequeo de colision de bala con enemigo
 			colJetpack = colision(jug, jetp);//
+			if (colJetpack) {
+				//Si colisiono con el jetpack me lo pongo y arranco el timer
+				jetp->setOnPlayer(true);
+				if (jetpackElapsedTime == -1) {
+					jetpackTimer->peek();
+					jetpackElapsedTime = 0;
+				}
+					
+			}
 			//Si choca con una plataforma, salta nuevamente(acumulador de tiempo de la ecuacion vuelve a 0) y ademas actualiza tanto altura de derrota como score, yAnt es usado en la animacion de salto
 			if (choque != NULL) {
 				timeAcc = 0;
@@ -459,6 +472,36 @@ int main(int argc, char* argv[]) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wb, hb, 0, GL_BGR, GL_UNSIGNED_BYTE, datosBala);
 			bul->draw(bala, vertAmountBala, textura);
 			glPopMatrix();
+		}
+
+		//Checkeo timer del jetpack
+		if (jetp->getOnPlayer()) {
+			jetpackElapsedTime += jetpackTimer->touch().delta;
+			gravity = -0.1;
+			if (jetpackElapsedTime >= jetpackTime) {
+				//Se acabo el tiempo del jetpack
+				jetpackElapsedTime = -1;
+				jetp->setOnPlayer(false);
+				jetp->setExist(false);
+				jetpackRemovalTimer->peek();
+				jetpackRemovedElapsedTime = 0;
+			}
+		}
+		else {
+			if (jetpackRemovedElapsedTime != -1) {
+				//segundos luego de que se acabe el jetpack tengo que aumentar la gravedad gradualmente.
+				jetpackRemovedElapsedTime += jetpackRemovalTimer->touch().delta;
+				if (jetpackRemovedElapsedTime <= jetpackTimeToGetToFullGravity) {
+					float gravityMultiplier = jetpackRemovedElapsedTime / jetpackTimeToGetToFullGravity;
+					gravity = 11 * gravityMultiplier;
+				}
+				else
+					jetpackRemovedElapsedTime = -1;
+			}
+			else {
+				gravity = 11;
+			}
+			
 		}
 
 		//Dibujado del jetpack
