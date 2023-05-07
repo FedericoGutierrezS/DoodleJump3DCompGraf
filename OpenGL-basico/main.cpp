@@ -11,6 +11,7 @@
 #include "plataforma.h"
 #include "jugador.h"
 #include "enemigo.h"
+#include "jetpack.h"
 #include "HUD.h"
 #include "bullet.h"
 #include <algorithm>
@@ -20,7 +21,6 @@
 using namespace std;
 
 void generate_object(string seed, float height,int &xcoord,int &ycoord) {
-
 	// Use the random number and the seed to generate a hash.
 	size_t hash_value = hash<string>{}(to_string((int)height) + seed);
 	// Convert the hash value to a string.
@@ -91,6 +91,36 @@ Enemigo* colision(Bullet* b, Enemigo** p, int c) {
 	return ret;
 }
 
+Jetpack* colision(Jugador* j, Jetpack* jp) {
+	Jetpack* ret = NULL;
+	if (jp->getExist()) {
+		if ((j->getPos()->getY() <= jp->getPos()->getY() + jp->getProfCol()) && (j->getPos()->getY() >= jp->getPos()->getY())) {
+			if ((j->getPos()->getZ() - j->getAnchCol() <= jp->getPos()->getZ() + jp->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= jp->getPos()->getZ() - jp->getAnchCol())) {
+				if ((j->getPos()->getX() - j->getAltCol() <= jp->getPos()->getX() + jp->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= jp->getPos()->getX() - jp->getAltCol())) {
+					ret = jp;
+					jp->setOnPlayer(true);
+				}
+			}
+		}
+	}
+	return ret;
+}
+
+void makeObjectLookAtMovementDir(Vector3* dir) {
+	if (dir->getX() == -1) {
+		if (dir->getZ() == 0) glRotatef(180, 0, 1, 0);
+		else if (dir->getZ() == -1) glRotatef(135, 0, 1, 0);
+		else glRotatef(225, 0, 1, 0);
+	}
+	else if (dir->getX() == 1) {
+		if (dir->getZ() == 0);
+		else if (dir->getZ() == -1) glRotatef(45, 0, 1, 0);
+		else glRotatef(315, 0, 1, 0);
+	}
+	else if (dir->getX() == 0 && dir->getZ() == 1) glRotatef(270, 0, 1, 0);
+	else if (dir->getX() == 0 && dir->getZ() == -1) glRotatef(90, 0, 1, 0);
+}
+
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -116,11 +146,12 @@ int main(int argc, char* argv[]) {
 	int vertAmountPlataforma = 0;
 	int vertAmountEnemigo = 0;
 	int vertAmountBala = 0;
+	int vertAmountJetpack = 0;
 	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
 	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
 	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
 	Vector3** bala = DoTheImportThing("bala.obj", vertAmountBala);
-
+	Vector3** jetpack = DoTheImportThing("jugador.obj", vertAmountJetpack);
 
 	//TEXTURA
 	char* archivo = new char[20];
@@ -177,6 +208,17 @@ int main(int argc, char* argv[]) {
 	void* datosBala = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "white_square.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wje = FreeImage_GetWidth(bitmap);
+	int hje = FreeImage_GetHeight(bitmap);
+	void* datosJetpack = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
 	GLuint textura;
 	glGenTextures(1, &textura);
 	glBindTexture(GL_TEXTURE_2D, textura);
@@ -223,8 +265,10 @@ int main(int argc, char* argv[]) {
 	float radioCamara = 7;//Radio de la camara, se ajusta en juego con la ruedita
 	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 8;
+	float jetpackTiem = 5;//Duracion del jetpack
 
 	Timer* timer = new Timer();//timer para el timeStep
+	Timer* jetpackTimer = new Timer();
 
 	float alturaDerrota = -200;
 
@@ -258,11 +302,19 @@ int main(int argc, char* argv[]) {
 	enemigos[3] = new Enemigo(0.3, 0.3, 0.3);
 	enemigos[3]->setPos(0, 27.4, 1);
 	int cantEnem = 4;
+	//Generacion de jetpack
+	Jetpack* colJetpack = NULL;
+	Jetpack* jetp = new Jetpack(1, 1, 1);
+	
+	jetp->setPos(0., 0., -5.);
+
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
 	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
+	
 	//LOOP PRINCIPAL
+
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
 		generate_object(seed, i, xcoord, zcoord);
@@ -308,6 +360,7 @@ int main(int argc, char* argv[]) {
 			choque = colision(jug, plataformas, cantPlat);//Chequeo de colision con plataformas
 			colEnemigo = colision(jug, enemigos, cantEnem);//Chequeo de colision con enemigos
 			enemigoHerido = colision(bul, enemigos, cantEnem);//Chequeo de colision de bala con enemigo
+			colJetpack = colision(jug, jetp);//
 			//Si choca con una plataforma, salta nuevamente(acumulador de tiempo de la ecuacion vuelve a 0) y ademas actualiza tanto altura de derrota como score, yAnt es usado en la animacion de salto
 			if (choque != NULL) {
 				timeAcc = 0;
@@ -391,18 +444,7 @@ int main(int argc, char* argv[]) {
 		//Se translada al personaje
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
 		//Se gira al personaje para que mire a donde apunta la direccion de movimiento
-		if (dir->getX() == -1) {
-			if(dir->getZ() == 0) glRotatef(180, 0, 1, 0);
-			else if(dir->getZ() == -1) glRotatef(135, 0, 1, 0);
-				else glRotatef(225, 0, 1, 0);
-		}
-		else if (dir->getX() == 1) {
-			if (dir->getZ() == 0);
-			else if (dir->getZ() == -1) glRotatef(45, 0, 1, 0);
-			else glRotatef(315, 0, 1, 0);
-		}
-		else if (dir->getX() == 0 && dir->getZ() == 1) glRotatef(270, 0, 1, 0);
-		else if (dir->getX() == 0 && dir->getZ() == -1) glRotatef(90, 0, 1, 0);
+		makeObjectLookAtMovementDir(dir);
 		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
@@ -418,6 +460,21 @@ int main(int argc, char* argv[]) {
 			bul->draw(bala, vertAmountBala, textura);
 			glPopMatrix();
 		}
+
+		//Dibujado del jetpack
+		if (jetp->getExist()) {
+			glPushMatrix();
+			glTranslatef(jetp->getPos()->getX(), jetp->getPos()->getY() + 0.8f, jetp->getPos()->getZ());
+			if (jetp->getOnPlayer()) {
+				jetp->setPos(jug->getPos()->getX() + 0.2, jug->getPos()->getY() - 0.3, jug->getPos()->getZ() + 0.2);
+				makeObjectLookAtMovementDir(dir);
+			}
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wb, hb, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
+			jetp->draw(jetpack, vertAmountJetpack, textura);
+			glPopMatrix();
+		}
+		
+	
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		for (int i = 0; i < cantPlat; i++) {
