@@ -70,7 +70,7 @@ Enemigo* colision(Jugador* j, Enemigo** p, int c) {
 		}
 		i++;
 	}
-	return NULL;
+	return ret;
 }
 
 Enemigo* colision(Bullet* b, Enemigo** p, int c) {
@@ -106,6 +106,7 @@ bool colision(Jugador* j, Jetpack* jp) {
 	return res;
 }
 
+
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -136,7 +137,7 @@ int main(int argc, char* argv[]) {
 	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
 	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
 	Vector3** bala = DoTheImportThing("bala.obj", vertAmountBala);
-	Vector3** jetpack = DoTheImportThing("jugador.obj", vertAmountJetpack);
+	Vector3** jetpack = DoTheImportThing("jetpack.obj", vertAmountJetpack);
 
 	//TEXTURA
 	char* archivo = new char[20];
@@ -193,7 +194,7 @@ int main(int argc, char* argv[]) {
 	void* datosBala = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
-	archivo = "white_square.png";
+	archivo = "jetpack.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -235,7 +236,7 @@ int main(int argc, char* argv[]) {
 	float radiansFromMovement = 0;
 	float degreesFromMovement = 0;
 	float lastDirX = 1, lastDirZ = 0;
-
+	float gradosARotar = 0;
 	float degrees = 0;
 
 	GLfloat luz_posicion[4] = { 0, 3, 1, 1 };
@@ -251,9 +252,9 @@ int main(int argc, char* argv[]) {
 	float enemigo1Speed = 4;//Velocidad del enemigo(Posiblemente puede convenir meterla dentro de la clase enemigo
 	float camRot = pi/2;//Angulo actual de la camara
 	float camRotH = pi/2;
-	float camSens = 0.004;//Sensibilidad de la camara
+	float camSens = 0.1;//Sensibilidad de la camara
 	float radioCamara = 4;//Radio de la camara, se ajusta en juego con la ruedita
-	float viewDistance = 10000;//Radio alrededor del personaje para el cual se renderizan las plataformas
+	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 8;
 	float jetpackTime = 5;//Duracion del jetpack
 
@@ -272,12 +273,14 @@ int main(int argc, char* argv[]) {
 	Vector3* direccionBala = new Vector3(0, 0, 0);
 
 	float timeAcc = 0;
-	float gravity = 10;
+	float gravity = 0;
+	float normalGravity = 10;
 	float velocidadJuego = 1;
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
-	float probEnemigos = 50;
+	float probEnemigos = 35;
+	float probJetpack = 15;
 	string seed = "sdda";
 
 	//Generacion de plataformas
@@ -287,7 +290,7 @@ int main(int argc, char* argv[]) {
 	//Generacion de enemigos
 	Enemigo* colEnemigo = NULL;
 	Enemigo* enemigoHerido = NULL;
-	Enemigo** enemigos = new Enemigo*[10];
+	Enemigo** enemigos = new Enemigo*[11];
 	enemigos[0] = new Enemigo(0.3, 0.3, 0.3);
 	enemigos[0]->setPos(-11, -11, -11);
 	enemigos[1] = new Enemigo(0.3, 0.3, 0.3);
@@ -311,13 +314,12 @@ int main(int argc, char* argv[]) {
 	enemigos[10] = new Enemigo(0.3, 0.3, 0.3);
 	enemigos[10]->setPos(-11, -11, -11);
 	int cantEnem = 11;
-	enemigos[3]->setPos(0, 27.4, 1);
-	int cantEnem = 4;
+
 	//Generacion de jetpack
 	bool colJetpack = false;
 	Jetpack* jetp = new Jetpack(1, 1, 1);
 	
-	jetp->setPos(0., 0., -5.);
+	jetp->setPos(-11, -11, -11);
 
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
@@ -329,7 +331,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
 		generate_object(seed, i, xcoord, zcoord);
-		int prob = (xcoord + zcoord) % 100;
+		int prob = ((xcoord + zcoord) * (i + 5)) % 100;
 		xcoord = (xcoord % 100) * 0.06;
 		zcoord = (zcoord % 100) * 0.06;
 		if (100 - prob < probEnemigos) {
@@ -362,13 +364,16 @@ int main(int argc, char* argv[]) {
 		
 		if(jug->getPos()->getY() > 5)
 			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
-				int xcoord = 2, zcoord = 0;
+				int xcoord = 0, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
-				int prob = (xcoord + zcoord) % 100;
+				int prob = ((xcoord + zcoord)*(i+5)) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if ((100 - prob < probEnemigos) && (enemigos[i % 11]->getPos()->getY() < i )) {
 					enemigos[i % 11]->setPos(xcoord,i+0.4,zcoord);
+				}
+				if ((100 - prob < probJetpack) && (jetp->getPos()->getY() == -11) && i > jug->getPos()->getY()) {
+					jetp->setPos(xcoord, i + 0.4, zcoord);
 				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
@@ -423,7 +428,7 @@ int main(int argc, char* argv[]) {
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
-				int prob = (xcoord + zcoord) % 100;
+				int prob = ((xcoord + zcoord) * (i + 5)) % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if (100 - prob < probEnemigos) {
@@ -438,6 +443,9 @@ int main(int argc, char* argv[]) {
 				enemigos[i]->setExists(true);
 			}
 			bul->getPos()->setY(0);
+			jetp->setExist(true);
+			jetp->setPos(-11, -11, -11);
+			jetp->setOnPlayer(false);
 		}
 		//La altura 0 es piso
 		if (jug->getPos()->getY() < 0) {
@@ -511,9 +519,9 @@ int main(int argc, char* argv[]) {
 				//Se acabo el tiempo del jetpack
 				jetpackElapsedTime = -1;
 				jetp->setOnPlayer(false);
-				jetp->setExist(false);
 				jetpackRemovalTimer->peek();
 				jetpackRemovedElapsedTime = 0;
+				jetp->setPos(-11, -11, -11);
 			}
 		}
 		else {
@@ -522,13 +530,13 @@ int main(int argc, char* argv[]) {
 				jetpackRemovedElapsedTime += jetpackRemovalTimer->touch().delta;
 				if (jetpackRemovedElapsedTime <= jetpackTimeToGetToFullGravity) {
 					float gravityMultiplier = jetpackRemovedElapsedTime / jetpackTimeToGetToFullGravity;
-					gravity = 11 * gravityMultiplier;
+					gravity = normalGravity * gravityMultiplier;
 				}
 				else
 					jetpackRemovedElapsedTime = -1;
 			}
 			else {
-				gravity = 11;
+				gravity = normalGravity;
 			}
 			
 		}
@@ -536,13 +544,19 @@ int main(int argc, char* argv[]) {
 		//Dibujado del jetpack
 		if (jetp->getExist()) {
 			glPushMatrix();
-			glTranslatef(jetp->getPos()->getX(), jetp->getPos()->getY() + 0.8f, jetp->getPos()->getZ());
+			glTranslatef(jetp->getPos()->getX(), jetp->getPos()->getY(), jetp->getPos()->getZ());
 			if (jetp->getOnPlayer()) {
-				jetp->setPos(jug->getPos()->getX() + 0.2, jug->getPos()->getY() - 0.3, jug->getPos()->getZ() + 0.2);
-				makeObjectLookAtMovementDir(dir);
+				jetp->setPos(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+				if (dir->getModulo() != 0) {
+					if (dir->getZ() > 0) gradosARotar = acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+					else gradosARotar = 360 - acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+				}
+				glRotatef(-gradosARotar + 180, 0, 1, 0);
+
 			}
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wb, hb, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
-			jetp->draw(jetpack, vertAmountJetpack, textura);
+			glTranslatef(0.4, 0.2, 0.0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
+			if (camType||!jetp->getOnPlayer()) jetp->draw(jetpack, vertAmountJetpack, textura);
 			glPopMatrix();
 		}
 		
@@ -623,8 +637,8 @@ int main(int argc, char* argv[]) {
 				radioCamara = radioCamara - evento.wheel.y*0.5;
 				break;
 			case SDL_MOUSEMOTION:
-				camRot = fmod((camRot + evento.motion.xrel * camSens), pi * 2);
-				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens), pi);
+				camRot = fmod((camRot + evento.motion.xrel * camSens * timeStep), pi * 2);
+				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens*timeStep), pi);
 				if (camRotH <= 0) camRotH = camRotH + 0.01;
 				if (camRotH >= pi-0.1) camRotH = camRotH - 0.01;
 				break;
