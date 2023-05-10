@@ -37,7 +37,6 @@ int AudioThread(void* data) {
 	AudioData* channels = static_cast<AudioData*>(data);
 	while (playing) {
 		for (int i = 0; i < pistasAudio; i++) {
-			cout << *channels[i].boolean_play;
 			if (*channels[i].boolean_play) {
 				int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
 				if (channel == -1) {
