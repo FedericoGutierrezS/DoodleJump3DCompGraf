@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
+#include <SDL/SDL_mixer.h>
 #include <iostream>
 #include "FreeImage.h"
 #include <stdio.h>
@@ -20,35 +21,44 @@
 
 using namespace std;
 
-// Variables globales compartidas
-SDL_AudioDeviceID audioDevice;
-SDL_AudioSpec desired, obtained;
+//Indica a otros Threads si se esta jugando
+bool playing = true;
+
+//Cantidad maxima de pistas de audio, debe ser mayor o igual a la cantidad de audios que tiene el juego
+const int pistasAudio = 1;
 
 struct AudioData {
-	Uint8* wavBuffer;
-	Uint32 wavLength;
+	Mix_Chunk* chunk;
 	bool* boolean_play;
+	const char* file;
 };
 
-//Thread de audio
-int AudioThread(void* data)
-{
-	AudioData* dataConverted = (AudioData*)data;
-	while (true) {
-		if (*dataConverted->boolean_play) {
-			SDL_LockAudioDevice(audioDevice);
-			SDL_QueueAudio(audioDevice, dataConverted->wavBuffer, dataConverted->wavLength);
-			SDL_UnlockAudioDevice(audioDevice);
-			SDL_PauseAudioDevice(audioDevice, 0);
-			while (SDL_GetQueuedAudioSize(audioDevice) > 0) {
-				SDL_Delay(10);
+int AudioThread(void* data) {
+	AudioData* channels = static_cast<AudioData*>(data);
+	while (playing) {
+		for (int i = 0; i < pistasAudio; i++) {
+			cout << *channels[i].boolean_play;
+			if (*channels[i].boolean_play) {
+				int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
+				if (channel == -1) {
+					cerr << "No se pudo reproducir el canal de audio: " << Mix_GetError() << endl;
+					exit(1);
+				}
+				while (Mix_Playing(channel) != 0) {
+					SDL_Delay(100);
+				}
 			}
-		}
-		else {
-			SDL_PauseAudioDevice(audioDevice, 1);
 		}
 		SDL_Delay(10);
 	}
+
+	for (int i = 0; i < pistasAudio; i++) {
+		Mix_FreeChunk(channels[i].chunk);
+	}
+
+	Mix_CloseAudio();
+	Mix_Quit();
+
 	return 0;
 }
 
@@ -152,18 +162,6 @@ int main(int argc, char* argv[]) {
 		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
-
-	//AUDIO INIT
-	SDL_memset(&desired, 0, sizeof(desired));
-	desired.freq = 44100;
-	desired.format = AUDIO_S16SYS;
-	desired.channels = 2;
-	desired.samples = 2048;
-	audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 0);
-	if (audioDevice == 0) {
-		cerr << "No se pudo iniciar AUDIO SDL: " << SDL_GetError() << endl;
-		exit(1);
-	}
 
 	glMatrixMode(GL_PROJECTION);
 	float color = 0;
@@ -273,17 +271,40 @@ int main(int argc, char* argv[]) {
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//FIN TEXTURA
 	
-	//CARGO SONIDOS
-	SDL_AudioSpec sound_jet;
-	Uint8* sound_jetBuffer;
-	Uint32 sound_jetLength;
-	SDL_LoadWAV("sounds/jetpack.wav", &sound_jet, &sound_jetBuffer, &sound_jetLength);
-	bool jetpackSound = false;
-	AudioData jetpackAudioData;
-	jetpackAudioData.wavBuffer = sound_jetBuffer;
-	jetpackAudioData.wavLength = sound_jetLength;
-	jetpackAudioData.boolean_play = &jetpackSound;
-	SDL_Thread* audio_thread = SDL_CreateThread(AudioThread, "jetpackAudio", &jetpackAudioData, SDL_THREAD_PRIORITY_NORMAL);
+	//SONIDOS
+	//INICIALIZACION
+	SDL_Thread* Audio_thread;
+	AudioData channels[pistasAudio];
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		cerr << "No se pudo iniciar el mixer de audio: " << Mix_GetError() << endl;
+		exit(1);
+	}
+	for (int i = 0; i < pistasAudio; i++)
+	{
+		channels[i].boolean_play = new bool;
+	}
+
+	//DATOS
+	//Efectos de sonido
+	channels[0].file = "sounds/jetpack.wav";
+	*channels[0].boolean_play = false;
+
+	//CARGA
+	for (int i = 0; i < pistasAudio; i++)
+	{
+		channels[i].chunk = Mix_LoadWAV(channels[i].file);
+		if (channels[i].chunk == NULL) {
+			cerr << "No se pudo iniciar el audio: " << Mix_GetError() << endl;
+			exit(1);
+		}
+	}
+
+	//REPRODUCCION
+	Audio_thread = SDL_CreateThread(AudioThread, "AudioThread", channels);
+	if (!Audio_thread) {
+		cerr << "No se pudo iniciar Thread de audio: " << SDL_GetError() << endl;
+		exit(1);
+	}
 	//FIN CARGA SONIDOS
 
 	bool fin = false;
@@ -439,7 +460,7 @@ int main(int argc, char* argv[]) {
 		timeStep = velocidadJuego*timer->touch().delta;
 		if (pause) timeStep = 0;//Pausa
 		tiempoTranscurrido = tiempoTranscurrido + timeStep;//Contador de tiempo
-		jetpackSound = jetp->getOnPlayer();
+		*channels[0].boolean_play = jetp->getOnPlayer();
 
 		if(jug->getPos()->getY() > 5)
 			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
@@ -840,10 +861,11 @@ int main(int argc, char* argv[]) {
 	} while (!fin);
 	//FIN LOOP PRINCIPAL
 	// LIMPIEZA
-	SDL_FreeWAV(sound_jetBuffer);
-	SDL_CloseAudioDevice(audioDevice);
+	playing = false;
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
+	int* exitAudio = new int;
+	SDL_WaitThread(Audio_thread, exitAudio);
 	SDL_Quit();
 	delete timer;
 	return 0;

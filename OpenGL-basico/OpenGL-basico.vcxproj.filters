@@ -42,6 +42,9 @@
     <ClCompile Include="bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="jetpack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jetpack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

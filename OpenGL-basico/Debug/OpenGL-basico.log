@@ -1,76 +1,75 @@
 ﻿  main.cpp
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(292,29): warning C4002: hay demasiados argumentos para la invocación de macro "SDL_CreateThread" de tipo función
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(324,26): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(332,21): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(337,28): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(372,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(374,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(376,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(378,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(380,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(382,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(384,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(386,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(388,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(390,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(392,43): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(403,43): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(405,50): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(411,25): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(414,27): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(415,27): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(417,46): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(417,39): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(417,29): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(420,78): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(420,51): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(420,48): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(420,40): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(445,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(451,15): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(453,27): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(456,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(457,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(459,44): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(459,39): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(459,31): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(462,36): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(462,29): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(462,19): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(464,44): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(464,41): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(464,33): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(488,24): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(516,27): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(519,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(520,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(522,48): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(522,41): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(522,31): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(524,42): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(524,40): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(524,33): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(577,52): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(603,53): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(604,18): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(617,68): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(639,134): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(640,30): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(645,30): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(662,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(688,64): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(695,63): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(732,31): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(736,54): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(737,41): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(738,46): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(747,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(748,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(757,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(758,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(767,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(768,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(777,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(778,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(311,14): warning C4101: 'auxY': variable local sin referencia
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(339,26): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(347,21): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(352,28): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(387,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(389,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(391,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(393,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(395,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(397,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(399,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(401,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(403,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(405,42): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(407,43): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(418,43): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(420,50): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(426,25): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(429,27): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(430,27): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(432,46): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(432,39): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(432,29): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(435,78): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(435,51): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(435,48): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(435,40): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(460,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(466,15): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(468,27): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(471,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(472,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(474,44): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(474,39): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(474,31): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(477,36): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(477,29): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(477,19): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(479,44): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(479,41): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(479,33): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(503,24): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(531,27): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(534,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(535,29): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(537,48): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(537,41): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(537,31): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(539,42): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(539,40): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(539,33): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(592,52): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(618,53): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(619,18): warning C4305: '=': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(632,68): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(654,134): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(655,30): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(660,30): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(677,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(703,64): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(710,63): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(747,31): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(751,54): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(752,41): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(753,46): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(762,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(763,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(772,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(773,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(782,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(783,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(792,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(793,16): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(326,14): warning C4101: 'auxY': variable local sin referencia
   OpenGL-basico.vcxproj -> C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\Debug\OpenGL-basico.exe
