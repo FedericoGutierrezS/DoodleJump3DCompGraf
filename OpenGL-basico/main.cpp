@@ -20,6 +20,38 @@
 
 using namespace std;
 
+// Variables globales compartidas
+SDL_AudioDeviceID audioDevice;
+SDL_AudioSpec desired, obtained;
+
+struct AudioData {
+	Uint8* wavBuffer;
+	Uint32 wavLength;
+	bool* boolean_play;
+};
+
+//Thread de audio
+int AudioThread(void* data)
+{
+	AudioData* dataConverted = (AudioData*)data;
+	while (true) {
+		if (*dataConverted->boolean_play) {
+			SDL_LockAudioDevice(audioDevice);
+			SDL_QueueAudio(audioDevice, dataConverted->wavBuffer, dataConverted->wavLength);
+			SDL_UnlockAudioDevice(audioDevice);
+			SDL_PauseAudioDevice(audioDevice, 0);
+			while (SDL_GetQueuedAudioSize(audioDevice) > 0) {
+				SDL_Delay(10);
+			}
+		}
+		else {
+			SDL_PauseAudioDevice(audioDevice, 1);
+		}
+		SDL_Delay(10);
+	}
+	return 0;
+}
+
 void generate_object(string seed, float height,int &xcoord,int &ycoord) {
 	// Use the random number and the seed to generate a hash.
 	size_t hash_value = hash<string>{}(to_string((int)height) + seed);
@@ -109,18 +141,30 @@ bool colision(Jugador* j, Jetpack* jp) {
 
 int main(int argc, char* argv[]) {
 	//INICIALIZACION
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		cerr << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
 
-	SDL_Window* win = SDL_CreateWindow("ICG-UdelaR",
+	SDL_Window* win = SDL_CreateWindow("ICG-UdelaR Doodle Jump",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	SDL_GLContext context = SDL_GL_CreateContext(win);
-
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+
+	//AUDIO INIT
+	SDL_memset(&desired, 0, sizeof(desired));
+	desired.freq = 44100;
+	desired.format = AUDIO_S16SYS;
+	desired.channels = 2;
+	desired.samples = 2048;
+	audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 0);
+	if (audioDevice == 0) {
+		cerr << "No se pudo iniciar AUDIO SDL: " << SDL_GetError() << endl;
+		exit(1);
+	}
+
 	glMatrixMode(GL_PROJECTION);
 	float color = 0;
 	glClearColor(color, color, color, 1);
@@ -229,6 +273,19 @@ int main(int argc, char* argv[]) {
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//FIN TEXTURA
 	
+	//CARGO SONIDOS
+	SDL_AudioSpec sound_jet;
+	Uint8* sound_jetBuffer;
+	Uint32 sound_jetLength;
+	SDL_LoadWAV("sounds/jetpack.wav", &sound_jet, &sound_jetBuffer, &sound_jetLength);
+	bool jetpackSound = false;
+	AudioData jetpackAudioData;
+	jetpackAudioData.wavBuffer = sound_jetBuffer;
+	jetpackAudioData.wavLength = sound_jetLength;
+	jetpackAudioData.boolean_play = &jetpackSound;
+	SDL_Thread* audio_thread = SDL_CreateThread(AudioThread, "jetpackAudio", &jetpackAudioData, SDL_THREAD_PRIORITY_NORMAL);
+	//FIN CARGA SONIDOS
+
 	bool fin = false;
 	bool movingr = false;
 	bool movingl = false;
@@ -271,6 +328,7 @@ int main(int argc, char* argv[]) {
 	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 12;
 	float jetpackTime = 5;//Duracion del jetpack
+	float shakeMagnitude = 0.1;
 
 	Timer* timer = new Timer();//timer para el timeStep
 	Timer* jetpackTimer = new Timer();//controla en tiempo que el jugador tiene el jetpack puesto
@@ -362,9 +420,14 @@ int main(int argc, char* argv[]) {
 		y = radioCamara * cos(camRotH);
 		z = radioCamara * sin(camRot);
 		if (camType) //Se elige el tipo de camara(con V)
-			gluLookAt(x + jug->getPos()->getX(),y + 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
+			if (jetp->getOnPlayer())
+				gluLookAt(x + jug->getPos()->getX(), y + 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX() + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, jug->getPos()->getY() + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, jug->getPos()->getZ() + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, 0, 1, 0);//Camara centrada en el jugador con sacudida
+			else
+				gluLookAt(x + jug->getPos()->getX(), y + 1.5 + jug->getPos()->getY(), z + jug->getPos()->getZ(), jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ(), 0, 1, 0);//Camara centrada en el jugador
+		else if(jetp->getOnPlayer())
+			gluLookAt(jug->getPos()->getX(),jug->getPos()->getY() + 1, jug->getPos()->getZ(), jug->getPos()->getX() - x + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, jug->getPos()->getY() + y + 1 + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, jug->getPos()->getZ() - z + 1 + ((((float)rand() / (float)RAND_MAX) * 2.0) - 1.0) * shakeMagnitude, 0, 1, 0);//Camara centrada en el escenario con sacudida
 		else
-			gluLookAt(jug->getPos()->getX(),jug->getPos()->getY()+1, jug->getPos()->getZ(), jug->getPos()->getX()-x, jug->getPos()->getY()+y+1, jug->getPos()->getZ()-z+1, 0, 1, 0);//Camara centrada en el escenario
+			gluLookAt(jug->getPos()->getX(), jug->getPos()->getY() + 1, jug->getPos()->getZ(), jug->getPos()->getX() - x, jug->getPos()->getY() + y + 1, jug->getPos()->getZ() - z + 1, 0, 1, 0);//Camara centrada en el escenario
 		//PRENDO LA LUZ (SIEMPRE DESPUES DEL gluLookAt)
 		glEnable(GL_LIGHT0); // habilita la luz 0
 		glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
@@ -376,7 +439,8 @@ int main(int argc, char* argv[]) {
 		timeStep = velocidadJuego*timer->touch().delta;
 		if (pause) timeStep = 0;//Pausa
 		tiempoTranscurrido = tiempoTranscurrido + timeStep;//Contador de tiempo
-		
+		jetpackSound = jetp->getOnPlayer();
+
 		if(jug->getPos()->getY() > 5)
 			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
 				int xcoord = 0, zcoord = 0;
@@ -776,6 +840,8 @@ int main(int argc, char* argv[]) {
 	} while (!fin);
 	//FIN LOOP PRINCIPAL
 	// LIMPIEZA
+	SDL_FreeWAV(sound_jetBuffer);
+	SDL_CloseAudioDevice(audioDevice);
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
 	SDL_Quit();
