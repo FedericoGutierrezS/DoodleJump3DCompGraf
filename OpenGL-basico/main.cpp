@@ -31,24 +31,23 @@ struct AudioData {
 	Mix_Chunk* chunk;
 	bool* boolean_play;
 	const char* file;
+	int* channel;
 };
 
 int AudioThread(void* data) {
 	AudioData* channels = static_cast<AudioData*>(data);
 	while (playing) {
 		for (int i = 0; i < pistasAudio; i++) {
-			if (*channels[i].boolean_play) {
+			if (*channels[i].boolean_play && (*channels[i].channel == -1 || !Mix_Playing(*channels[i].channel))) {
 				int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
 				if (channel == -1) {
 					cerr << "No se pudo reproducir el canal de audio: " << Mix_GetError() << endl;
 					exit(1);
 				}
-				while (Mix_Playing(channel) != 0 && playing) {
-					SDL_Delay(100);
-				}
+				*channels[i].channel = channel;
 			}
 		}
-		SDL_Delay(10);
+		SDL_Delay(100);
 	}
 
 	for (int i = 0; i < pistasAudio; i++) {
@@ -176,16 +175,16 @@ int main(int argc, char* argv[]) {
 	int vertAmountJetpack = 0;
 	int vertAmountBackground = 0;
 	int dListBackground = -1;
-	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
-	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
-	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
-	Vector3** bala = DoTheImportThing("bala.obj", vertAmountBala);
-	Vector3** jetpack = DoTheImportThing("jetpack.obj", vertAmountJetpack);
-	Vector3** background = DoTheImportThing("background.obj", vertAmountBackground);
+	Vector3** jugador = DoTheImportThing("models/jugador.obj", vertAmountJugador);//mesh.h
+	Vector3** plataforma = DoTheImportThing("models/plataforma.obj", vertAmountPlataforma);
+	Vector3** enemigo1 = DoTheImportThing("models/enemigo.obj", vertAmountEnemigo);
+	Vector3** bala = DoTheImportThing("models/bala.obj", vertAmountBala);
+	Vector3** jetpack = DoTheImportThing("models/jetpack.obj", vertAmountJetpack);
+	Vector3** background = DoTheImportThing("models/background.obj", vertAmountBackground);
 
 	//TEXTURA
 	char* archivo = new char[20];
-	archivo = "jugador.png";
+	archivo = "textures/jugador.png";
 
 	//CARGAR IMAGEN
 	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(archivo);
@@ -195,7 +194,7 @@ int main(int argc, char* argv[]) {
 	int hj = FreeImage_GetHeight(bitmap);
 	void* datosJugador = FreeImage_GetBits(bitmap);
 
-	archivo = "plataforma.png";
+	archivo = "textures/plataforma.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -205,7 +204,7 @@ int main(int argc, char* argv[]) {
 	int hp = FreeImage_GetHeight(bitmap);
 	void* datosPlataforma = FreeImage_GetBits(bitmap);
 
-	archivo = "atlasFont.png";
+	archivo = "textures/atlasFont.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -216,7 +215,7 @@ int main(int argc, char* argv[]) {
 	void* datosAtlasFont = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
-	archivo = "Enemigo.png";
+	archivo = "textures/Enemigo.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -227,7 +226,7 @@ int main(int argc, char* argv[]) {
 	void* datosEnemigo = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
-	archivo = "Bala.png";
+	archivo = "textures/Bala.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -238,7 +237,7 @@ int main(int argc, char* argv[]) {
 	void* datosBala = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
-	archivo = "jetpack.png";
+	archivo = "textures/jetpack.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -249,7 +248,7 @@ int main(int argc, char* argv[]) {
 	void* datosJetpack = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
-	archivo = "background.png";
+	archivo = "textures/background.png";
 
 	//CARGAR IMAGEN
 	fif = FreeImage_GetFIFFromFilename(archivo);
@@ -294,6 +293,8 @@ int main(int argc, char* argv[]) {
 	//CARGA
 	for (int i = 0; i < pistasAudio; i++)
 	{
+		channels[i].channel = new int;
+		*channels[i].channel = -1;
 		channels[i].chunk = Mix_LoadWAV(channels[i].file);
 		if (channels[i].chunk == NULL) {
 			cerr << "No se pudo iniciar el audio: " << Mix_GetError() << endl;
