@@ -133,11 +133,14 @@ int main(int argc, char* argv[]) {
 	int vertAmountEnemigo = 0;
 	int vertAmountBala = 0;
 	int vertAmountJetpack = 0;
+	int vertAmountBackground = 0;
+	int dListBackground = -1;
 	Vector3** jugador = DoTheImportThing("jugador.obj", vertAmountJugador);//mesh.h
 	Vector3** plataforma = DoTheImportThing("plataforma.obj", vertAmountPlataforma);
 	Vector3** enemigo1 = DoTheImportThing("enemigo.obj", vertAmountEnemigo);
 	Vector3** bala = DoTheImportThing("bala.obj", vertAmountBala);
 	Vector3** jetpack = DoTheImportThing("jetpack.obj", vertAmountJetpack);
+	Vector3** background = DoTheImportThing("background.obj", vertAmountBackground);
 
 	//TEXTURA
 	char* archivo = new char[20];
@@ -205,6 +208,17 @@ int main(int argc, char* argv[]) {
 	void* datosJetpack = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "background.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wba = FreeImage_GetWidth(bitmap);
+	int hba = FreeImage_GetHeight(bitmap);
+	void* datosBackground = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
 	GLuint textura;
 	glGenTextures(1, &textura);
 	glBindTexture(GL_TEXTURE_2D, textura);
@@ -255,7 +269,7 @@ int main(int argc, char* argv[]) {
 	float camSens = 0.1;//Sensibilidad de la camara
 	float radioCamara = 4;//Radio de la camara, se ajusta en juego con la ruedita
 	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
-	float bulletSpeed = 8;
+	float bulletSpeed = 12;
 	float jetpackTime = 5;//Duracion del jetpack
 
 	Timer* timer = new Timer();//timer para el timeStep
@@ -279,8 +293,8 @@ int main(int argc, char* argv[]) {
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
-	float probEnemigos = 35;
-	float probJetpack = 15;
+	float probEnemigos = 19;
+	float probJetpack = 5;
 	string seed = "sdda";
 
 	//Generacion de plataformas
@@ -331,7 +345,8 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
 		generate_object(seed, i, xcoord, zcoord);
-		int prob = ((xcoord + zcoord) * (i + 5)) % 100;
+		srand(xcoord + zcoord + i + 5);
+		int prob = rand() % 100;
 		xcoord = (xcoord % 100) * 0.06;
 		zcoord = (zcoord % 100) * 0.06;
 		if (100 - prob < probEnemigos) {
@@ -366,7 +381,8 @@ int main(int argc, char* argv[]) {
 			for (int i = jug->getPos()->getY() - 5; i < jug->getPos()->getY() + 5; i++) {
 				int xcoord = 0, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
-				int prob = ((xcoord + zcoord)*(i+5)) % 100;
+				srand(xcoord + zcoord +i +5);
+				int prob = rand() % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if ((100 - prob < probEnemigos) && (enemigos[i % 11]->getPos()->getY() < i )) {
@@ -428,7 +444,8 @@ int main(int argc, char* argv[]) {
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
 				generate_object(seed, i, xcoord, zcoord);
-				int prob = ((xcoord + zcoord) * (i + 5)) % 100;
+				srand(xcoord + zcoord + i + 5);
+				int prob = rand() % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if (100 - prob < probEnemigos) {
@@ -538,6 +555,7 @@ int main(int argc, char* argv[]) {
 			else {
 				gravity = normalGravity;
 			}
+			if (jetp->getPos()->getY() < jug->getPos()->getY() - 10 && jetp->getPos()->getY() != -11) jetp->setPos(-11,-11,-11);
 			
 		}
 
@@ -556,22 +574,21 @@ int main(int argc, char* argv[]) {
 			}
 			glTranslatef(0.4, 0.2, 0.0);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
-			if (camType||!jetp->getOnPlayer()) jetp->draw(jetpack, vertAmountJetpack, textura);
+			if ((camType||!jetp->getOnPlayer()) && (jetp->getPos()->getY() > jug->getPos()->getY() - viewDistance) && (jetp->getPos()->getY() < jug->getPos()->getY() + viewDistance)) jetp->draw(jetpack, vertAmountJetpack, textura);
 			glPopMatrix();
 		}
 		
 	
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
+		glPushMatrix();
 		for (int i = 0; i < cantPlat; i++) {
 			if ((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance) && (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance) && plataformas[i]->getExists()) {
 				switch (plataformas[i]->getType()) {
 				case 'n':
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
 					break;
 				case 'd':
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 					glColor3f(1, 0, 0.412);
 					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
 					glColor3f(1, 1, 1);
@@ -579,6 +596,14 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
+		glPopMatrix();
+		glPushMatrix();
+		glTranslatef(3.0, jug->getPos()->getY(), 3.0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wba, hba, 0, GL_BGR, GL_UNSIGNED_BYTE, datosBackground);
+		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
+		if(dListBackground != -1) glCallList(dListBackground);
+		glPopMatrix();
+
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
 		for (int i = 0; i < cantEnem; i++) {
@@ -638,7 +663,7 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_MOUSEMOTION:
 				camRot = fmod((camRot + evento.motion.xrel * camSens * timeStep), pi * 2);
-				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens*timeStep), pi);
+				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens*0.3*timeStep), pi);
 				if (camRotH <= 0) camRotH = camRotH + 0.01;
 				if (camRotH >= pi-0.1) camRotH = camRotH - 0.01;
 				break;

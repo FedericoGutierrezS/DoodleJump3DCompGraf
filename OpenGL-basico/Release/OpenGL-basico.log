@@ -1,1 +1,79 @@
-﻿  OpenGL-basico.vcxproj -> C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Release\OpenGL-basico.exe
+﻿  main.cpp
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(261,26): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(269,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(308,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(310,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(312,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(314,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(316,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(318,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(320,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(322,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(324,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(326,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(328,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(339,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(341,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(347,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(350,27): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(351,27): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(353,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(353,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(353,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(356,78): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(356,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(356,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(356,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(376,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(381,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(383,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(386,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(387,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(389,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(389,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(389,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(392,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(392,29): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(392,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(394,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(394,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(394,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(418,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(446,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(449,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(450,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(452,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(452,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(452,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(454,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(454,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(454,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(507,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(533,47): warning C4244: '+=': conversion from 'const double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(534,18): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(547,62): warning C4244: '+=': conversion from 'const double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(569,134): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(570,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(575,30): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(592,27): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(618,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(625,63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(662,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(666,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(667,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(668,46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(677,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(678,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(687,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(688,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(697,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(698,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(707,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(708,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(248,14): warning C4101: 'auxY': unreferenced local variable
+  Generating code
+  1 of 230 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  OpenGL-basico.vcxproj -> C:\Users\feder\OneDrive\Documents\VS Projects\DoodleJump3D\DoodleJump3DCompGraf\Release\OpenGL-basico.exe
