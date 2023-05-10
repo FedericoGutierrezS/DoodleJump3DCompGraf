@@ -18,6 +18,7 @@ mono_crash.*
 
 # Build results
 [Dd]ebug/
+[Rr]elease/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -363,7 +364,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #Otros ignore
-Debug/*
-OpenGL-basico/Debug/*
-Release/*
-OpenGL-basico/Release/*
+Debug/
+OpenGL-basico/Debug/
+Release/
+OpenGL-basico/Release/
