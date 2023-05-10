@@ -25,7 +25,7 @@ using namespace std;
 bool playing = true;
 
 //Cantidad maxima de pistas de audio, debe ser mayor o igual a la cantidad de audios que tiene el juego
-const int pistasAudio = 1;
+const int pistasAudio = 2;
 
 struct AudioData {
 	Mix_Chunk* chunk;
@@ -43,7 +43,7 @@ int AudioThread(void* data) {
 					cerr << "No se pudo reproducir el canal de audio: " << Mix_GetError() << endl;
 					exit(1);
 				}
-				while (Mix_Playing(channel) != 0) {
+				while (Mix_Playing(channel) != 0 && playing) {
 					SDL_Delay(100);
 				}
 			}
@@ -287,6 +287,9 @@ int main(int argc, char* argv[]) {
 	//Efectos de sonido
 	channels[0].file = "sounds/jetpack.wav";
 	*channels[0].boolean_play = false;
+
+	channels[1].file = "sounds/space-jazz-by-kevin-macleod-from-filmmusic-io.ogg";
+	*channels[1].boolean_play = true;
 
 	//CARGA
 	for (int i = 0; i < pistasAudio; i++)
