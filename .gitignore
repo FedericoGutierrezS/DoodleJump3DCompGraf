@@ -368,3 +368,12 @@ Debug/
 OpenGL-basico/Debug/
 Release/
 OpenGL-basico/Release/
+Release/OpenGL-basico.pdb
+Release/OpenGL-basico.exe
+OpenGL-basico/Release/vc142.pdb
+OpenGL-basico/Release/OpenGL-basico.tlog/link.read.1.tlog
+OpenGL-basico/Release/OpenGL-basico.log
+OpenGL-basico/Release/OpenGL-basico.ipdb
+OpenGL-basico/Release/OpenGL-basico.iobj
+OpenGL-basico/Release/OpenGL-basico.Build.CppClean.log
+OpenGL-basico/Release/main.obj
