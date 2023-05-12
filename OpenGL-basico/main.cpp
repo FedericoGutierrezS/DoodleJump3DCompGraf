@@ -22,11 +22,11 @@
 
 using namespace std;
 
-//Indica a otros Threads si se esta jugando
-bool playing = true;
-
 //Cantidad maxima de pistas de audio, debe ser mayor o igual a la cantidad de audios que tiene el juego
 const int pistasAudio = 2;
+
+//Indica si termino el juego o no
+bool fin = false;
 
 struct AudioData {
 	Mix_Chunk* chunk;
@@ -37,7 +37,7 @@ struct AudioData {
 
 int AudioThread(void* data) {
 	AudioData* channels = static_cast<AudioData*>(data);
-	while (playing) {
+	while (!fin) {
 		for (int i = 0; i < pistasAudio; i++) {
 			if (*channels[i].boolean_play && (*channels[i].channel == -1 || !Mix_Playing(*channels[i].channel))) {
 				int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
@@ -509,7 +509,6 @@ int main(int argc, char* argv[]) {
 	}
 	//FIN CARGA SONIDOS
 
-	bool fin = false;
 	bool movingr = false;
 	bool movingl = false;
 	bool movingf = false;
@@ -1254,7 +1253,6 @@ int main(int argc, char* argv[]) {
 	} while (!fin);
 	//FIN LOOP PRINCIPAL
 	// LIMPIEZA
-	playing = false;
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
 	int* exitAudio = new int;
