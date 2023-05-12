@@ -295,6 +295,105 @@ void renderScore(float score, GLuint textura) {
 	}
 }
 
+void renderFrames(float frames, GLuint textura) {
+	switch ((int)frames % 10) {
+	case 0:
+		render0(1250, 500, textura);
+		break;
+	case 1:
+		render1(1250, 500, textura);
+		break;
+	case 2:
+		render2(1250, 500, textura);
+		break;
+	case 3:
+		render3(1250, 500, textura);
+		break;
+	case 4:
+		render4(1250, 500, textura);
+		break;
+	case 5:
+		render5(1250, 500, textura);
+		break;
+	case 6:
+		render6(1250, 500, textura);
+		break;
+	case 7:
+		render7(1250, 500, textura);
+		break;
+	case 8:
+		render8(1250, 500, textura);
+		break;
+	case 9:
+		render9(1250, 500, textura);
+		break;
+	}
+	switch (((int)frames % 100 - (int)frames % 10) / 10) {
+	case 0:
+		render0(1220, 500, textura);
+		break;
+	case 1:
+		render1(1220, 500, textura);
+		break;
+	case 2:
+		render2(1220, 500, textura);
+		break;
+	case 3:
+		render3(1220, 500, textura);
+		break;
+	case 4:
+		render4(1220, 500, textura);
+		break;
+	case 5:
+		render5(1220, 500, textura);
+		break;
+	case 6:
+		render6(1220, 500, textura);
+		break;
+	case 7:
+		render7(1220, 500, textura);
+		break;
+	case 8:
+		render8(1220, 500, textura);
+		break;
+	case 9:
+		render9(1220, 500, textura);
+		break;
+	}
+	switch (((int)frames % 1000 - (int)frames % 100) / 100) {
+	case 0:
+		render0(1190, 500, textura);
+		break;
+	case 1:
+		render1(1190, 500, textura);
+		break;
+	case 2:
+		render2(1190, 500, textura);
+		break;
+	case 3:
+		render3(1190, 500, textura);
+		break;
+	case 4:
+		render4(1190, 500, textura);
+		break;
+	case 5:
+		render5(1190, 500, textura);
+		break;
+	case 6:
+		render6(1190, 500, textura);
+		break;
+	case 7:
+		render7(1190, 500, textura);
+		break;
+	case 8:
+		render8(1190, 500, textura);
+		break;
+	case 9:
+		render9(1190, 500, textura);
+		break;
+	}
+}
+
 void renderShieldTime(float score, GLuint textura) {
 	switch ((int)score % 10) {
 	case 0:

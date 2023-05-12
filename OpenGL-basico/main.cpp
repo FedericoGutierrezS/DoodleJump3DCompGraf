@@ -690,9 +690,22 @@ int main(int argc, char* argv[]) {
 	}
 
 	//LOOP PRINCIPAL
+	float fps = 0;
+	int frameCount = 0;
+	Uint64 startTime = SDL_GetPerformanceCounter();
+	Uint64 prevTime = startTime;
+
 	do {
 		if (!pause) SDL_SetRelativeMouseMode(SDL_TRUE);
 		else SDL_SetRelativeMouseMode(SDL_FALSE);
+		//Actualizo contador de fps al inicio de cada frame
+		Uint64 currentTime = SDL_GetPerformanceCounter();
+		float deltaTime = static_cast<float>(currentTime - prevTime) / SDL_GetPerformanceFrequency();
+		if (frameCount % 10 == 0)
+			fps = 1.0 / deltaTime;
+		prevTime = currentTime;
+		frameCount++;
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		x = radioCamara * cos(camRot);
@@ -1093,6 +1106,7 @@ int main(int argc, char* argv[]) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
 			renderTime(tiempoTranscurrido, textura);
 			renderScore(score, textura);
+			renderFrames(fps, textura);
 			if (escudo->getOnPlayer()) renderShieldTime(shieldTime - shieldElapsedTime, textura);
 		}
 		// Making sure we can render 3d again

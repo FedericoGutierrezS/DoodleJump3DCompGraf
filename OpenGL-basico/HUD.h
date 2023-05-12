@@ -7,3 +7,4 @@ void renderShieldTime(float time, GLuint textura);
 void renderBackground();
 void renderButton(float x, float y, GLuint textura);
 void renderValue(float x, float y, GLuint textura);
+void renderFrames(float frames, GLuint textura);
