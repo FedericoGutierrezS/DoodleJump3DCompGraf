@@ -659,14 +659,6 @@ int main(int argc, char* argv[]) {
 	vertPoderes[0] = vertAmountJetpack;
 	vertPoderes[1] = vertAmountShield;
 
-	
-	
-	
-	
-
-
-
-
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
@@ -1258,6 +1250,31 @@ int main(int argc, char* argv[]) {
 	int* exitAudio = new int;
 	SDL_WaitThread(Audio_thread, exitAudio);
 	SDL_Quit();
+	for (int i = 0; i < 11; i++) {
+		delete plataformas[i % 11];
+	}
+	delete exitAudio;
 	delete timer;
+	delete jug;
+	delete bul;
+	delete[] enemigos;
+	delete[] colores;
+	delete[] velocidades;
+	delete[] direcciones;
+	delete jetpackTimer;
+	delete jetpackRemovalTimer;
+	delete shieldTimer;
+	delete dir;
+	delete direccionBala;
+	delete jetp;
+	delete escudo;
+	delete[] poderes;
+	delete[] vertPoderes;
+	delete[] modelosPoderes;
+	for (int i = 0; i < pistasAudio; i++)
+	{
+		delete channels[i].boolean_play;
+		delete channels[i].channel;
+	}
 	return 0;
 }
