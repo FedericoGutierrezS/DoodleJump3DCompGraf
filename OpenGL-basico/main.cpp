@@ -1276,5 +1276,21 @@ int main(int argc, char* argv[]) {
 		delete channels[i].boolean_play;
 		delete channels[i].channel;
 	}
+	for (int i = 0; i < 3; ++i) {
+		delete[] jugador[i];
+		delete[] plataforma[i];
+		delete[] enemigo1[i];
+		delete[] bala[i];
+		delete[] jetpack[i];
+		delete[] shield[i];
+		delete[] background[i];
+	}
+	delete[] jugador;
+	delete[] plataforma;
+	delete[] enemigo1;
+	delete[] bala;
+	delete[] jetpack;
+	delete[] shield;
+	delete[] background;
 	return 0;
 }

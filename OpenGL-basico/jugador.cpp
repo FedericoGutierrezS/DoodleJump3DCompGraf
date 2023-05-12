@@ -10,6 +10,11 @@ Jugador::Jugador(float alt, float anch, float prof) {
 	disList = -1;
 }
 
+Jugador::~Jugador() {
+	delete pos;
+	delete vel;
+}
+
 float Jugador::getAltCol() {
 	return altCol;
 }

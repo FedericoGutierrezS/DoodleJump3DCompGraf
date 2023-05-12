@@ -8,6 +8,9 @@ Bullet::Bullet(float a, float b, float c, float alt, float anch, float prof) {
 	profCol = prof;
 	disList = -1;
 }
+Bullet::~Bullet() {
+	delete pos;
+}
 float Bullet::getAltCol() {
 	return altCol;
 }

@@ -15,6 +15,7 @@ private:
 
 public:
 	Jugador(float, float, float);
+	~Jugador();
 	float getAltCol();
 	float getAnchCol();
 	float getProfCol();

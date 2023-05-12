@@ -14,6 +14,7 @@ private:
 
 public:
 	Bullet(float, float, float, float, float, float);
+	~Bullet();
 	Vector3* getPos();
 	bool getExists();
 	float getAltCol();
