@@ -543,6 +543,7 @@ int main(int argc, char* argv[]) {
 	colores[3] = Vector3(0, 0, 0.8);
 	colores[4] = Vector3(0, 0.8, 0);
 	int luzAct = 0;
+	int luzActPos = 0;
 
 	GLfloat luz_posicion[4] = { 0, 3, 1, 1 };
 	GLfloat luz_posicion1[4] = { 0, 3, 1, 1 };
@@ -571,6 +572,11 @@ int main(int argc, char* argv[]) {
 	velocidades[1] = 0.5;
 	velocidades[2] = 1;
 	velocidades[3] = 2;
+	float* direcciones = new float[4];
+	direcciones[0] = 4;
+	direcciones[1] = -4;
+	direcciones[2] = 4;
+	direcciones[3] = -4;
 
 
 	Timer* timer = new Timer();//timer para el timeStep
@@ -757,6 +763,7 @@ int main(int argc, char* argv[]) {
 					jetpackElapsedTime = 0;
 				}
 			}
+
 			if (colEscudo) {
 				escudo->setOnPlayer(true);
 				damageOn = false;
@@ -847,9 +854,15 @@ int main(int argc, char* argv[]) {
 		luz_posicion[0] = jug->getPos()->getX() + 0;
 		luz_posicion[1] = jug->getPos()->getY() + 5;
 		luz_posicion[2] = jug->getPos()->getZ() + 0;
-		luz_posicion1[0] = jug->getPos()->getX() + 0;
+		if (luzActPos % 4 < 2) {
+			luz_posicion1[0] = jug->getPos()->getX() + direcciones[luzActPos];
+			luz_posicion1[2] = jug->getPos()->getZ() + 0;
+		}
+		if (luzActPos % 4 > 1) {
+			luz_posicion1[0] = jug->getPos()->getX() + 0;
+			luz_posicion1[2] = jug->getPos()->getZ() + direcciones[luzActPos];
+		}
 		luz_posicion1[1] = jug->getPos()->getY() + 2;
-		luz_posicion1[2] = jug->getPos()->getZ() + 0;
 		glEnable(GL_LIGHTING);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wj, hj, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJugador);
 		glPushMatrix();
@@ -1080,8 +1093,7 @@ int main(int argc, char* argv[]) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
 			renderTime(tiempoTranscurrido, textura);
 			renderScore(score, textura);
-			if (escudo->getOnPlayer())
-				renderShieldTime(shieldTime - shieldElapsedTime, textura);
+			if (escudo->getOnPlayer()) renderShieldTime(shieldTime - shieldElapsedTime, textura);
 		}
 		// Making sure we can render 3d again
 		glMatrixMode(GL_PROJECTION);
@@ -1105,7 +1117,7 @@ int main(int argc, char* argv[]) {
 
 				if (xPos > 400 && xPos < 700 && yPos > 500 && yPos < 575 && pause) luzAct = (luzAct + 1) % 5;
 
-				if (xPos > 400 && xPos < 700 && yPos > 600 && yPos < 675 && pause) cout << "Cambiar dir luz";
+				if (xPos > 400 && xPos < 700 && yPos > 600 && yPos < 675 && pause) luzActPos = (luzActPos + 1) % 4;;
 
 				break;
 			case SDL_MOUSEBUTTONUP:
