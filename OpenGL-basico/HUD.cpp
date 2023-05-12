@@ -362,3 +362,42 @@ void renderShieldTime(float score, GLuint textura) {
 	}
 
 }
+
+void renderBackground() {
+	glBegin(GL_QUADS);
+	glColor3f(0, 0, 0);
+	glVertex2f(0, 0);
+	glVertex2f(1280, 0);
+	glVertex2f(1280, 720);
+	glVertex2f(0, 720);
+	glEnd();
+	glColor3f(1, 1, 1);
+}
+
+void renderButton(float x, float y, GLuint textura) {
+	glBindTexture(GL_TEXTURE_2D, textura);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1);
+	glVertex2f(x, y);
+	glTexCoord2f(1, 1);
+	glVertex2f(x + 300, y);
+	glTexCoord2f(1, 0);
+	glVertex2f(x + 300, y + 75);
+	glTexCoord2f(0, 0);
+	glVertex2f(x, y + 75);
+	glEnd();
+}
+
+void renderValue(float x, float y, GLuint textura) {
+	glBindTexture(GL_TEXTURE_2D, textura);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1);
+	glVertex2f(x, y);
+	glTexCoord2f(1, 1);
+	glVertex2f(x + 200, y);
+	glTexCoord2f(1, 0);
+	glVertex2f(x + 200, y + 75);
+	glTexCoord2f(0, 0);
+	glVertex2f(x, y + 75);
+	glEnd();
+}
