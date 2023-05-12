@@ -13,6 +13,7 @@
 #include "jugador.h"
 #include "enemigo.h"
 #include "jetpack.h"
+#include "shield.h"
 #include "HUD.h"
 #include "bullet.h"
 #include <algorithm>
@@ -131,14 +132,13 @@ Enemigo* colision(Bullet* b, Enemigo** p, int c) {
 	return ret;
 }
 
-bool colision(Jugador* j, Jetpack* jp) {
+bool colision(Jugador* j, Powers* pow) {
 	bool res = false;
-	if (jp->getExist()) {
-		if ((j->getPos()->getY() <= jp->getPos()->getY() + jp->getProfCol()) && (j->getPos()->getY() >= jp->getPos()->getY())) {
-			if ((j->getPos()->getZ() - j->getAnchCol() <= jp->getPos()->getZ() + jp->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= jp->getPos()->getZ() - jp->getAnchCol())) {
-				if ((j->getPos()->getX() - j->getAltCol() <= jp->getPos()->getX() + jp->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= jp->getPos()->getX() - jp->getAltCol())) {
+	if (pow->getExist()) {
+		if ((j->getPos()->getY() <= pow->getPos()->getY() + pow->getProfCol()) && (j->getPos()->getY() >= pow->getPos()->getY())) {
+			if ((j->getPos()->getZ() - j->getAnchCol() <= pow->getPos()->getZ() + pow->getAnchCol()) && (j->getPos()->getZ() + j->getAnchCol() >= pow->getPos()->getZ() - pow->getAnchCol())) {
+				if ((j->getPos()->getX() - j->getAltCol() <= pow->getPos()->getX() + pow->getAltCol()) && (j->getPos()->getX() + j->getAltCol() >= pow->getPos()->getX() - pow->getAltCol())) {
 					res = true;
-					;
 				}
 			}
 		}
@@ -173,6 +173,7 @@ int main(int argc, char* argv[]) {
 	int vertAmountEnemigo = 0;
 	int vertAmountBala = 0;
 	int vertAmountJetpack = 0;
+	int vertAmountShield = 0;
 	int vertAmountBackground = 0;
 	int dListBackground = -1;
 	Vector3** jugador = DoTheImportThing("models/jugador.obj", vertAmountJugador);//mesh.h
@@ -180,6 +181,7 @@ int main(int argc, char* argv[]) {
 	Vector3** enemigo1 = DoTheImportThing("models/enemigo.obj", vertAmountEnemigo);
 	Vector3** bala = DoTheImportThing("models/bala.obj", vertAmountBala);
 	Vector3** jetpack = DoTheImportThing("models/jetpack.obj", vertAmountJetpack);
+	Vector3** shield = DoTheImportThing("models/bala.obj", vertAmountShield);
 	Vector3** background = DoTheImportThing("models/background.obj", vertAmountBackground);
 
 	//TEXTURA
@@ -257,6 +259,17 @@ int main(int argc, char* argv[]) {
 	int wba = FreeImage_GetWidth(bitmap);
 	int hba = FreeImage_GetHeight(bitmap);
 	void* datosBackground = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
+	archivo = "textures/Bala.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int ws = FreeImage_GetWidth(bitmap);
+	int hs = FreeImage_GetHeight(bitmap);
+	void* datosShield= FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
 	GLuint textura;
@@ -352,15 +365,18 @@ int main(int argc, char* argv[]) {
 	float viewDistance = 5;//Radio alrededor del personaje para el cual se renderizan las plataformas
 	float bulletSpeed = 12;
 	float jetpackTime = 5;//Duracion del jetpack
+	float shieldTime = 15;
 	float shakeMagnitude = 0.1;
 
 	Timer* timer = new Timer();//timer para el timeStep
 	Timer* jetpackTimer = new Timer();//controla en tiempo que el jugador tiene el jetpack puesto
 	Timer* jetpackRemovalTimer = new Timer();//controla el timepo luego de que se le termina el jetpack al jugador
+	Timer* shieldTimer = new Timer();
 	float jetpackElapsedTime = -1;
 	float jetpackRemovedElapsedTime = -1;
 	float jetpackTimeToGetToFullGravity = 5;
-
+	float shieldElapsedTime = -1;
+	
 	float alturaDerrota = -200;
 
 	Vector3 dummy;//Auxiliar para usar operaciones de Vector3
@@ -377,6 +393,7 @@ int main(int argc, char* argv[]) {
 	float altAlcanzada = 0;
 	float probEnemigos = 19;
 	float probJetpack = 5;
+	float probEscudo = 15;
 	string seed = "sdda";
 
 	//Generacion de plataformas
@@ -414,13 +431,37 @@ int main(int argc, char* argv[]) {
 	//Generacion de jetpack
 	bool colJetpack = false;
 	Jetpack* jetp = new Jetpack(1, 1, 1);
-	
 	jetp->setPos(-11, -11, -11);
+
+	//Generacion de escudo
+	bool colEscudo = false;
+	bool damageOn = true;
+	Shield* escudo = new Shield(1, 1, 1);
+	escudo->setPos(-11, -11, -11);
+
+	Powers** poderes = new Powers*[2];
+	poderes[0] = jetp;
+	poderes[1] = escudo;
+	Vector3*** modelosPoderes = new Vector3**[2];
+	modelosPoderes[0] = jetpack;
+	modelosPoderes[1] = shield;
+	int* vertPoderes = new int[2];
+	vertPoderes[0] = vertAmountJetpack;
+	vertPoderes[1] = vertAmountShield;
+
+	
+	
+	
+	
+
+
+
 
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
 	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
+
 	
 	//LOOP PRINCIPAL
 
@@ -479,6 +520,9 @@ int main(int argc, char* argv[]) {
 				if ((100 - prob < probJetpack) && (jetp->getPos()->getY() == -11) && i > jug->getPos()->getY()) {
 					jetp->setPos(xcoord, i + 0.4, zcoord);
 				}
+				if ((100 - prob < probEscudo) && (escudo->getPos()->getY() == -11) && i > jug->getPos()->getY()) {
+					escudo->setPos(xcoord, i + 0.4, zcoord);
+				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
 		//TRANSFORMACIONES LINEALES
@@ -487,9 +531,11 @@ int main(int argc, char* argv[]) {
 			timeAcc += timeStep;
 			jug->getVel()->setY(jumpSpeed - timeAcc * gravity);
 			choque = colision(jug, plataformas, cantPlat);//Chequeo de colision con plataformas
-			colEnemigo = colision(jug, enemigos, cantEnem);//Chequeo de colision con enemigos
+			if (damageOn)
+				colEnemigo = colision(jug, enemigos, cantEnem);//Chequeo de colision con enemigos
 			enemigoHerido = colision(bul, enemigos, cantEnem);//Chequeo de colision de bala con enemigo
 			colJetpack = colision(jug, jetp);//
+			colEscudo = colision(jug, escudo);
 			if (colJetpack) {
 				//Si colisiono con el jetpack me lo pongo y arranco el timer
 				jetp->setOnPlayer(true);
@@ -497,7 +543,14 @@ int main(int argc, char* argv[]) {
 					jetpackTimer->peek();
 					jetpackElapsedTime = 0;
 				}
-					
+			}
+			if (colEscudo) {
+				escudo->setOnPlayer(true);
+				damageOn = false;
+				if (shieldElapsedTime == -1) {
+					shieldTimer->peek();
+					shieldElapsedTime = 0;
+				}
 			}
 			//Si choca con una plataforma, salta nuevamente(acumulador de tiempo de la ecuacion vuelve a 0) y ademas actualiza tanto altura de derrota como score, yAnt es usado en la animacion de salto
 			if (choque != NULL) {
@@ -644,26 +697,39 @@ int main(int argc, char* argv[]) {
 				gravity = normalGravity;
 			}
 			if (jetp->getPos()->getY() < jug->getPos()->getY() - 10 && jetp->getPos()->getY() != -11) jetp->setPos(-11,-11,-11);
-			
 		}
 
-		//Dibujado del jetpack
-		if (jetp->getExist()) {
-			glPushMatrix();
-			glTranslatef(jetp->getPos()->getX(), jetp->getPos()->getY(), jetp->getPos()->getZ());
-			if (jetp->getOnPlayer()) {
-				jetp->setPos(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
-				if (dir->getModulo() != 0) {
-					if (dir->getZ() > 0) gradosARotar = acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
-					else gradosARotar = 360 - acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
-				}
-				glRotatef(-gradosARotar + 180, 0, 1, 0);
-
+		//Checkeo timer del escudo
+		if (escudo->getOnPlayer()) {
+			shieldElapsedTime += shieldTimer->touch().delta;
+			if (shieldElapsedTime >= shieldTime) {
+				//Se acabo el tiempo del escudo
+				shieldElapsedTime = -1;
+				escudo->setOnPlayer(false);
+				damageOn = true;
+				escudo->setPos(1, 1, 1);
 			}
-			glTranslatef(0.4, 0.2, 0.0);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
-			if ((camType||!jetp->getOnPlayer()) && (jetp->getPos()->getY() > jug->getPos()->getY() - viewDistance) && (jetp->getPos()->getY() < jug->getPos()->getY() + viewDistance)) jetp->draw(jetpack, vertAmountJetpack, textura);
-			glPopMatrix();
+		}
+
+		//Dibujado de poderes
+		for (int i = 0; i < 2; i++) {
+			if (poderes[i]->getExist()) {
+				glPushMatrix();
+				glTranslatef(poderes[i]->getPos()->getX(), poderes[i]->getPos()->getY(), poderes[i]->getPos()->getZ());
+				if (poderes[i]->getOnPlayer()) {
+					poderes[i]->setPos(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+					if (dir->getModulo() != 0) {
+						if (dir->getZ() > 0) gradosARotar = acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+						else gradosARotar = 360 - acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+					}
+					glRotatef(-gradosARotar + 180, 0, 1, 0);
+				}
+				glTranslatef(0.4, 0.2, 0.0);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
+				if ((camType || !poderes[i]->getOnPlayer()) && (poderes[i]->getPos()->getY() > jug->getPos()->getY() - viewDistance) && (poderes[i]->getPos()->getY() < jug->getPos()->getY() + viewDistance))
+					poderes[i]->draw(modelosPoderes[i], vertPoderes[i], textura);
+				glPopMatrix();
+			}
 		}
 		
 	
@@ -733,6 +799,8 @@ int main(int argc, char* argv[]) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
 		renderTime(tiempoTranscurrido, textura);
 		renderScore(score, textura);
+		if (escudo->getOnPlayer())
+			renderShieldTime(shieldTime - shieldElapsedTime, textura);
 		// Making sure we can render 3d again
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();

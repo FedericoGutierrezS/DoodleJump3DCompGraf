@@ -294,3 +294,71 @@ void renderScore(float score, GLuint textura) {
 		break;
 	}
 }
+
+void renderShieldTime(float score, GLuint textura) {
+	switch ((int)score % 10) {
+	case 0:
+		render0(30, 670, textura);
+		break;
+	case 1:
+		render1(30, 670, textura);
+		break;
+	case 2:
+		render2(30, 670, textura);
+		break;
+	case 3:
+		render3(30, 670, textura);
+		break;
+	case 4:
+		render4(30, 670, textura);
+		break;
+	case 5:
+		render5(30, 670, textura);
+		break;
+	case 6:
+		render6(30, 670, textura);
+		break;
+	case 7:
+		render7(30, 670, textura);
+		break;
+	case 8:
+		render8(30, 670, textura);
+		break;
+	case 9:
+		render9(30, 670, textura);
+		break;
+	}
+	switch (((int)score % 100 - (int)score % 10) / 10) {
+	case 0:
+		render0(0, 670, textura);
+		break;
+	case 1:
+		render1(0, 670, textura);
+		break;
+	case 2:
+		render2(0, 670, textura);
+		break;
+	case 3:
+		render3(0, 670, textura);
+		break;
+	case 4:
+		render4(0, 670, textura);
+		break;
+	case 5:
+		render5(0, 670, textura);
+		break;
+	case 6:
+		render6(0, 670, textura);
+		break;
+	case 7:
+		render7(0, 670, textura);
+		break;
+	case 8:
+		render8(0, 670, textura);
+		break;
+	case 9:
+		render9(0, 670, textura);
+		break;
+	}
+
+}
