@@ -10,6 +10,10 @@ Powers::Powers(float alt, float anch, float prof) {
 	onPlayer = false;
 }
 
+Powers::~Powers() {
+	delete pos;
+}
+
 float Powers::getAltCol() {
 	return altCol;
 }

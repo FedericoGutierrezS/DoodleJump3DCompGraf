@@ -113,6 +113,7 @@ xcopy /y /d /s /i "$(ProjectDir)/models" "$(TargetDir)/models"</Command>
     <ClInclude Include="mesh.h" />
     <ClInclude Include="plataforma.h" />
     <ClInclude Include="powers.h" />
+    <ClInclude Include="shield.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>

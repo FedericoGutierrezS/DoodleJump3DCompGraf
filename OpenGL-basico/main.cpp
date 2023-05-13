@@ -205,6 +205,20 @@ int main(int argc, char* argv[]) {
 	int hp = FreeImage_GetHeight(bitmap);
 	void* datosPlataforma = FreeImage_GetBits(bitmap);
 
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	for (int y = 0; y < hp; y++) {
+		BYTE* pixel = FreeImage_GetScanLine(bitmap, y);
+		for (int x = 0; x < wp; x++) {
+			pixel[0] /= 1.7;
+			pixel[1] /= 1.7;
+			pixel[2] = 255;
+
+			pixel += 3;
+		}
+	}
+	void* datosPlataforma2 = FreeImage_GetBits(bitmap);
+
 	archivo = "textures/atlasFont.png";
 
 	//CARGAR IMAGEN
@@ -601,6 +615,7 @@ int main(int argc, char* argv[]) {
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
+	float probPlataformaRota = 10;
 	float probEnemigos = 19;
 	float probJetpack = 5;
 	float probEscudo = 15;
@@ -671,13 +686,17 @@ int main(int argc, char* argv[]) {
 		generate_object(seed, i, xcoord, zcoord);
 		srand((xcoord + zcoord + i + 5) * 10);
 		int prob = rand() % 100;
+		int probPlat = rand() % 100;
 		xcoord = (xcoord % 100) * 0.06;
 		zcoord = (zcoord % 100) * 0.06;
 		if (100 - prob < probEnemigos) {
 			enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
 			if (i > jug->getPos()->getY() + 1)enemigos[i % 11]->setExists(true);
 		}
-		plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
+		if (100 - probPlat < probPlataformaRota)
+			plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'd');
+		else
+			plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
 	}
 
 	//LOOP PRINCIPAL
@@ -735,9 +754,10 @@ int main(int argc, char* argv[]) {
 				generate_object(seed, i, xcoord, zcoord);
 				srand((xcoord + zcoord + i + 5) * 10);
 				int prob = rand() % 100;
+				int probPlat = rand() % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
-				if ((100 - prob < probEnemigos) && (enemigos[i % 11]->getPos()->getY() < i)) {
+				if ((100 - prob < probEnemigos) && (enemigos[i % 11]->getPos()->getY() < i) && (100 - probPlat >= probPlataformaRota)) {
 					enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
 				}
 				if ((100 - prob < probJetpack) && (jetp->getPos()->getY() == -11) && i > jug->getPos()->getY()) {
@@ -745,6 +765,10 @@ int main(int argc, char* argv[]) {
 				}
 				if ((100 - prob < probEscudo) && (escudo->getPos()->getY() == -11) && i > jug->getPos()->getY()) {
 					escudo->setPos(xcoord, i + 0.4, zcoord);
+				}
+				if (100 - probPlat < probPlataformaRota) {
+					delete plataformas[i % 11];
+					plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'd');
 				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
@@ -962,7 +986,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		
-	
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 		glPushMatrix();
@@ -973,9 +996,9 @@ int main(int argc, char* argv[]) {
 					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
 					break;
 				case 'd':
-					glColor3f(1, 0, 0.412);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma2);
 					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
-					glColor3f(1, 1, 1);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 					break;
 				}
 			}

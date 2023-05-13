@@ -15,6 +15,7 @@ private:
 
 public:
 	Powers(float, float, float);
+	~Powers();
 	float getAltCol();
 	float getAnchCol();
 	float getProfCol();
