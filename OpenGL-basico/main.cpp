@@ -472,6 +472,17 @@ int main(int argc, char* argv[]) {
 	void* datosOff = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "textures/luz.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wluz = FreeImage_GetWidth(bitmap);
+	int hluz = FreeImage_GetHeight(bitmap);
+	void* datosLuz = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
 	GLuint textura;
 	glGenTextures(1, &textura);
 	glBindTexture(GL_TEXTURE_2D, textura);
@@ -965,26 +976,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		//Dibujado de poderes
-		for (int i = 0; i < 2; i++) {
-			if (poderes[i]->getExist()) {
-				glPushMatrix();
-				glTranslatef(poderes[i]->getPos()->getX(), poderes[i]->getPos()->getY(), poderes[i]->getPos()->getZ());
-				if (poderes[i]->getOnPlayer()) {
-					poderes[i]->setPos(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
-					if (dir->getModulo() != 0) {
-						if (dir->getZ() > 0) gradosARotar = acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
-						else gradosARotar = 360 - acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
-					}
-					glRotatef(-gradosARotar + 180, 0, 1, 0);
-				}
-				glTranslatef(0.4, 0.2, 0.0);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
-				if ((camType || !poderes[i]->getOnPlayer()) && (poderes[i]->getPos()->getY() > jug->getPos()->getY() - viewDistance) && (poderes[i]->getPos()->getY() < jug->getPos()->getY() + viewDistance))
-					poderes[i]->draw(modelosPoderes[i], vertPoderes[i], textura);
-				glPopMatrix();
-			}
-		}
 		
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
@@ -1040,6 +1031,38 @@ int main(int argc, char* argv[]) {
 		glPopMatrix();
 
 		
+		//Dibujado de poderes
+		for (int i = 0; i < 2; i++) {
+			if (poderes[i]->getExist()) {
+				glPushMatrix();
+				glTranslatef(poderes[i]->getPos()->getX(), poderes[i]->getPos()->getY(), poderes[i]->getPos()->getZ());
+				if (poderes[i]->getOnPlayer()) {
+					poderes[i]->setPos(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+					if (dir->getModulo() != 0) {
+						if (dir->getZ() > 0) gradosARotar = acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+						else gradosARotar = 360 - acos(dummy.dot(*dir, Vector3(1, 0, 0)) / (dir->getModulo() * Vector3(1, 0, 0).getModulo())) * 57.2958;
+					}
+					glRotatef(-gradosARotar + 180, 0, 1, 0);
+				}
+				glTranslatef(0.4, 0.2, 0.0);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wje, hje, 0, GL_BGR, GL_UNSIGNED_BYTE, datosJetpack);
+				if ((camType || !poderes[i]->getOnPlayer()) && (poderes[i]->getPos()->getY() > jug->getPos()->getY() - viewDistance) && (poderes[i]->getPos()->getY() < jug->getPos()->getY() + viewDistance)) {
+					if (i == 1) {
+						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ws, hs, 0, GL_BGR, GL_UNSIGNED_BYTE, datosShield);
+						glEnable(GL_BLEND);
+						glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+						glColor4f(0, 1, 0, 0.2);
+						glTranslatef(-0.4, -0.3, 0);
+						glScalef(9, 9, 9);
+					}
+					poderes[i]->draw(modelosPoderes[i], vertPoderes[i], textura);
+					glColor4f(1, 1, 1, 1);
+					glDisable(GL_BLEND);
+				}
+				glPopMatrix();
+			}
+		}
+
 		//FIN DIBUJAR OBJETOS
 		
 
@@ -1091,6 +1114,8 @@ int main(int argc, char* argv[]) {
 			else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbufac, hbufac, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButFac);
 			renderButton(400, 330, textura);
 
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wluz, hluz, 0, GL_BGR, GL_UNSIGNED_BYTE, datosLuz);
+			renderValue(450, 410, textura);
 
 			switch ((luzAct) % 5) {
 			case 1:
@@ -1155,7 +1180,7 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_MOUSEMOTION:
 				camRot = fmod((camRot + evento.motion.xrel * camSens * timeStep), pi * 2);
-				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens*0.3*timeStep), pi);
+				if(camRotH < pi-0.1 && camRotH > 0)camRotH = fmod((camRotH + evento.motion.yrel * camSens*0.5*timeStep), pi);
 				if (camRotH <= 0) camRotH = camRotH + 0.01;
 				if (camRotH >= pi-0.1) camRotH = camRotH - 0.01;
 				break;
