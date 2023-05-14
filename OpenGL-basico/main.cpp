@@ -1011,10 +1011,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		//DIBUJADO DE PARTICULAS
-		//test particulas
-		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
-		testEmitter->draw(0, 0, 0, tiempoTranscurrido);
 
 		glPopMatrix();
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
@@ -1042,6 +1038,12 @@ int main(int argc, char* argv[]) {
 			}
 			glPopMatrix();
 		}
+
+		//DIBUJADO DE PARTICULAS
+		//test particulas
+		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
+		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+
 		glDisable(GL_LIGHTING);
 
 		glPushMatrix();
