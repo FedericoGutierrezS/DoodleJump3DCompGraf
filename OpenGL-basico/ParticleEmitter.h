@@ -47,5 +47,5 @@ public:
 	float getAlphaFade();
 	void setAliveTime(float);
 	float getAliveTime();
-	void draw(float, float, float);
+	void draw(float, float, float, float);
 };

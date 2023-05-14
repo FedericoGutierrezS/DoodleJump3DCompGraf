@@ -15,6 +15,9 @@ ParticleEmitter::ParticleEmitter(Vector3* posVector, Vector3* forceVector, Vecto
 	exists = existe;
 	amount = cantidad;
 	particles = new Particle*[cantidad];
+	for (int i = 0; i < cantidad; i++) {
+		particles[i] = nullptr;
+	}
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -61,14 +64,22 @@ float ParticleEmitter::getAliveTime()
 	return aliveTime;
 }
 
-void ParticleEmitter::draw(float, float, float)
+void ParticleEmitter::draw(float x, float y, float z, float time)
 {
 	for (int i = 0; i < amount; i++)
 	{
-		if (particles[i] == nullptr) {
-			particles[i] = new Particle(new Vector3(pos->getX(), pos->getY(), pos->getZ()), new Vector3(color->getX(), color->getY(), color->getZ()), ALPHA, size, aliveTime, exists);
-			particles[i]->setVel(new Vector3(force->getX() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0)), force->getY(), force->getZ() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0))));
+		if (particles[i] != nullptr && particles[i]->getTime() > particles[i]->getAliveTime()) {
+			//particles[i]->~Particle();
+			delete particles[i];
+			particles[i] = nullptr;
 		}
+		if (particles[i] == nullptr) {
+			particles[i] = new Particle(time, new Vector3(pos->getX(), pos->getY(), pos->getZ()), new Vector3(color->getX(), color->getY(), color->getZ()), ALPHA, size, aliveTime * rand() / RAND_MAX, exists);
+			particles[i]->setVel(new Vector3(force->getX() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0)), force->getY(), force->getZ() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0))));
+			particles[i]->setAcc(new Vector3(0, gravity, 0));
+		}
+		particles[i]->incTime(time - particles[i]->getCreationTime() - particles[i]->getTime());
+		particles[i]->draw(x, y, z);
 	}
 }
 

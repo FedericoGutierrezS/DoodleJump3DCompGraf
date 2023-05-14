@@ -17,6 +17,7 @@
 #include "HUD.h"
 #include "bullet.h"
 #include "Particle.h"
+#include "ParticleEmitter.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <string>
@@ -683,6 +684,7 @@ int main(int argc, char* argv[]) {
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(1, 1, 5), new Vector3(0, 3, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 15, 1, 1, 1, -1, true);
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -1010,6 +1012,7 @@ int main(int argc, char* argv[]) {
 		//DIBUJADO DE PARTICULAS
 		//test particulas
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
+		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 
 		glPopMatrix();
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
