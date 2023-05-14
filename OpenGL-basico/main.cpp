@@ -684,7 +684,7 @@ int main(int argc, char* argv[]) {
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
-	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(1, 1, 5), new Vector3(0, 3, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 15, 1, 1, 1, -1, true);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(1, 1, 5), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;

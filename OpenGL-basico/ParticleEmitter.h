@@ -12,6 +12,7 @@ private:
 	float dispersion;
 	float size;
 	bool exists;
+	bool repeat;
 	Vector3* color;
 	Vector3* colorFade;
 	float ALPHA;
@@ -22,7 +23,7 @@ private:
 	Particle** particles;
 
 public:
-	ParticleEmitter(Vector3*, Vector3*, Vector3*, float = 1.0, Vector3* = new Vector3(0.0, 0.0, 0.0), float = 0.0, int = 5, float = 1.0, float = 0.0, float = 2.0, float = 9.8, bool = false);
+	ParticleEmitter(Vector3*, Vector3*, Vector3*, float = 1.0, Vector3* = new Vector3(0.0, 0.0, 0.0), float = 0.0, int = 5, float = 1.0, float = 0.0, float = 2.0, float = 9.8, bool = false, bool = true);
 	~ParticleEmitter();
 	void setGravity(float);
 	float getGravity();
@@ -47,5 +48,7 @@ public:
 	float getAlphaFade();
 	void setAliveTime(float);
 	float getAliveTime();
+	void setRepeat(bool);
+	bool getRepeat();
 	void draw(float, float, float, float);
 };

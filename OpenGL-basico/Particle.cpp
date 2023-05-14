@@ -21,6 +21,7 @@ Particle::~Particle()
 	delete color;
 	delete vel;
 	delete pos;
+	delete realPos;
 	delete acc;
 }
 
@@ -130,20 +131,17 @@ void Particle::draw(float x, float y, float z)
 	realPos->setX(pos->getX() + distanceX);
 	realPos->setY(pos->getY() + distanceY);
 	realPos->setZ(pos->getZ() + distanceZ);
-	//std::cout << "Time:" << time << " velY:" << vel->getY() << " accY:" << acc->getY() << " posY:" << pos->getY() << " distanceY:" << distanceY << " sum1:" << vel->getY() * time << " sum2:" << 0.5 * acc->getY() * time * time  << std::endl;
-	//std::cout << "Time: " << time << " accY: "<< distanceY << " posX: " << pos->getX() << " posY: " << pos->getY() << " posZ: " << pos->getZ() << " RposX: " << realPos->getX() << " RposY: " << realPos->getY() << " RposZ: " << realPos->getZ() << std::endl;
 	glTranslatef(realPos->getX(), realPos->getY(), realPos->getZ());
 
-	// Calculate the vector from the particle to the camera
+	// Calcula el vector de la particula a la camara
 	float cameraVectorX = x - realPos->getX();
 	float cameraVectorY = y - realPos->getY();
 	float cameraVectorZ = z - realPos->getZ();
 
-	// Calculate the angle between the camera vector and the z-axis
 	float angleXZ = atan2(cameraVectorX, cameraVectorZ);
 	float angleYZ = atan2(cameraVectorY, cameraVectorZ);
 
-	// Apply rotations to make the square face the camera
+	// Aplica rotaciones para que la particula mire la camara
 	glRotatef(angleXZ * 180.0f / M_PI, 0.0f, 1.0f, 0.0f);
 	glRotatef(-angleYZ * 180.0f / M_PI, 1.0f, 0.0f, 0.0f);
 
@@ -151,7 +149,6 @@ void Particle::draw(float x, float y, float z)
 		int displayList = glGenLists(1);
 		glNewList(displayList, GL_COMPILE);
 
-		//glDepthMask(GL_FALSE);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
@@ -170,7 +167,6 @@ void Particle::draw(float x, float y, float z)
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_LIGHTING);
-		//glDepthMask(GL_TRUE);
 
 		glEndList();
 		
