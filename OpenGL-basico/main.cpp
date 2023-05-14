@@ -823,6 +823,8 @@ int main(int argc, char* argv[]) {
 			enemigoHerido->setExists(false);
 			bul->setExists(false);
 			score = score + 371;
+			delete testEmitter;
+			testEmitter = new ParticleEmitter(new Vector3(enemigoHerido->getPos()->getX(), enemigoHerido->getPos()->getY() + 0.2, enemigoHerido->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0.2, 0, 1), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
 			enemigoHerido = NULL;
 		}
 
@@ -1012,7 +1014,7 @@ int main(int argc, char* argv[]) {
 		//DIBUJADO DE PARTICULAS
 		//test particulas
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
-		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		testEmitter->draw(0, 0, 0, tiempoTranscurrido);
 
 		glPopMatrix();
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
