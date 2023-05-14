@@ -16,6 +16,7 @@
 #include "shield.h"
 #include "HUD.h"
 #include "bullet.h"
+#include "Particle.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <string>
@@ -679,7 +680,9 @@ int main(int argc, char* argv[]) {
 	//Se crea la bala
 	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
 
-
+	//Generacion de particulas
+	//Test particula
+	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -1004,6 +1007,10 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		//DIBUJADO DE PARTICULAS
+		//test particulas
+		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
+
 		glPopMatrix();
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
@@ -1038,7 +1045,6 @@ int main(int argc, char* argv[]) {
 		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
 		if(dListBackground != -1) glCallList(dListBackground);
 		glPopMatrix();
-
 		
 		//FIN DIBUJAR OBJETOS
 		
