@@ -3,7 +3,6 @@
 #include "Vector3.h"
 #include "Particle.h"
 #include <SDL/SDL_opengl.h>
-#include <vector>
 
 class ParticleEmitter {
 private:
@@ -11,6 +10,7 @@ private:
 	Vector3* force;
 	float dispersion;
 	float size;
+	float sizeFade;
 	bool exists;
 	bool repeat;
 	Vector3* color;

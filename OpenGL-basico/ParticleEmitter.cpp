@@ -9,6 +9,7 @@ ParticleEmitter::ParticleEmitter(Vector3* posVector, Vector3* forceVector, Vecto
 	colorFade = colorFadeVector;
 	alphaFade = fadeAlpha;
 	size = boxSize;
+	sizeFade = boxSize;
 	dispersion = dispersionAmount;
 	aliveTime = time;
 	gravity = gravityAmount;
