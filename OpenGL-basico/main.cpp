@@ -26,6 +26,7 @@ using namespace std;
 
 //Cantidad maxima de pistas de audio, debe ser mayor o igual a la cantidad de audios que tiene el juego
 const int pistasAudio = 2;
+bool audio = false;
 
 //Indica si termino el juego o no
 bool fin = false;
@@ -38,28 +39,29 @@ struct AudioData {
 };
 
 int AudioThread(void* data) {
-	AudioData* channels = static_cast<AudioData*>(data);
-	while (!fin) {
-		for (int i = 0; i < pistasAudio; i++) {
-			if (*channels[i].boolean_play && (*channels[i].channel == -1 || !Mix_Playing(*channels[i].channel))) {
-				int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
-				if (channel == -1) {
-					cerr << "No se pudo reproducir el canal de audio: " << Mix_GetError() << endl;
-					exit(1);
+	if (audio == true) {
+		AudioData* channels = static_cast<AudioData*>(data);
+		while (!fin) {
+			for (int i = 0; i < pistasAudio; i++) {
+				if (*channels[i].boolean_play && (*channels[i].channel == -1 || !Mix_Playing(*channels[i].channel))) {
+					int channel = Mix_PlayChannel(-1, channels[i].chunk, 0);
+					if (channel == -1) {
+						cerr << "No se pudo reproducir el canal de audio: " << Mix_GetError() << endl;
+						exit(1);
+					}
+					*channels[i].channel = channel;
 				}
-				*channels[i].channel = channel;
 			}
+			SDL_Delay(100);
 		}
-		SDL_Delay(100);
+
+		for (int i = 0; i < pistasAudio; i++) {
+			Mix_FreeChunk(channels[i].chunk);
+		}
+
+		Mix_CloseAudio();
+		Mix_Quit();
 	}
-
-	for (int i = 0; i < pistasAudio; i++) {
-		Mix_FreeChunk(channels[i].chunk);
-	}
-
-	Mix_CloseAudio();
-	Mix_Quit();
-
 	return 0;
 }
 
@@ -499,35 +501,35 @@ int main(int argc, char* argv[]) {
 	//INICIALIZACION
 	SDL_Thread* Audio_thread;
 	AudioData channels[pistasAudio];
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-		cerr << "No se pudo iniciar el mixer de audio: " << Mix_GetError() << endl;
-		exit(1);
-	}
 	for (int i = 0; i < pistasAudio; i++)
 	{
 		channels[i].boolean_play = new bool;
 	}
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		cerr << "No se pudo iniciar el mixer de audio: " << Mix_GetError() << endl;
+	}
+	else {
+		audio = true;
+		//DATOS
+		//Efectos de sonido
+		channels[0].file = "sounds/jetpack.wav";
+		*channels[0].boolean_play = false;
 
-	//DATOS
-	//Efectos de sonido
-	channels[0].file = "sounds/jetpack.wav";
-	*channels[0].boolean_play = false;
+		channels[1].file = "sounds/space-jazz-by-kevin-macleod-from-filmmusic-io.ogg";
+		*channels[1].boolean_play = true;
 
-	channels[1].file = "sounds/space-jazz-by-kevin-macleod-from-filmmusic-io.ogg";
-	*channels[1].boolean_play = true;
-
-	//CARGA
-	for (int i = 0; i < pistasAudio; i++)
-	{
-		channels[i].channel = new int;
-		*channels[i].channel = -1;
-		channels[i].chunk = Mix_LoadWAV(channels[i].file);
-		if (channels[i].chunk == NULL) {
-			cerr << "No se pudo iniciar el audio: " << Mix_GetError() << endl;
-			exit(1);
+		//CARGA
+		for (int i = 0; i < pistasAudio; i++)
+		{
+			channels[i].channel = new int;
+			*channels[i].channel = -1;
+			channels[i].chunk = Mix_LoadWAV(channels[i].file);
+			if (channels[i].chunk == NULL) {
+				cerr << "No se pudo iniciar el audio: " << Mix_GetError() << endl;
+				exit(1);
+			}
 		}
 	}
-
 	//REPRODUCCION
 	Audio_thread = SDL_CreateThread(AudioThread, "AudioThread", channels);
 	if (!Audio_thread) {
@@ -1335,7 +1337,8 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < pistasAudio; i++)
 	{
 		delete channels[i].boolean_play;
-		delete channels[i].channel;
+		if(audio == true)
+			delete channels[i].channel;
 	}
 	for (int i = 0; i < 3; ++i) {
 		delete[] jugador[i];
