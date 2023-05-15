@@ -16,6 +16,8 @@
 #include "shield.h"
 #include "HUD.h"
 #include "bullet.h"
+#include "Particle.h"
+#include "ParticleEmitter.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <string>
@@ -690,7 +692,10 @@ int main(int argc, char* argv[]) {
 	//Se crea la bala
 	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
 
-
+	//Generacion de particulas
+	//Test particula
+	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -829,6 +834,8 @@ int main(int argc, char* argv[]) {
 			enemigoHerido->setExists(false);
 			bul->setExists(false);
 			score = score + 371;
+			delete testEmitter;
+			testEmitter = new ParticleEmitter(new Vector3(enemigoHerido->getPos()->getX(), enemigoHerido->getPos()->getY() + 0.2, enemigoHerido->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0.2, 0, 1), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
 			enemigoHerido = NULL;
 		}
 
@@ -995,6 +1002,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+
 		glPopMatrix();
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
@@ -1021,6 +1029,12 @@ int main(int argc, char* argv[]) {
 			}
 			glPopMatrix();
 		}
+
+		//DIBUJADO DE PARTICULAS
+		//test particulas
+		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
+		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+
 		glDisable(GL_LIGHTING);
 
 		glPushMatrix();
@@ -1029,7 +1043,6 @@ int main(int argc, char* argv[]) {
 		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
 		if(dListBackground != -1) glCallList(dListBackground);
 		glPopMatrix();
-
 		
 		//Dibujado de poderes
 		for (int i = 0; i < 2; i++) {
