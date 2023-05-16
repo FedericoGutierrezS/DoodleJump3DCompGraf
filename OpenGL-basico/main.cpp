@@ -889,7 +889,7 @@ int main(int argc, char* argv[]) {
 			for (int i = 0; i < cantEnem; i++) {
 				enemigos[i]->setExists(true);
 			}
-			bul->getPos()->setY(0);
+			bul->getPos()->setY(-13);
 			jetp->setExist(true);
 			jetp->setPos(-11, -11, -11);
 			jetp->setOnPlayer(false);
