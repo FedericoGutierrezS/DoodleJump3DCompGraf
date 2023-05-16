@@ -697,7 +697,10 @@ int main(int argc, char* argv[]) {
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
-	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 1, -2, true, false);
+	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+	ParticleEmitter* jetLeftEmitter = nullptr;
+	ParticleEmitter* jetRightEmitter = nullptr;
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -823,7 +826,11 @@ int main(int argc, char* argv[]) {
 				timeAcc = 0;
 				if (alturaDerrota < choque->getY() - 2) alturaDerrota = choque->getY() - 2;
 				yAnt = choque->getY();
-				if (choque->getType() == 'd') choque->setExists(false);
+				if (choque->getType() == 'd') { 
+					choque->setExists(false);
+					delete destroyPlatform;
+					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+				}
 				if (alturaDerrota > altAlcanzada) {
 					score = score + (alturaDerrota - altAlcanzada) * 300;
 					altAlcanzada = alturaDerrota;
@@ -943,10 +950,17 @@ int main(int argc, char* argv[]) {
 			glPopMatrix();
 		}
 
+
 		//Checkeo timer del jetpack
 		if (jetp->getOnPlayer()) {
+			if(jetLeftEmitter == nullptr)
+				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
+			if (jetRightEmitter == nullptr)
+				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
+			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0));
+			jetRightEmitter->setPos(new Vector3(0.2, 0, 0));
 			if (jetpackElapsedTime >= jetpackTime) {
 				//Se acabo el tiempo del jetpack
 				jetpackElapsedTime = -1;
@@ -954,6 +968,10 @@ int main(int argc, char* argv[]) {
 				jetpackRemovalTimer->peek();
 				jetpackRemovedElapsedTime = 0;
 				jetp->setPos(-11, -11, -11);
+				delete jetLeftEmitter;
+				jetLeftEmitter = nullptr;
+				delete jetRightEmitter;
+				jetRightEmitter = nullptr;
 			}
 		}
 		else {
@@ -1036,6 +1054,19 @@ int main(int argc, char* argv[]) {
 		//test particulas
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
 		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		destroyPlatform->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		glPushMatrix();
+		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+		glRotatef(degreesFromMovement, 0, 1, 0);
+		if(jetLeftEmitter != nullptr)
+			//jetLeftEmitter->draw(0, 0, 0, tiempoTranscurrido);
+			jetLeftEmitter->draw(x, y, z, tiempoTranscurrido);
+			//jetLeftEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		if (jetRightEmitter != nullptr)
+			//jetRightEmitter->draw(0, 0, 0, tiempoTranscurrido);
+			jetRightEmitter->draw(x, y, z, tiempoTranscurrido);
+			//jetRightEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		glPopMatrix();
 
 		glDisable(GL_LIGHTING);
 
