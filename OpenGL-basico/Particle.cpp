@@ -143,7 +143,7 @@ void Particle::draw(float x, float y, float z)
 
 	// Aplica rotaciones para que la particula mire la camara
 	glRotatef(angleXZ * 180.0f / M_PI, 0.0f, 1.0f, 0.0f);
-	glRotatef(-angleYZ * 180.0f / M_PI, 1.0f, 0.0f, 0.0f);
+	glRotatef(angleYZ * 180.0f / M_PI, 1.0f, 0.0f, 0.0f);
 
 	if (disList == -1) {
 		int displayList = glGenLists(1);

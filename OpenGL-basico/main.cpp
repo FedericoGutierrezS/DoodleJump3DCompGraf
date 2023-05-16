@@ -902,6 +902,10 @@ int main(int argc, char* argv[]) {
 					delete destroyPlatform;
 					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 				}
+				else {
+					delete destroyPlatform;
+					destroyPlatform = new ParticleEmitter(new Vector3(jug->getPos()->getX(), choque->getY() + 0.5, jug->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0, 0.4, 0), 1, new Vector3(1, 0, 0), 0.5, 6, 0.1, 0.5, 1, new Vector3(0, 0, 0), true, false);
+				}
 				if (alturaDerrota > altAlcanzada) {
 					score = score + (alturaDerrota - altAlcanzada) * 300;
 					altAlcanzada = alturaDerrota;
