@@ -1,0 +1,84 @@
+Guia de uso de Demo de Emisor de Particulas
+Modo 0:
+	1:
+		+ColorX
+	2:
+		-ColorX
+	3:
+		+ColorY
+	4:
+		-ColorY
+	5:
+		+ColorZ
+	6:
+		-ColorZ
+	7:
+		+Alpha
+	8:
+		-Alpha
+
+Modo 1:
+	1:
+		+Fade ColorX
+	2:
+		-Fade ColorX
+	3:
+		+Fade ColorY
+	4:
+		-Fade ColorY
+	5:
+		+Fade ColorZ
+	6:
+		-Fade ColorZ
+	7:
+		+Fade Alpha
+	8:
+		-Fade Alpha
+
+Modo 2:
+	1:
+		+AliveTime
+	2:
+		-AliveTime
+	3:
+		+Size
+	4:
+		-Size
+	5:
+		+Dispersion
+	6:
+		-Dispersion
+	7:
+		Move To Me
+	8:
+		Switch Exists
+	9:
+		Switch Repeat
+
+Modo 3:
+	1:
+		+VelocityX
+	2:
+		-VelocityX
+	3:
+		+VelocityY
+	4:
+		-VelocityY
+	5:
+		+VelocityZ
+	6:
+		-VelocityZ
+
+Modo 4:
+	1:
+		+AccelerationX
+	2:
+		-AccelerationX
+	3:
+		+AccelerationY
+	4:
+		-AccelerationY
+	5:
+		+AccelerationZ
+	6:
+		-AccelerationZ

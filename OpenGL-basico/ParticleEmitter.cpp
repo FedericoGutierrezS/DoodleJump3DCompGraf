@@ -136,7 +136,7 @@ float ParticleEmitter::getSize()
 void ParticleEmitter::setPos(Vector3* position)
 {
 	delete pos;
-	pos = position;
+	pos = new Vector3(position->getX(), position->getY(), position->getZ());
 }
 
 Vector3* ParticleEmitter::getPos()

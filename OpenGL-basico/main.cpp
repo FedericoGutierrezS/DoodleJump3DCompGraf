@@ -768,8 +768,11 @@ int main(int argc, char* argv[]) {
 	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
 	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 	ParticleEmitter* jumpParticles = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
+	ParticleEmitter* demoEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
 	ParticleEmitter* jetLeftEmitter = nullptr;
 	ParticleEmitter* jetRightEmitter = nullptr;
+
+	int demoEmitterMode = 0;
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -938,6 +941,8 @@ int main(int argc, char* argv[]) {
 			gameover = true;
 			delete destroyPlatform;
 			destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
+			delete demoEmitter;
+			demoEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
 			//Se marcan todas las plataformas como existentes nuevamente
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
@@ -1149,6 +1154,7 @@ int main(int argc, char* argv[]) {
 		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 		destroyPlatform->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 		jumpParticles->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		demoEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 		glPushMatrix();
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
 		glRotatef(degreesFromMovement, 0, 1, 0);
@@ -1358,6 +1364,201 @@ int main(int argc, char* argv[]) {
 				break;
 			case SDL_KEYDOWN:
 				switch (evento.key.keysym.sym) {
+				case SDLK_1:
+					switch (demoEmitterMode)
+					{
+						case 0:
+							if(demoEmitter->getColor()->getX() + 0.01 <= 1)
+								demoEmitter->setColor(demoEmitter->getColor()->getX() + 0.01 , demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ(), demoEmitter->getAlpha());
+							break;
+						case 1:
+							if (demoEmitter->getFadeColor()->getX() + 0.01 <= 1)
+								demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX() + 0.01, demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade());
+							break;
+						case 2:
+							demoEmitter->setAliveTime(demoEmitter->getAliveTime() + 0.01);
+							break;
+						case 3:
+							demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX() + 0.1, demoEmitter->getVelocity()->getY(), demoEmitter->getVelocity()->getZ()));
+							break;
+						case 4:
+							demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX() + 0.1, demoEmitter->getAcceleration()->getY(), demoEmitter->getAcceleration()->getZ()));
+							break;
+						default:
+							break;
+					};
+					break;
+				case SDLK_2:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getColor()->getX() - 0.01 >= 0)
+							demoEmitter->setColor(demoEmitter->getColor()->getX() - 0.01, demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ(), demoEmitter->getAlpha());
+						break;
+					case 1:
+						if (demoEmitter->getFadeColor()->getX() - 0.01 >= 0)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX() - 0.01, demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade());
+						break;
+					case 2:
+						if (demoEmitter->getAliveTime() - 0.01 >= 0)
+							demoEmitter->setAliveTime(demoEmitter->getAliveTime() - 0.01);
+						break;
+					case 3:
+						if (demoEmitter->getVelocity()->getX() - 0.01 >= 0)
+							demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX() - 0.1, demoEmitter->getVelocity()->getY(), demoEmitter->getVelocity()->getZ()));
+						break;
+					case 4:
+						demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX() - 0.1, demoEmitter->getAcceleration()->getY(), demoEmitter->getAcceleration()->getZ()));
+						break;
+					default:
+						break;
+					};
+					break;
+				case SDLK_3:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getColor()->getY() + 0.01 <= 1)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY() + 0.01, demoEmitter->getColor()->getZ(), demoEmitter->getAlpha());
+						break;
+					case 1:
+						if (demoEmitter->getFadeColor()->getY() + 0.01 <= 1)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY() + 0.01, demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade());
+						break;
+					case 2:
+						demoEmitter->setSize(demoEmitter->getSize() + 0.01);
+						break;
+					case 3:
+						demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX(), demoEmitter->getVelocity()->getY() + 0.1, demoEmitter->getVelocity()->getZ()));
+						break;
+					case 4:
+						demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX(), demoEmitter->getAcceleration()->getY() + 0.1, demoEmitter->getAcceleration()->getZ()));
+						break;
+					default:
+						break;
+					};
+					break;
+				case SDLK_4:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getColor()->getY() - 0.01 >= 0)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY() - 0.01, demoEmitter->getColor()->getZ(), demoEmitter->getAlpha());
+						break;
+					case 1:
+						if (demoEmitter->getFadeColor()->getY() - 0.01 >= 0)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY() - 0.01, demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade());
+						break;
+					case 2:
+						if (demoEmitter->getSize() - 0.01 >= 0)
+							demoEmitter->setSize(demoEmitter->getSize() - 0.01);
+						break;
+					case 3:
+						if (demoEmitter->getVelocity()->getY() - 0.01 >= 0)
+							demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX(), demoEmitter->getVelocity()->getY() - 0.1, demoEmitter->getVelocity()->getZ()));
+						break;
+					case 4:
+						demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX(), demoEmitter->getAcceleration()->getY() - 0.1, demoEmitter->getAcceleration()->getZ()));
+						break;
+					default:
+						break;
+					};
+					break;
+				case SDLK_5:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getColor()->getZ() + 0.01 <= 1)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ() + 0.01, demoEmitter->getAlpha());
+						break;
+					case 1:
+						if (demoEmitter->getFadeColor()->getZ() + 0.01 <= 1)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ() + 0.01, demoEmitter->getAlphaFade());
+						break;
+					case 2:
+						demoEmitter->setDispersion(demoEmitter->getDispersion() + 0.01);
+						break;
+					case 3:
+						demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX(), demoEmitter->getVelocity()->getY(), demoEmitter->getVelocity()->getZ() + 0.1));
+						break;
+					case 4:
+						demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX(), demoEmitter->getAcceleration()->getY(), demoEmitter->getAcceleration()->getZ() + 0.1));
+						break;
+					default:
+						break;
+					};
+					break;
+				case SDLK_6:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getColor()->getZ() - 0.01 >= 0)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ() - 0.01, demoEmitter->getAlpha());
+						break;
+					case 1:
+						if (demoEmitter->getFadeColor()->getZ() - 0.01 >= 0)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ() - 0.01, demoEmitter->getAlphaFade());
+						break;
+					case 2:
+						if (demoEmitter->getDispersion() - 0.01 >= 0)
+							demoEmitter->setDispersion(demoEmitter->getDispersion() - 0.01);
+						break;
+					case 3:
+						if (demoEmitter->getVelocity()->getZ() - 0.01 >= 0)
+							demoEmitter->setVelocity(new Vector3(demoEmitter->getVelocity()->getX(), demoEmitter->getVelocity()->getY(), demoEmitter->getVelocity()->getZ() - 0.1));
+						break;
+					case 4:
+						demoEmitter->setAcceleration(new Vector3(demoEmitter->getAcceleration()->getX(), demoEmitter->getAcceleration()->getY(), demoEmitter->getAcceleration()->getZ() - 0.1));
+						break;
+					default:
+						break;
+					};
+					break;
+				case SDLK_7:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getAlpha() + 0.01 <= 1)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ(), demoEmitter->getAlpha() + 0.01);
+						break;
+					case 1:
+						if (demoEmitter->getAlphaFade() + 0.01 <= 1)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade() + 0.01);
+						break;
+					case 2:
+						demoEmitter->setPos(jug->getPos());
+					default:
+						break;
+					};
+					break;
+				case SDLK_8:
+					switch (demoEmitterMode)
+					{
+					case 0:
+						if (demoEmitter->getAlpha() - 0.01 >= 0)
+							demoEmitter->setColor(demoEmitter->getColor()->getX(), demoEmitter->getColor()->getY(), demoEmitter->getColor()->getZ(), demoEmitter->getAlpha() - 0.01);
+						break;
+					case 1:
+						if (demoEmitter->getAlphaFade() - 0.01 >= 0)
+							demoEmitter->setFadeColor(demoEmitter->getFadeColor()->getX(), demoEmitter->getFadeColor()->getY(), demoEmitter->getFadeColor()->getZ(), demoEmitter->getAlphaFade() - 0.01);
+						break;
+					case 2:
+						demoEmitter->setExists(!demoEmitter->getExist());
+					default:
+						break;
+					};
+					break;
+				case SDLK_9:
+					switch (demoEmitterMode) {
+					case 2:
+						demoEmitter->setRepeat(!demoEmitter->getRepeat());
+					}
+					break;
+				case SDLK_0:
+					demoEmitterMode = demoEmitterMode + 1;
+					if (demoEmitterMode > 4)
+						demoEmitterMode = 0;
+					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
 					auxX = pow(cos(camRot), 2);
