@@ -1093,7 +1093,7 @@ int main(int argc, char* argv[]) {
 						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ws, hs, 0, GL_BGR, GL_UNSIGNED_BYTE, datosShield);
 						glEnable(GL_BLEND);
 						glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-						glColor4f(0, 1, 0, 0.2);
+						glColor4f(0, 0.1, 1, 0.5);
 						glTranslatef(-0.4, -0.3, 0);
 						glScalef(9, 9, 9);
 					}
