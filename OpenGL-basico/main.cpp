@@ -1044,9 +1044,9 @@ int main(int argc, char* argv[]) {
 		//Checkeo timer del jetpack
 		if (jetp->getOnPlayer()) {
 			if(jetLeftEmitter == nullptr)
-				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
+				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0.25, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			if (jetRightEmitter == nullptr)
-				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
+				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0.25, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
 			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0.4));
