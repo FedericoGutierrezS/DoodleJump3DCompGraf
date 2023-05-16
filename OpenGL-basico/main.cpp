@@ -4,6 +4,7 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_mixer.h>
 #include <iostream>
+#include <fstream>
 #include "FreeImage.h"
 #include <stdio.h>
 #include <conio.h>
@@ -652,11 +653,13 @@ int main(int argc, char* argv[]) {
 	float jetpackTime = 5;//Duracion del jetpack
 	float shieldTime = 15;
 	float shakeMagnitude = 0.1;
+
 	float* velocidades = new float[4];
 	velocidades[0] = 0.25;
 	velocidades[1] = 0.5;
 	velocidades[2] = 1;
 	velocidades[3] = 2;
+
 	float* direcciones = new float[4];
 	direcciones[0] = 4;
 	direcciones[1] = -4;
@@ -689,11 +692,17 @@ int main(int argc, char* argv[]) {
 	float previousScore = 0;
 	float bestScore = 0;
 	float altAlcanzada = 0;
-	float probPlataformaRota = 10;
+	float probPlataformaRota = 13;
 	float probEnemigos = 19;
 	float probJetpack = 5;
 	float probEscudo = 15;
-	string seed = "sdda";
+
+
+	string seed;
+
+	ifstream ArchivoSeed("seed.txt");
+	getline(ArchivoSeed, seed);
+	ArchivoSeed.close();
 
 	//Generacion de plataformas
 	Plataforma* choque = NULL;
@@ -751,12 +760,15 @@ int main(int argc, char* argv[]) {
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
-	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
+	Bullet* bul = new Bullet(0, -13, 0, 0.1, 0.1, 0.5);
 
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
-	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 1, -2, true, false);
+	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+	ParticleEmitter* jetLeftEmitter = nullptr;
+	ParticleEmitter* jetRightEmitter = nullptr;
 
 	for (int i = 0; i < 11; i++) {
 		int xcoord = 2, zcoord = 0;
@@ -844,9 +856,9 @@ int main(int argc, char* argv[]) {
 					escudo->setPos(xcoord, i + 0.4, zcoord);
 				}
 				if (100 - probPlat < probPlataformaRota) {
-					delete plataformas[i % 11];
-					plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'd');
+					plataformas[i % 11]->setType('d');
 				}
+				else plataformas[i % 11]->setType('n');
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
 		//TRANSFORMACIONES LINEALES
@@ -882,7 +894,11 @@ int main(int argc, char* argv[]) {
 				timeAcc = 0;
 				if (alturaDerrota < choque->getY() - 2) alturaDerrota = choque->getY() - 2;
 				yAnt = choque->getY();
-				if (choque->getType() == 'd') choque->setExists(false);
+				if (choque->getType() == 'd') { 
+					choque->setExists(false);
+					delete destroyPlatform;
+					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+				}
 				if (alturaDerrota > altAlcanzada) {
 					score = score + (alturaDerrota - altAlcanzada) * 300;
 					altAlcanzada = alturaDerrota;
@@ -918,12 +934,17 @@ int main(int argc, char* argv[]) {
 				generate_object(seed, i, xcoord, zcoord);
 				srand((xcoord + zcoord + i + 5) * 10);
 				int prob = rand() % 100;
+				int probPlat = rand() % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if (100 - prob < probEnemigos) {
 					enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
 				}
 				plataformas[i % 11]->setPos(xcoord,i,zcoord);
+				if (100 - probPlat < probPlataformaRota)
+					plataformas[i % 11]->setType('d');
+				else
+					plataformas[i % 11]->setType('n');
 			}
 			for (int i = 0; i < cantPlat; i++) {
 				plataformas[i]->setExists(true);
@@ -961,6 +982,9 @@ int main(int argc, char* argv[]) {
 		if (texturas) glEnable(GL_TEXTURE_2D);
 		if (facetado) glShadeModel(GL_FLAT);
 		else glShadeModel(GL_SMOOTH);
+
+		glCullFace(GL_BACK);
+
 		//Luces alrededor del jugador
 		luz_posicion[0] = jug->getPos()->getX() + 0;
 		luz_posicion[1] = jug->getPos()->getY() + 5;
@@ -994,7 +1018,9 @@ int main(int argc, char* argv[]) {
 		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
+		glEnable(GL_CULL_FACE);
 		if(camType) jug->draw(jugador, vertAmountJugador, textura);
+		
 
 		glPopMatrix();
 		//Dibujado de bala
@@ -1006,10 +1032,17 @@ int main(int argc, char* argv[]) {
 			glPopMatrix();
 		}
 
+
 		//Checkeo timer del jetpack
 		if (jetp->getOnPlayer()) {
+			if(jetLeftEmitter == nullptr)
+				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
+			if (jetRightEmitter == nullptr)
+				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
+			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0.4));
+			jetRightEmitter->setPos(new Vector3(0.2, 0, 0.4));
 			if (jetpackElapsedTime >= jetpackTime) {
 				//Se acabo el tiempo del jetpack
 				jetpackElapsedTime = -1;
@@ -1017,6 +1050,10 @@ int main(int argc, char* argv[]) {
 				jetpackRemovalTimer->peek();
 				jetpackRemovedElapsedTime = 0;
 				jetp->setPos(-11, -11, -11);
+				delete jetLeftEmitter;
+				jetLeftEmitter = nullptr;
+				delete jetRightEmitter;
+				jetRightEmitter = nullptr;
 			}
 		}
 		else {
@@ -1047,7 +1084,7 @@ int main(int argc, char* argv[]) {
 				escudo->setPos(1, 1, 1);
 			}
 		}
-
+		glDisable(GL_CULL_FACE);
 		
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
@@ -1069,6 +1106,7 @@ int main(int argc, char* argv[]) {
 
 
 		glPopMatrix();
+		glEnable(GL_CULL_FACE);
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
 		for (int i = 0; i < cantEnem; i++) {
@@ -1094,11 +1132,20 @@ int main(int argc, char* argv[]) {
 			}
 			glPopMatrix();
 		}
-
+		glDisable(GL_CULL_FACE);
 		//DIBUJADO DE PARTICULAS
 		//test particulas
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
 		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		destroyPlatform->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		glPushMatrix();
+		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
+		glRotatef(degreesFromMovement, 0, 1, 0);
+		if(jetLeftEmitter != nullptr)
+			jetLeftEmitter->draw(x + degreesFromMovement, y, z + degreesFromMovement, tiempoTranscurrido);
+		if (jetRightEmitter != nullptr)
+			jetRightEmitter->draw(x + degreesFromMovement, y, z + degreesFromMovement, tiempoTranscurrido);
+		glPopMatrix();
 
 		glDisable(GL_LIGHTING);
 
@@ -1108,8 +1155,9 @@ int main(int argc, char* argv[]) {
 		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
 		if(dListBackground != -1) glCallList(dListBackground);
 		glPopMatrix();
-		
+
 		//Dibujado de poderes
+		glEnable(GL_CULL_FACE);
 		for (int i = 0; i < 2; i++) {
 			if (poderes[i]->getExist()) {
 				glPushMatrix();
@@ -1129,7 +1177,8 @@ int main(int argc, char* argv[]) {
 						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ws, hs, 0, GL_BGR, GL_UNSIGNED_BYTE, datosShield);
 						glEnable(GL_BLEND);
 						glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-						glColor4f(0, 1, 0, 0.2);
+
+						glColor4f(0, 0.1, 1, 0.5);
 						glTranslatef(-0.4, -0.3, 0);
 						glScalef(9, 9, 9);
 					}
@@ -1140,7 +1189,7 @@ int main(int argc, char* argv[]) {
 				glPopMatrix();
 			}
 		}
-
+		glDisable(GL_CULL_FACE);
 		//FIN DIBUJAR OBJETOS
 		
 

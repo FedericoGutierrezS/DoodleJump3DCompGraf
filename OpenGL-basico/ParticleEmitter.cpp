@@ -89,7 +89,7 @@ void ParticleEmitter::draw(float x, float y, float z, float time)
 	{
 		if (particles[i] != nullptr && particles[i]->getTime() > particles[i]->getAliveTime()) {
 			particles[i]->setExists(false);
-			if (repeat) {
+			if (repeat && exists) {
 				delete particles[i];
 				particles[i] = nullptr;
 			}
@@ -128,6 +128,7 @@ float ParticleEmitter::getSize()
 
 void ParticleEmitter::setPos(Vector3* position)
 {
+	delete pos;
 	pos = position;
 }
 
