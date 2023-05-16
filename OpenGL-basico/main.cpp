@@ -641,7 +641,7 @@ int main(int argc, char* argv[]) {
 	const float pi = 3.14159;
 
 	float timeStep = 0;
-	float jumpSpeed = 6;//Velocidad inicial del salto del jugador
+	float jumpSpeed = 6.5;//Velocidad inicial del salto del jugador
 	float moveSpeed = 5;//Velocidad del jugador
 	float enemigo1Speed = 4;//Velocidad del enemigo(Posiblemente puede convenir meterla dentro de la clase enemigo
 	float camRot = pi/2;//Angulo actual de la camara
