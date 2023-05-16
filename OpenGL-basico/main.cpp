@@ -355,6 +355,62 @@ int main(int argc, char* argv[]) {
 	void* datosButVel = FreeImage_GetBits(bitmap);
 	//FIN CARGAR IMAGEN
 
+	archivo = "textures/gameover2.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wbover = FreeImage_GetWidth(bitmap);
+	int hbover = FreeImage_GetHeight(bitmap);
+	void* datosGameOver = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
+	archivo = "textures/best.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wbbest = FreeImage_GetWidth(bitmap);
+	int hbbest = FreeImage_GetHeight(bitmap);
+	void* datosbest = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
+	archivo = "textures/score2.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wbscore = FreeImage_GetWidth(bitmap);
+	int hbscore = FreeImage_GetHeight(bitmap);
+	void* datosScore = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
+	archivo = "textures/r.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wbr = FreeImage_GetWidth(bitmap);
+	int hbr = FreeImage_GetHeight(bitmap);
+	void* datosR = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+
+	archivo = "textures/restart.png";
+
+	//CARGAR IMAGEN
+	fif = FreeImage_GetFIFFromFilename(archivo);
+	bitmap = FreeImage_Load(fif, archivo);
+	bitmap = FreeImage_ConvertTo24Bits(bitmap);
+	int wbres = FreeImage_GetWidth(bitmap);
+	int hbres = FreeImage_GetHeight(bitmap);
+	void* datosRestart = FreeImage_GetBits(bitmap);
+	//FIN CARGAR IMAGEN
+	
+
 	archivo = "textures/buttontex.png";
 
 	//CARGAR IMAGEN
@@ -545,6 +601,7 @@ int main(int argc, char* argv[]) {
 	bool camType = false;//Tipo de camara(Se cambia con V)
 	bool fullscreen = false;
 	bool pause = false;
+	bool gameover = false;
 	bool texturas = true;
 	bool wireframe = false;
 	bool facetado = false;
@@ -629,6 +686,8 @@ int main(int argc, char* argv[]) {
 	int velocidadJuegoPos = 2;
 	float tiempoTranscurrido = 0;
 	float score = 0;
+	float previousScore = 0;
+	float bestScore = 0;
 	float altAlcanzada = 0;
 	float probPlataformaRota = 10;
 	float probEnemigos = 19;
@@ -845,10 +904,14 @@ int main(int argc, char* argv[]) {
 		if (jug->getPos()->getY() < alturaDerrota || colEnemigo != NULL) {
 			alturaDerrota = -200;
 			tiempoTranscurrido = 0;
+			previousScore = score;
+			if (score > bestScore)
+				bestScore = score;
 			score = 0;
 			jug->setPos(5, 0, 5);
 			yAnt = 0;
 			altAlcanzada = 0;
+			gameover = true;
 			//Se marcan todas las plataformas como existentes nuevamente
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
@@ -1156,13 +1219,44 @@ int main(int argc, char* argv[]) {
 
 			renderBackground();
 		}
+		else if (gameover) {
+			glEnable(GL_TEXTURE_2D);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbover, hbover, 0, GL_BGR, GL_UNSIGNED_BYTE, datosGameOver);
+			renderButtonGameOver(400, 30, textura);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbscore, hbscore, 0, GL_BGR, GL_UNSIGNED_BYTE, datosScore);
+			renderButton(30, 400, textura);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbbest, hbbest, 0, GL_BGR, GL_UNSIGNED_BYTE, datosbest);
+			renderButton(30, 600, textura);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
+			renderScore(previousScore, textura, 500, 410);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
+			renderScore(bestScore, textura, 500, 610);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbr, hbr, 0, GL_BGR, GL_UNSIGNED_BYTE, datosR);
+			glPushMatrix();
+			glScalef(1, min(max(3.0f - jug->getPos()->getY(), 0.2f) * 0.5f, 1.0f), 1);
+			renderButton(800, 300 - (jug->getPos()->getY() * 80), textura);
+			glPopMatrix();
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbres, hbres, 0, GL_BGR, GL_UNSIGNED_BYTE, datosRestart);
+			renderButton(800, 400, textura);
+
+			renderBackground();
+		} 
 		else {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
 			renderTime(tiempoTranscurrido, textura);
-			renderScore(score, textura);
+			renderScore(score, textura, 1250, 0);
 			renderFrames(fps, textura);
 			if (escudo->getOnPlayer()) renderShieldTime(shieldTime - shieldElapsedTime, textura);
 		}
+
+		
 		// Making sure we can render 3d again
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -1279,6 +1373,10 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_p:
 					pause = !pause;
+					break;
+				case SDLK_r:
+					gameover = false;
+					tiempoTranscurrido = 0;
 					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
