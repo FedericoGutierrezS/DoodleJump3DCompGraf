@@ -905,6 +905,9 @@ int main(int argc, char* argv[]) {
 		if (texturas) glEnable(GL_TEXTURE_2D);
 		if (facetado) glShadeModel(GL_FLAT);
 		else glShadeModel(GL_SMOOTH);
+
+		glCullFace(GL_BACK);
+
 		//Luces alrededor del jugador
 		luz_posicion[0] = jug->getPos()->getX() + 0;
 		luz_posicion[1] = jug->getPos()->getY() + 5;
@@ -938,7 +941,9 @@ int main(int argc, char* argv[]) {
 		//Animacion salto personaje
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
+		glEnable(GL_CULL_FACE);
 		if(camType) jug->draw(jugador, vertAmountJugador, textura);
+		
 
 		glPopMatrix();
 		//Dibujado de bala
@@ -1002,7 +1007,7 @@ int main(int argc, char* argv[]) {
 				escudo->setPos(1, 1, 1);
 			}
 		}
-
+		glDisable(GL_CULL_FACE);
 		
 		//DIBUJO ESCENARIO(Sin movimiento de personaje)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
@@ -1024,6 +1029,7 @@ int main(int argc, char* argv[]) {
 
 
 		glPopMatrix();
+		glEnable(GL_CULL_FACE);
 		//Movimiento de los enemigos oscilante sobre sus plataformas y renderizado
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, we, he, 0, GL_BGR, GL_UNSIGNED_BYTE, datosEnemigo);
 		for (int i = 0; i < cantEnem; i++) {
@@ -1049,7 +1055,7 @@ int main(int argc, char* argv[]) {
 			}
 			glPopMatrix();
 		}
-
+		glDisable(GL_CULL_FACE);
 		//DIBUJADO DE PARTICULAS
 		//test particulas
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
@@ -1072,8 +1078,9 @@ int main(int argc, char* argv[]) {
 		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
 		if(dListBackground != -1) glCallList(dListBackground);
 		glPopMatrix();
-		
+
 		//Dibujado de poderes
+		glEnable(GL_CULL_FACE);
 		for (int i = 0; i < 2; i++) {
 			if (poderes[i]->getExist()) {
 				glPushMatrix();
@@ -1093,6 +1100,7 @@ int main(int argc, char* argv[]) {
 						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ws, hs, 0, GL_BGR, GL_UNSIGNED_BYTE, datosShield);
 						glEnable(GL_BLEND);
 						glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
 						glColor4f(0, 0.1, 1, 0.5);
 						glTranslatef(-0.4, -0.3, 0);
 						glScalef(9, 9, 9);
@@ -1104,7 +1112,7 @@ int main(int argc, char* argv[]) {
 				glPopMatrix();
 			}
 		}
-
+		glDisable(GL_CULL_FACE);
 		//FIN DIBUJAR OBJETOS
 		
 
