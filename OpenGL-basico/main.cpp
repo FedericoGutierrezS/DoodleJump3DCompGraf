@@ -787,7 +787,7 @@ int main(int argc, char* argv[]) {
 		else
 			plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'n');
 	}
-
+	
 	//LOOP PRINCIPAL
 	float fps = 0;
 	int frameCount = 0;
@@ -858,7 +858,10 @@ int main(int argc, char* argv[]) {
 				if (100 - probPlat < probPlataformaRota) {
 					plataformas[i % 11]->setType('d');
 				}
-				else plataformas[i % 11]->setType('n');
+				else {
+					plataformas[i % 11]->setType('n');
+					plataformas[i % 11]->setExists(true);
+				}
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
 		//TRANSFORMACIONES LINEALES
