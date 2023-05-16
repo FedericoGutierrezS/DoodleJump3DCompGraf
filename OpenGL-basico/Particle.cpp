@@ -4,7 +4,7 @@ Particle::Particle(float ct, Vector3* posVector, Vector3* rgb, float a, float s,
 {
 	pos = posVector;
 	realPos = new Vector3(posVector->getX(), posVector->getY(), posVector->getZ());
-	color = rgb;
+	color = new Vector3(rgb->getX(), rgb->getY(), rgb->getZ());
 	ALPHA = a;
 	size = s;
 	aliveTime = at;
@@ -78,13 +78,17 @@ Vector3* Particle::getPos()
 
 void Particle::setColor(float r, float g, float b, float a)
 {
-	color = new Vector3(r, g, b);
+	color->setX(r);
+	color->setY(g);
+	color->setZ(b);
 	ALPHA = a;
 }
 
 void Particle::setColor(Vector3* rgb, float a)
 {
-	color = rgb;
+	color->setX(rgb->getX());
+	color->setY(rgb->getY());
+	color->setZ(rgb->getZ());
 	ALPHA = a;
 }
 
@@ -145,6 +149,8 @@ void Particle::draw(float x, float y, float z)
 	glRotatef(angleXZ * 180.0f / M_PI, 0.0f, 1.0f, 0.0f);
 	glRotatef(angleYZ * 180.0f / M_PI, 1.0f, 0.0f, 0.0f);
 
+	glColor4f(color->getX(), color->getY(), color->getZ(), ALPHA);
+
 	if (disList == -1) {
 		int displayList = glGenLists(1);
 		glNewList(displayList, GL_COMPILE);
@@ -154,7 +160,6 @@ void Particle::draw(float x, float y, float z)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		glColor4f(color->getX(), color->getY(), color->getZ(), ALPHA);
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glBegin(GL_QUADS);
 		glVertex3f(-0.5 * size, -0.5 * size, 0.0);

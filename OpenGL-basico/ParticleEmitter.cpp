@@ -102,6 +102,12 @@ void ParticleEmitter::draw(float x, float y, float z, float time)
 		}
 		if (particles[i]->getExist()) {
 			particles[i]->incTime(time - particles[i]->getCreationTime() - particles[i]->getTime());
+			float percent = (particles[i]->getTime()) / (particles[i]->getAliveTime());
+			float xColor = color->getX() * (1 - percent) + colorFade->getX() * percent;
+			float yColor = color->getY() * (1 - percent) + colorFade->getY() * percent;
+			float zColor = color->getZ() * (1 - percent) + colorFade->getZ() * percent;
+			float alphaDegrade = ALPHA * (1 - percent) + alphaFade * percent;
+			particles[i]->setColor(xColor, yColor, zColor, alphaDegrade);
 			particles[i]->draw(x, y, z);
 		}
 	}

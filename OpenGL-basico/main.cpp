@@ -765,8 +765,9 @@ int main(int argc, char* argv[]) {
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
-	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
-	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
+	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
+	ParticleEmitter* jumpParticles = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 	ParticleEmitter* jetLeftEmitter = nullptr;
 	ParticleEmitter* jetRightEmitter = nullptr;
 
@@ -903,8 +904,8 @@ int main(int argc, char* argv[]) {
 					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 				}
 				else {
-					delete destroyPlatform;
-					destroyPlatform = new ParticleEmitter(new Vector3(jug->getPos()->getX(), choque->getY() + 0.5, jug->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0, 0.4, 0), 1, new Vector3(1, 0, 0), 0.5, 6, 0.1, 0.5, 1, new Vector3(0, 0, 0), true, false);
+					delete jumpParticles;
+					jumpParticles = new ParticleEmitter(new Vector3(jug->getPos()->getX(), choque->getY() + 0.5, jug->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0, 0.4, 0), 1, new Vector3(0, 0.4, 0), 1, 6, 0.1, 0.5, 1, new Vector3(0, 0, 0), true, false);
 				}
 				if (alturaDerrota > altAlcanzada) {
 					score = score + (alturaDerrota - altAlcanzada) * 300;
@@ -1043,9 +1044,9 @@ int main(int argc, char* argv[]) {
 		//Checkeo timer del jetpack
 		if (jetp->getOnPlayer()) {
 			if(jetLeftEmitter == nullptr)
-				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
+				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			if (jetRightEmitter == nullptr)
-				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
+				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 1, new Vector3(0, 0, 0), 0, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
 			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0.4));
@@ -1145,6 +1146,7 @@ int main(int argc, char* argv[]) {
 		//testParticula->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ());
 		testEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 		destroyPlatform->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+		jumpParticles->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
 		glPushMatrix();
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
 		glRotatef(degreesFromMovement, 0, 1, 0);
