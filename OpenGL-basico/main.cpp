@@ -936,6 +936,8 @@ int main(int argc, char* argv[]) {
 			yAnt = 0;
 			altAlcanzada = 0;
 			gameover = true;
+			delete destroyPlatform;
+			destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(0.1, 0.1, 0.1), 0, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 			//Se marcan todas las plataformas como existentes nuevamente
 			for (int i = 0; i < 11; i++) {
 				int xcoord = 2, zcoord = 0;
