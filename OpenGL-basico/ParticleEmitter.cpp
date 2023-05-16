@@ -1,9 +1,9 @@
 #include "ParticleEmitter.h"
 
-ParticleEmitter::ParticleEmitter(Vector3* posVector, Vector3* forceVector, Vector3* colorVector, float colorAlpha, Vector3* colorFadeVector, float fadeAlpha, int cantidad, float boxSize, float dispersionAmount, float time, float gravityAmount, bool existe, bool r)
+ParticleEmitter::ParticleEmitter(Vector3* posVector, Vector3* velVector, Vector3* colorVector, float colorAlpha, Vector3* colorFadeVector, float fadeAlpha, int cantidad, float boxSize, float dispersionAmount, float time, Vector3* acc, bool existe, bool r)
 {
 	pos = posVector;
-	force = forceVector;
+	vel = velVector;
 	color = colorVector;
 	ALPHA = colorAlpha;
 	colorFade = colorFadeVector;
@@ -12,7 +12,7 @@ ParticleEmitter::ParticleEmitter(Vector3* posVector, Vector3* forceVector, Vecto
 	sizeFade = boxSize;
 	dispersion = dispersionAmount;
 	aliveTime = time;
-	gravity = gravityAmount;
+	acceleration = acc;
 	exists = existe;
 	amount = cantidad;
 	repeat = r;
@@ -28,19 +28,20 @@ ParticleEmitter::~ParticleEmitter()
 		delete particles[i];
 	}
 	delete pos;
-	delete force;
+	delete vel;
 	delete color;
 	delete colorFade;
+	delete acceleration;
 }
 
-void ParticleEmitter::setGravity(float g)
+void ParticleEmitter::setAcceleration(Vector3* acc)
 {
-	gravity = g;
+	acceleration = acc;
 }
 
-float ParticleEmitter::getGravity()
+Vector3* ParticleEmitter::getAcceleration()
 {
-	return gravity;
+	return acceleration;
 }
 
 void ParticleEmitter::setExists(bool e)
@@ -96,8 +97,8 @@ void ParticleEmitter::draw(float x, float y, float z, float time)
 		}
 		if (particles[i] == nullptr) {
 			particles[i] = new Particle(time, new Vector3(pos->getX(), pos->getY(), pos->getZ()), new Vector3(color->getX(), color->getY(), color->getZ()), ALPHA, size, aliveTime * rand() / RAND_MAX, exists);
-			particles[i]->setVel(new Vector3(force->getX() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0)), force->getY(), force->getZ() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0))));
-			particles[i]->setAcc(new Vector3(0, gravity, 0));
+			particles[i]->setVel(new Vector3(vel->getX() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0)), vel->getY(), vel->getZ() + dispersion * (-1.0 + (2.0 * rand()) / (RAND_MAX + 1.0))));
+			particles[i]->setAcc(new Vector3(acceleration->getX(), acceleration->getY(), acceleration->getZ()));
 		}
 		if (particles[i]->getExist()) {
 			particles[i]->incTime(time - particles[i]->getCreationTime() - particles[i]->getTime());
@@ -137,14 +138,14 @@ Vector3* ParticleEmitter::getPos()
 	return pos;
 }
 
-void ParticleEmitter::setForce(Vector3* vector)
+void ParticleEmitter::setVelocity(Vector3* vector)
 {
-	force = vector;
+	vel = vector;
 }
 
-Vector3* ParticleEmitter::getForce()
+Vector3* ParticleEmitter::getVelocity()
 {
-	return force;
+	return vel;
 }
 
 void ParticleEmitter::setColor(float r, float g, float b, float a)

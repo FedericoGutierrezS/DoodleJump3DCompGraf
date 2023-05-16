@@ -7,7 +7,7 @@
 class ParticleEmitter {
 private:
 	Vector3* pos;
-	Vector3* force;
+	Vector3* vel;
 	float dispersion;
 	float size;
 	float sizeFade;
@@ -18,15 +18,15 @@ private:
 	float ALPHA;
 	float alphaFade;
 	float aliveTime;
-	float gravity;
+	Vector3* acceleration;
 	int amount;
 	Particle** particles;
 
 public:
-	ParticleEmitter(Vector3*, Vector3*, Vector3*, float = 1.0, Vector3* = new Vector3(0.0, 0.0, 0.0), float = 0.0, int = 5, float = 1.0, float = 0.0, float = 2.0, float = 9.8, bool = false, bool = true);
+	ParticleEmitter(Vector3*, Vector3*, Vector3*, float = 1.0, Vector3* = new Vector3(0.0, 0.0, 0.0), float = 0.0, int = 5, float = 1.0, float = 0.0, float = 2.0, Vector3* = new Vector3(0.0, 9.8, 0.0), bool = false, bool = true);
 	~ParticleEmitter();
-	void setGravity(float);
-	float getGravity();
+	void setAcceleration(Vector3*);
+	Vector3* getAcceleration();
 	void setExists(bool);
 	bool getExist();
 	void setDispersion(float);
@@ -35,8 +35,8 @@ public:
 	float getSize();
 	void setPos(Vector3*);
 	Vector3* getPos();
-	void setForce(Vector3*);
-	Vector3* getForce();
+	void setVelocity(Vector3*);
+	Vector3* getVelocity();
 	void setColor(float, float, float, float = 1.0);
 	void setColor(Vector3*, float = 1.0);
 	Vector3* getColor();

@@ -53,7 +53,7 @@ int AudioThread(void* data) {
 					*channels[i].channel = channel;
 				}
 			}
-			SDL_Delay(100);
+			//SDL_Delay(100);
 		}
 
 		for (int i = 0; i < pistasAudio; i++) {
@@ -765,8 +765,8 @@ int main(int argc, char* argv[]) {
 	//Generacion de particulas
 	//Test particula
 	//Particle* testParticula = new Particle(new Vector3(1, 5, 5), new Vector3(1, 0, 0), 0.5, 1, 9.8, 20, true);
-	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 1, -2, true, false);
-	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+	ParticleEmitter* testEmitter = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 1, new Vector3(0, -2, 0), true, false);
+	ParticleEmitter* destroyPlatform = new ParticleEmitter(new Vector3(-60, -60, -60), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 	ParticleEmitter* jetLeftEmitter = nullptr;
 	ParticleEmitter* jetRightEmitter = nullptr;
 
@@ -897,7 +897,7 @@ int main(int argc, char* argv[]) {
 				if (choque->getType() == 'd') { 
 					choque->setExists(false);
 					delete destroyPlatform;
-					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+					destroyPlatform = new ParticleEmitter(new Vector3(choque->getX(), choque->getY(), choque->getZ()), new Vector3(0, 0.1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 				}
 				if (alturaDerrota > altAlcanzada) {
 					score = score + (alturaDerrota - altAlcanzada) * 300;
@@ -912,7 +912,7 @@ int main(int argc, char* argv[]) {
 			bul->setExists(false);
 			score = score + 371;
 			delete testEmitter;
-			testEmitter = new ParticleEmitter(new Vector3(enemigoHerido->getPos()->getX(), enemigoHerido->getPos()->getY() + 0.2, enemigoHerido->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0.2, 0, 1), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, -2, true, false);
+			testEmitter = new ParticleEmitter(new Vector3(enemigoHerido->getPos()->getX(), enemigoHerido->getPos()->getY() + 0.2, enemigoHerido->getPos()->getZ()), new Vector3(0, 0.1, 0), new Vector3(0.2, 0, 1), 0.5, new Vector3(1, 0, 0), 0.5, 30, 0.1, 1, 3, new Vector3(0, -2, 0), true, false);
 			enemigoHerido = NULL;
 		}
 
@@ -1036,9 +1036,9 @@ int main(int argc, char* argv[]) {
 		//Checkeo timer del jetpack
 		if (jetp->getOnPlayer()) {
 			if(jetLeftEmitter == nullptr)
-				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
+				jetLeftEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			if (jetRightEmitter == nullptr)
-				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
+				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, new Vector3(0, -10, 0), true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
 			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0.4));
