@@ -4,6 +4,7 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_mixer.h>
 #include <iostream>
+#include <fstream>
 #include "FreeImage.h"
 #include <stdio.h>
 #include <conio.h>
@@ -595,11 +596,13 @@ int main(int argc, char* argv[]) {
 	float jetpackTime = 5;//Duracion del jetpack
 	float shieldTime = 15;
 	float shakeMagnitude = 0.1;
+
 	float* velocidades = new float[4];
 	velocidades[0] = 0.25;
 	velocidades[1] = 0.5;
 	velocidades[2] = 1;
 	velocidades[3] = 2;
+
 	float* direcciones = new float[4];
 	direcciones[0] = 4;
 	direcciones[1] = -4;
@@ -630,11 +633,17 @@ int main(int argc, char* argv[]) {
 	float tiempoTranscurrido = 0;
 	float score = 0;
 	float altAlcanzada = 0;
-	float probPlataformaRota = 10;
+	float probPlataformaRota = 13;
 	float probEnemigos = 19;
 	float probJetpack = 5;
 	float probEscudo = 15;
-	string seed = "sdda";
+
+
+	string seed;
+
+	ifstream ArchivoSeed("seed.txt");
+	getline(ArchivoSeed, seed);
+	ArchivoSeed.close();
 
 	//Generacion de plataformas
 	Plataforma* choque = NULL;
@@ -692,7 +701,7 @@ int main(int argc, char* argv[]) {
 	//Se crea el jugador
 	Jugador* jug = new Jugador(0.3, 0.3, 0.2);
 	//Se crea la bala
-	Bullet* bul = new Bullet(0, 0, 0, 0.1, 0.1, 0.5);
+	Bullet* bul = new Bullet(0, -13, 0, 0.1, 0.1, 0.5);
 
 	//Generacion de particulas
 	//Test particula
@@ -788,9 +797,9 @@ int main(int argc, char* argv[]) {
 					escudo->setPos(xcoord, i + 0.4, zcoord);
 				}
 				if (100 - probPlat < probPlataformaRota) {
-					delete plataformas[i % 11];
-					plataformas[i % 11] = new Plataforma(xcoord, i, zcoord, 1.4, 0.5, 0.3, 'd');
+					plataformas[i % 11]->setType('d');
 				}
+				else plataformas[i % 11]->setType('n');
 				plataformas[i % 11]->setPos(xcoord, i, zcoord);
 			}
 		//TRANSFORMACIONES LINEALES
@@ -862,12 +871,17 @@ int main(int argc, char* argv[]) {
 				generate_object(seed, i, xcoord, zcoord);
 				srand((xcoord + zcoord + i + 5) * 10);
 				int prob = rand() % 100;
+				int probPlat = rand() % 100;
 				xcoord = (xcoord % 100) * 0.06;
 				zcoord = (zcoord % 100) * 0.06;
 				if (100 - prob < probEnemigos) {
 					enemigos[i % 11]->setPos(xcoord, i + 0.4, zcoord);
 				}
 				plataformas[i % 11]->setPos(xcoord,i,zcoord);
+				if (100 - probPlat < probPlataformaRota)
+					plataformas[i % 11]->setType('d');
+				else
+					plataformas[i % 11]->setType('n');
 			}
 			for (int i = 0; i < cantPlat; i++) {
 				plataformas[i]->setExists(true);
