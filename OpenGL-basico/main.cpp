@@ -1424,8 +1424,10 @@ int main(int argc, char* argv[]) {
 					pause = !pause;
 					break;
 				case SDLK_r:
-					gameover = false;
-					tiempoTranscurrido = 0;
+					if (gameover) {
+						gameover = false;
+						tiempoTranscurrido = 0;
+					}
 					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
