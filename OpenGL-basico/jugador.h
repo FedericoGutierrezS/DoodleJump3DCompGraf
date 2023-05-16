@@ -24,5 +24,5 @@ public:
 	void setPos(Vector3*);
 	Vector3* getVel();
 	void setVel(Vector3*);
-	void draw(Vector3**, int, GLuint);
+	void draw(Vector3**, int);
 };

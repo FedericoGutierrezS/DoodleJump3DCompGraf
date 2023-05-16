@@ -58,8 +58,7 @@ Vector3** DoTheImportThing(const std::string& pFile, int& faceAmount) {
 	return model;
 };
 
-int drawFaces(Vector3** model, int faceAmount, GLuint textura) {
-	glBindTexture(GL_TEXTURE_2D, textura);
+int drawFaces(Vector3** model, int faceAmount) {
 	int displayList = glGenLists(1);
 	glNewList(displayList, GL_COMPILE);
 	for (int i = 0; i < faceAmount; i++) {

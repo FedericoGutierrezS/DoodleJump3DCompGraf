@@ -47,10 +47,10 @@ void Plataforma::setPos(float a, float b, float c) {
 void Plataforma::setType(char typ) {
 	type = typ;
 }
-void Plataforma::draw(Vector3** modelo, int caras,GLuint textura) {
+void Plataforma::draw(Vector3** modelo, int caras) {
 	glPushMatrix();
 	glTranslatef(x, y, z);
-	if(disList == -1) disList = drawFaces(modelo, caras, textura);
+	if(disList == -1) disList = drawFaces(modelo, caras);
 	if (disList != -1) glCallList(disList);
 	glPopMatrix();
 }

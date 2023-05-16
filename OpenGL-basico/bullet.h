@@ -22,5 +22,5 @@ public:
 	float getProfCol();
 	void setExists(bool);
 	void setPos(Vector3*);
-	void draw(Vector3**, int, GLuint);
+	void draw(Vector3**, int);
 };

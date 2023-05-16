@@ -24,7 +24,7 @@ public:
 	Vector3* getPos();
 	void setPos(float, float, float);
 	void setPos(Vector3*);
-	void draw(Vector3**, int, GLuint);
+	void draw(Vector3**, int);
 	void setExist(bool);
 	void setOnPlayer(bool);
 };

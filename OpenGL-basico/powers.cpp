@@ -57,7 +57,7 @@ void Powers::setOnPlayer(bool val) {
 }
 
 
-void Powers::draw(Vector3** modelo, int caras, GLuint textura) {
-	if (disList == -1) disList = drawFaces(modelo, caras, textura);
+void Powers::draw(Vector3** modelo, int caras) {
+	if (disList == -1) disList = drawFaces(modelo, caras);
 	if (disList != -1) glCallList(disList);
 }

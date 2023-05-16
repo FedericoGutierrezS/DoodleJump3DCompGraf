@@ -1019,7 +1019,7 @@ int main(int argc, char* argv[]) {
 		glScalef(1, min(max(jug->getPos()->getY() - yAnt,0.2f)*0.5f,1.0f), 1);
 		//Dibujado de personaje
 		glEnable(GL_CULL_FACE);
-		if(camType) jug->draw(jugador, vertAmountJugador, textura);
+		if(camType) jug->draw(jugador, vertAmountJugador);
 		
 
 		glPopMatrix();
@@ -1028,7 +1028,7 @@ int main(int argc, char* argv[]) {
 			glPushMatrix();
 			glTranslatef(bul->getPos()->getX(), bul->getPos()->getY()+0.8f, bul->getPos()->getZ());
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wb, hb, 0, GL_BGR, GL_UNSIGNED_BYTE, datosBala);
-			bul->draw(bala, vertAmountBala, textura);
+			bul->draw(bala, vertAmountBala);
 			glPopMatrix();
 		}
 
@@ -1093,11 +1093,11 @@ int main(int argc, char* argv[]) {
 			if ((plataformas[i]->getY() > jug->getPos()->getY() - viewDistance) && (plataformas[i]->getY() < jug->getPos()->getY() + viewDistance) && plataformas[i]->getExists()) {
 				switch (plataformas[i]->getType()) {
 				case 'n':
-					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+					plataformas[i]->draw(plataforma, vertAmountPlataforma);
 					break;
 				case 'd':
 					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma2);
-					plataformas[i]->draw(plataforma, vertAmountPlataforma, textura);
+					plataformas[i]->draw(plataforma, vertAmountPlataforma);
 					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wp, hp, 0, GL_BGR, GL_UNSIGNED_BYTE, datosPlataforma);
 					break;
 				}
@@ -1128,7 +1128,7 @@ int main(int argc, char* argv[]) {
 				enemigos[i]->getPos()->setX(enemigos[i]->getEnemyCenter() - 1.79);
 			}
 			if (enemigos[i]->getExists() && enemigos[i]->getPos()->getY() <= jug->getPos()->getY() + viewDistance && enemigos[i]->getPos()->getY() >= jug->getPos()->getY() - viewDistance) {
-				enemigos[i]->draw(enemigo1, vertAmountEnemigo, textura);
+				enemigos[i]->draw(enemigo1, vertAmountEnemigo);
 			}
 			glPopMatrix();
 		}
@@ -1152,7 +1152,7 @@ int main(int argc, char* argv[]) {
 		glPushMatrix();
 		glTranslatef(3.0, jug->getPos()->getY(), 3.0);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wba, hba, 0, GL_BGR, GL_UNSIGNED_BYTE, datosBackground);
-		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground,textura);
+		if (dListBackground == -1) dListBackground = drawFaces(background,vertAmountBackground);
 		if(dListBackground != -1) glCallList(dListBackground);
 		glPopMatrix();
 
@@ -1182,7 +1182,7 @@ int main(int argc, char* argv[]) {
 						glTranslatef(-0.4, -0.3, 0);
 						glScalef(9, 9, 9);
 					}
-					poderes[i]->draw(modelosPoderes[i], vertPoderes[i], textura);
+					poderes[i]->draw(modelosPoderes[i], vertPoderes[i]);
 					glColor4f(1, 1, 1, 1);
 					glDisable(GL_BLEND);
 				}
@@ -1208,7 +1208,7 @@ int main(int argc, char* argv[]) {
 			glEnable(GL_TEXTURE_2D);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbuvel, hbuvel, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButVel);
-			renderButton(400, 30, textura);
+			renderButton(400, 30);
 			switch ((velocidadJuegoPos) % 4) {
 			case 0:
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w025, h025, 0, GL_BGR, GL_UNSIGNED_BYTE, datos025);
@@ -1223,26 +1223,26 @@ int main(int argc, char* argv[]) {
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w2, h2, 0, GL_BGR, GL_UNSIGNED_BYTE, datos2);
 				break;
 			}
-			renderValue(730, 30, textura);
+			renderValue(730, 30);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbutex, hbutex, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButTex);
-			renderButton(400, 130, textura);
+			renderButton(400, 130);
 			if (texturas)glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, won, hon, 0, GL_BGR, GL_UNSIGNED_BYTE, datosOn);
 			else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, woff, hoff, 0, GL_BGR, GL_UNSIGNED_BYTE, datosOff);
-			renderValue(730, 130, textura);
+			renderValue(730, 130);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbuwire, hbuwire, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButWire);
-			renderButton(400, 230, textura);
+			renderButton(400, 230);
 			if (wireframe)glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, won, hon, 0, GL_BGR, GL_UNSIGNED_BYTE, datosOn);
 			else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, woff, hoff, 0, GL_BGR, GL_UNSIGNED_BYTE, datosOff);
-			renderValue(730, 230, textura);
+			renderValue(730, 230);
 
 			if (!facetado) glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbuint, hbuint, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButInt);
 			else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbufac, hbufac, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButFac);
-			renderButton(400, 330, textura);
+			renderButton(400, 330);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wluz, hluz, 0, GL_BGR, GL_UNSIGNED_BYTE, datosLuz);
-			renderValue(450, 410, textura);
+			renderValue(450, 410);
 
 			switch ((luzAct) % 5) {
 			case 1:
@@ -1261,10 +1261,10 @@ int main(int argc, char* argv[]) {
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbucy, hbucy, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButColY);
 				break;
 			}
-			renderButton(400, 500, textura);
+			renderButton(400, 500);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbudir, hbudir, 0, GL_BGR, GL_UNSIGNED_BYTE, datosButDir);
-			renderButton(400, 600, textura);
+			renderButton(400, 600);
 
 			renderBackground();
 		}
@@ -1272,37 +1272,37 @@ int main(int argc, char* argv[]) {
 			glEnable(GL_TEXTURE_2D);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbover, hbover, 0, GL_BGR, GL_UNSIGNED_BYTE, datosGameOver);
-			renderButtonGameOver(400, 30, textura);
+			renderButtonGameOver(400, 30);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbscore, hbscore, 0, GL_BGR, GL_UNSIGNED_BYTE, datosScore);
-			renderButton(30, 400, textura);
+			renderButton(30, 400);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbbest, hbbest, 0, GL_BGR, GL_UNSIGNED_BYTE, datosbest);
-			renderButton(30, 600, textura);
+			renderButton(30, 600);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
-			renderScore(previousScore, textura, 500, 410);
+			renderScore(previousScore, 500, 410);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
-			renderScore(bestScore, textura, 500, 610);
+			renderScore(bestScore, 500, 610);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbr, hbr, 0, GL_BGR, GL_UNSIGNED_BYTE, datosR);
 			glPushMatrix();
 			glScalef(1, min(max(3.0f - jug->getPos()->getY(), 0.2f) * 0.5f, 1.0f), 1);
-			renderButton(800, 300 - (jug->getPos()->getY() * 80), textura);
+			renderButton(800, 300 - (jug->getPos()->getY() * 80));
 			glPopMatrix();
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wbres, hbres, 0, GL_BGR, GL_UNSIGNED_BYTE, datosRestart);
-			renderButton(800, 400, textura);
+			renderButton(800, 400);
 
 			renderBackground();
 		} 
 		else {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wa, ha, 0, GL_BGR, GL_UNSIGNED_BYTE, datosAtlasFont);
-			renderTime(tiempoTranscurrido, textura);
-			renderScore(score, textura, 1250, 0);
-			renderFrames(fps, textura);
-			if (escudo->getOnPlayer()) renderShieldTime(shieldTime - shieldElapsedTime, textura);
+			renderTime(tiempoTranscurrido);
+			renderScore(score, 1250, 0);
+			renderFrames(fps);
+			if (escudo->getOnPlayer()) renderShieldTime(shieldTime - shieldElapsedTime);
 		}
 
 		

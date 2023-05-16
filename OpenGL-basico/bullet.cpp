@@ -33,7 +33,7 @@ void Bullet::setPos(Vector3* npos) {
 	delete pos;
 	pos = npos;
 }
-void Bullet::draw(Vector3** modelo, int caras, GLuint textura) {
-	if (disList == -1) disList = drawFaces(modelo, caras, textura);
+void Bullet::draw(Vector3** modelo, int caras) {
+	if (disList == -1) disList = drawFaces(modelo, caras);
 	if (disList != -1) glCallList(disList);
 }

@@ -47,7 +47,7 @@ void Jugador::setPos(float x,float y,float z) {
 	pos->setZ(z);
 }
 
-void Jugador::draw(Vector3** modelo, int caras, GLuint textura) {
-	if(disList == -1) disList = drawFaces(modelo, caras, textura);
+void Jugador::draw(Vector3** modelo, int caras) {
+	if(disList == -1) disList = drawFaces(modelo, caras);
 	if (disList != -1) glCallList(disList);
 }
