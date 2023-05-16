@@ -1558,6 +1558,7 @@ int main(int argc, char* argv[]) {
 					demoEmitterMode = demoEmitterMode + 1;
 					if (demoEmitterMode > 4)
 						demoEmitterMode = 0;
+					cout << "Particle Emitter Demo Mode cambiado a: " << demoEmitterMode << endl;
 					break;
 				case SDLK_RIGHT:
 				case SDLK_d:
