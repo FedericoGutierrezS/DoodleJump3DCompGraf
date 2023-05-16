@@ -82,8 +82,8 @@ C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(95
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(959,232): warning C4305: 'argumento': truncamiento de 'double' a 'float'
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(960,53): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(961,18): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(962,50): warning C4305: 'argumento': truncamiento de 'double' a 'float'
-C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(963,50): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(962,52): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(963,52): warning C4305: 'argumento': truncamiento de 'double' a 'float'
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(980,68): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(996,51): warning C4244: '+=': conversión de 'const double' a 'float'; posible pérdida de datos
 C:\Users\Usuario\Documents\GitHub\DoodleJump3DCompGraf\OpenGL-basico\main.cpp(1038,63): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos

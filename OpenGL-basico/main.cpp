@@ -959,8 +959,8 @@ int main(int argc, char* argv[]) {
 				jetRightEmitter = new ParticleEmitter(new Vector3(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ()), new Vector3(0, -1, 0), new Vector3(1, 0, 0), 0.5, new Vector3(1, 0, 0), 1, 30, 0.15, 1, 1, -10, true, true);
 			jetpackElapsedTime += jetpackTimer->touch().delta;
 			gravity = -0.1;
-			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0));
-			jetRightEmitter->setPos(new Vector3(0.2, 0, 0));
+			jetLeftEmitter->setPos(new Vector3(-0.2, 0, 0.4));
+			jetRightEmitter->setPos(new Vector3(0.2, 0, 0.4));
 			if (jetpackElapsedTime >= jetpackTime) {
 				//Se acabo el tiempo del jetpack
 				jetpackElapsedTime = -1;
@@ -1059,13 +1059,9 @@ int main(int argc, char* argv[]) {
 		glTranslatef(jug->getPos()->getX(), jug->getPos()->getY(), jug->getPos()->getZ());
 		glRotatef(degreesFromMovement, 0, 1, 0);
 		if(jetLeftEmitter != nullptr)
-			//jetLeftEmitter->draw(0, 0, 0, tiempoTranscurrido);
-			jetLeftEmitter->draw(x, y, z, tiempoTranscurrido);
-			//jetLeftEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+			jetLeftEmitter->draw(x + degreesFromMovement, y, z + degreesFromMovement, tiempoTranscurrido);
 		if (jetRightEmitter != nullptr)
-			//jetRightEmitter->draw(0, 0, 0, tiempoTranscurrido);
-			jetRightEmitter->draw(x, y, z, tiempoTranscurrido);
-			//jetRightEmitter->draw(x + jug->getPos()->getX(), y + jug->getPos()->getY(), z + jug->getPos()->getZ(), tiempoTranscurrido);
+			jetRightEmitter->draw(x + degreesFromMovement, y, z + degreesFromMovement, tiempoTranscurrido);
 		glPopMatrix();
 
 		glDisable(GL_LIGHTING);
